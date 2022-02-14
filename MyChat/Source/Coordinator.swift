@@ -36,7 +36,7 @@ extension Coordinator: CoordinatorProtocol {
     
     func presentTabBarViewController(showSplash: Bool) {
         guard let window = window else { return }
-        window.rootViewController = moduleFactory?.getTabBarController()
+        window.rootViewController = moduleFactory?.getTabBarController(showSplash: showSplash)
         window.makeKeyAndVisible()
     }
     

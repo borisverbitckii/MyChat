@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol ModuleFactoryProtocol {
-    func getTabBarController() -> UITabBarController
+    func getTabBarController(showSplash: Bool) -> UITabBarController
     func getRegisterViewController() -> UIViewController
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController
     func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController
@@ -34,14 +34,14 @@ final class ModuleFactory {
 
 //MARK: - extension + ModuleFactoryProtocol
 extension ModuleFactory: ModuleFactoryProtocol {
-    func getTabBarController() -> UITabBarController {
+    func getTabBarController(showSplash: Bool) -> UITabBarController {
         guard let coordinator = coordinator else { return UITabBarController() }
         let chatsListVC = getChatsListModule(coordinator: coordinator)
         let profileVC = getProfileModule(coordinator: coordinator)
         let viewControllers = [chatsListVC, profileVC]
         return TabBarControllerModuleBuilder().build(coordinator: coordinator,
                                                      viewControllers: viewControllers,
-                                                     showSplash: true)
+                                                     showSplash: showSplash)
     }
     
     func getRegisterViewController() -> UIViewController {

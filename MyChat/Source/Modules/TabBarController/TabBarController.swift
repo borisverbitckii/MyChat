@@ -32,8 +32,8 @@ final class TabBarController: UITabBarController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !splashIsShown {
-            tabBarViewModel.presentSplashModule(transitionHandler: self)
             splashIsShown = true 
+            tabBarViewModel.presentSplashModule(transitionHandler: self)
         }
     }
 }

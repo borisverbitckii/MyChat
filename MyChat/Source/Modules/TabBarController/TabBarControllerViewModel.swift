@@ -28,7 +28,6 @@ final class TabBarControllerViewModel {
 extension TabBarControllerViewModel: TabBarControllerViewModelProtocol {
     
     func presentSplashModule(transitionHandler: TransitionHandler) {
-        print(showSplash)
         if showSplash {
             coordinator.presentSplashViewController(transitionHandler: transitionHandler)
             return

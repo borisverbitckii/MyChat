@@ -38,6 +38,14 @@ final class ChatsListViewController: UIViewController {
     private func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         title = Text.title(.chatList).text
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                            target: self,
+                                                            action: #selector(addChat))
+    }
+    
+    //MARK: - OBJC methods
+    @objc private func addChat() {
+        print("add chat")
     }
 }
 
