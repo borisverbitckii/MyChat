@@ -40,6 +40,13 @@
 		A101D5D627B7A6D700A38901 /* TabBarControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5D527B7A6D700A38901 /* TabBarControllerViewModel.swift */; };
 		A101D5D827B7A6F500A38901 /* TabBarControllerModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5D727B7A6F500A38901 /* TabBarControllerModuleBuilder.swift */; };
 		A101D5DB27B9119F00A38901 /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5DA27B9119F00A38901 /* Text.swift */; };
+		A101D5DD27BA845900A38901 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5DC27BA845900A38901 /* RegisterViewController.swift */; };
+		A101D5E027BA846A00A38901 /* RegisterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5DF27BA846A00A38901 /* RegisterViewModel.swift */; };
+		A101D5E227BA847200A38901 /* RegisterModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5E127BA847200A38901 /* RegisterModuleBuilder.swift */; };
+		A101D5E427BA897E00A38901 /* UserDefaultsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5E327BA897E00A38901 /* UserDefaultsKey.swift */; };
+		A101D5E627BA99E500A38901 /* NewChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5E527BA99E500A38901 /* NewChatViewController.swift */; };
+		A101D5E827BA99EF00A38901 /* NewChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5E727BA99EF00A38901 /* NewChatViewModel.swift */; };
+		A101D5EA27BA99F500A38901 /* NewChatBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5E927BA99F500A38901 /* NewChatBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +82,13 @@
 		A101D5D527B7A6D700A38901 /* TabBarControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarControllerViewModel.swift; sourceTree = "<group>"; };
 		A101D5D727B7A6F500A38901 /* TabBarControllerModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarControllerModuleBuilder.swift; sourceTree = "<group>"; };
 		A101D5DA27B9119F00A38901 /* Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
+		A101D5DC27BA845900A38901 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
+		A101D5DF27BA846A00A38901 /* RegisterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewModel.swift; sourceTree = "<group>"; };
+		A101D5E127BA847200A38901 /* RegisterModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterModuleBuilder.swift; sourceTree = "<group>"; };
+		A101D5E327BA897E00A38901 /* UserDefaultsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKey.swift; sourceTree = "<group>"; };
+		A101D5E527BA99E500A38901 /* NewChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatViewController.swift; sourceTree = "<group>"; };
+		A101D5E727BA99EF00A38901 /* NewChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatViewModel.swift; sourceTree = "<group>"; };
+		A101D5E927BA99F500A38901 /* NewChatBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatBuilder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +145,9 @@
 			children = (
 				A101D5D927B7A7A200A38901 /* TabBarController */,
 				A101D5AB27B7789E00A38901 /* Splash */,
+				A101D5DE27BA845C00A38901 /* Register */,
 				A101D5A427B7778600A38901 /* ChatsList */,
+				A101D5EB27BA99FC00A38901 /* NewChat */,
 				A101D5A527B7779D00A38901 /* Profile */,
 				A101D5B727B779AF00A38901 /* Chat */,
 			);
@@ -159,6 +175,7 @@
 				A101D5D027B78B9C00A38901 /* AppAssembly.swift */,
 				A101D5B027B7790F00A38901 /* Coordinator.swift */,
 				A101D5DA27B9119F00A38901 /* Text.swift */,
+				A101D5E327BA897E00A38901 /* UserDefaultsKey.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -249,6 +266,26 @@
 			path = TabBarController;
 			sourceTree = "<group>";
 		};
+		A101D5DE27BA845C00A38901 /* Register */ = {
+			isa = PBXGroup;
+			children = (
+				A101D5E127BA847200A38901 /* RegisterModuleBuilder.swift */,
+				A101D5DC27BA845900A38901 /* RegisterViewController.swift */,
+				A101D5DF27BA846A00A38901 /* RegisterViewModel.swift */,
+			);
+			path = Register;
+			sourceTree = "<group>";
+		};
+		A101D5EB27BA99FC00A38901 /* NewChat */ = {
+			isa = PBXGroup;
+			children = (
+				A101D5E927BA99F500A38901 /* NewChatBuilder.swift */,
+				A101D5E527BA99E500A38901 /* NewChatViewController.swift */,
+				A101D5E727BA99EF00A38901 /* NewChatViewModel.swift */,
+			);
+			path = NewChat;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -328,12 +365,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				A101D5A727B777AA00A38901 /* ProfileViewController.swift in Sources */,
+				A101D5E027BA846A00A38901 /* RegisterViewModel.swift in Sources */,
 				A101D5B627B7796300A38901 /* Profile.swift in Sources */,
 				A101D5C527B77D5B00A38901 /* ManagerFactory.swift in Sources */,
+				A101D5E427BA897E00A38901 /* UserDefaultsKey.swift in Sources */,
 				A101D5C727B77D7F00A38901 /* ModuleFactory.swift in Sources */,
 				A101D5C927B77F6400A38901 /* SplashModuleBuilder.swift in Sources */,
+				A101D5EA27BA99F500A38901 /* NewChatBuilder.swift in Sources */,
 				A101D5CD27B7838800A38901 /* ChatsListModuleBuilder.swift in Sources */,
 				A101D58627B7750C00A38901 /* ChatsListViewController.swift in Sources */,
+				A101D5E827BA99EF00A38901 /* NewChatViewModel.swift in Sources */,
 				A101D5B127B7790F00A38901 /* Coordinator.swift in Sources */,
 				A101D5BE27B77A4600A38901 /* AuthManager.swift in Sources */,
 				A101D5AA27B7788900A38901 /* PorfileViewModel.swift in Sources */,
@@ -341,11 +382,13 @@
 				A101D5AF27B778BC00A38901 /* SplashViewModel.swift in Sources */,
 				A101D58227B7750C00A38901 /* AppDelegate.swift in Sources */,
 				A101D5B427B7795300A38901 /* Message.swift in Sources */,
+				A101D5E227BA847200A38901 /* RegisterModuleBuilder.swift in Sources */,
 				A101D5BB27B77A1D00A38901 /* ChatViewModel.swift in Sources */,
 				A101D5C227B77AF400A38901 /* NetworkManager.swift in Sources */,
 				A101D5A127B776A900A38901 /* ChatsListViewModel.swift in Sources */,
 				A101D5D827B7A6F500A38901 /* TabBarControllerModuleBuilder.swift in Sources */,
 				A101D5D627B7A6D700A38901 /* TabBarControllerViewModel.swift in Sources */,
+				A101D5E627BA99E500A38901 /* NewChatViewController.swift in Sources */,
 				A101D5CB27B7811100A38901 /* PorfileModuleBuilder.swift in Sources */,
 				A101D5CF27B783F100A38901 /* ChatModuleBuilder.swift in Sources */,
 				A101D5B927B779C000A38901 /* ChatViewController.swift in Sources */,
@@ -355,6 +398,7 @@
 				A101D5AD27B778A900A38901 /* SplachViewController.swift in Sources */,
 				A101D5C027B77AC600A38901 /* StorageManager.swift in Sources */,
 				A101D5D427B7A4BA00A38901 /* UIViewController + transitionHandler.swift in Sources */,
+				A101D5DD27BA845900A38901 /* RegisterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

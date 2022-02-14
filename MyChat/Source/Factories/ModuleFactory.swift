@@ -10,9 +10,11 @@ import UIKit
 
 protocol ModuleFactoryProtocol {
     func getTabBarController() -> UITabBarController
+    func getRegisterViewController() -> UIViewController
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController
     func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController
     func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController
+    func getNewChatModule(coordinator: CoordinatorProtocol) -> NewChatViewController
     func getChatModule(coordinator: CoordinatorProtocol) -> ChatViewController
 }
 
@@ -37,7 +39,15 @@ extension ModuleFactory: ModuleFactoryProtocol {
         let chatsListVC = getChatsListModule(coordinator: coordinator)
         let profileVC = getProfileModule(coordinator: coordinator)
         let viewControllers = [chatsListVC, profileVC]
-        return TabBarControllerModuleBuilder().build(coordinator: coordinator, viewControllers: viewControllers)
+        return TabBarControllerModuleBuilder().build(coordinator: coordinator,
+                                                     viewControllers: viewControllers,
+                                                     showSplash: true)
+    }
+    
+    func getRegisterViewController() -> UIViewController {
+        guard let coordinator = coordinator else { return UIViewController() }
+        return RegisterModuleBuilder().build(coordinator: coordinator,
+                                      authManager: managerFactory.getAuthManager())
     }
     
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController {
@@ -51,8 +61,12 @@ extension ModuleFactory: ModuleFactoryProtocol {
     }
     
     func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController {
-        return ChatsListModuleBuilder().build(managerFactory: managerFactory,
+        ChatsListModuleBuilder().build(managerFactory: managerFactory,
                                               coordinator: coordinator)
+    }
+    
+    func getNewChatModule(coordinator: CoordinatorProtocol) -> NewChatViewController {
+        NewChatModuleBuilder().build(coordinator: coordinator)
     }
     
     func getChatModule(coordinator: CoordinatorProtocol) -> ChatViewController {

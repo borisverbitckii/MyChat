@@ -12,7 +12,7 @@ protocol CoordinatorProtocol: AnyObject {
     func injectWindow(window: UIWindow)
     func injectModuleFactory(moduleFactory: ModuleFactory)
     
-    func presentTabBarViewController()
+    func presentTabBarViewController(showSplash: Bool)
     func presentSplashViewController(transitionHandler: TransitionHandler)
 }
 
@@ -34,9 +34,15 @@ extension Coordinator: CoordinatorProtocol {
         self.moduleFactory = moduleFactory
     }
     
-    func presentTabBarViewController() {
+    func presentTabBarViewController(showSplash: Bool) {
         guard let window = window else { return }
         window.rootViewController = moduleFactory?.getTabBarController()
+        window.makeKeyAndVisible()
+    }
+    
+    func presentRegisterViewController() {
+        guard let window = window else { return }
+        window.rootViewController = moduleFactory?.getRegisterViewController()
         window.makeKeyAndVisible()
     }
     
