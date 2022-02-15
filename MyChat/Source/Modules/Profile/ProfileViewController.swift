@@ -41,6 +41,6 @@ final class ProfileViewController: UIViewController {
     //MARK: - Private methods
     private func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        title = Text.title(.profile).text
+        title = Text.navigationTitle(.profile).text
     }
 }

@@ -1,5 +1,5 @@
 //
-//  SplachViewController.swift
+//  SplashViewController.swift
 //  MyChat
 //
 //  Created by Борис on 12.02.2022.
@@ -26,8 +26,7 @@ final class SplashViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red // remove this
-        print(1111222)
-        DispatchQueue.main.asyncAfter(deadline: .now()) { // fix this logic
+        DispatchQueue.main.async { // fix this logic
             self.modalTransitionStyle = .crossDissolve
             self.dismiss(animated: true)
         }

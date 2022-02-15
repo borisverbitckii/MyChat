@@ -19,7 +19,7 @@
 		A101D5A327B7776C00A38901 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5A227B7776C00A38901 /* TabBarController.swift */; };
 		A101D5A727B777AA00A38901 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5A627B777AA00A38901 /* ProfileViewController.swift */; };
 		A101D5AA27B7788900A38901 /* PorfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5A927B7788900A38901 /* PorfileViewModel.swift */; };
-		A101D5AD27B778A900A38901 /* SplachViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5AC27B778A900A38901 /* SplachViewController.swift */; };
+		A101D5AD27B778A900A38901 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5AC27B778A900A38901 /* SplashViewController.swift */; };
 		A101D5AF27B778BC00A38901 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5AE27B778BC00A38901 /* SplashViewModel.swift */; };
 		A101D5B127B7790F00A38901 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5B027B7790F00A38901 /* Coordinator.swift */; };
 		A101D5B427B7795300A38901 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D5B327B7795300A38901 /* Message.swift */; };
@@ -64,7 +64,7 @@
 		A101D5A227B7776C00A38901 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		A101D5A627B777AA00A38901 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		A101D5A927B7788900A38901 /* PorfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PorfileViewModel.swift; sourceTree = "<group>"; };
-		A101D5AC27B778A900A38901 /* SplachViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplachViewController.swift; sourceTree = "<group>"; };
+		A101D5AC27B778A900A38901 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		A101D5AE27B778BC00A38901 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		A101D5B027B7790F00A38901 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		A101D5B327B7795300A38901 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -211,7 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				A101D5C827B77F6400A38901 /* SplashModuleBuilder.swift */,
-				A101D5AC27B778A900A38901 /* SplachViewController.swift */,
+				A101D5AC27B778A900A38901 /* SplashViewController.swift */,
 				A101D5AE27B778BC00A38901 /* SplashViewModel.swift */,
 			);
 			path = Splash;
@@ -406,7 +406,7 @@
 				A101D5A327B7776C00A38901 /* TabBarController.swift in Sources */,
 				A101D58427B7750C00A38901 /* SceneDelegate.swift in Sources */,
 				A101D5D127B78B9C00A38901 /* AppAssembly.swift in Sources */,
-				A101D5AD27B778A900A38901 /* SplachViewController.swift in Sources */,
+				A101D5AD27B778A900A38901 /* SplashViewController.swift in Sources */,
 				A101D5C027B77AC600A38901 /* StorageManager.swift in Sources */,
 				A101D5D427B7A4BA00A38901 /* UIViewController + transitionHandler.swift in Sources */,
 				A101D5DD27BA845900A38901 /* RegisterViewController.swift in Sources */,
