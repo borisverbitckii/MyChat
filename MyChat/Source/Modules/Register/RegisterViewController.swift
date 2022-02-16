@@ -7,10 +7,8 @@
 
 import UIKit
 import RxSwift
-
-fileprivate enum TextfieldTag: Int {
-    case name, password, secondPassword
-}
+import RxRelay
+import RxCocoa
 
 fileprivate final class RegisterUIElements {
     
@@ -18,22 +16,23 @@ fileprivate final class RegisterUIElements {
     let titleLabel: UILabel = {
         return $0
     }(UILabel())
-
+    
     let nameTextField: UITextField = {
         $0.placeholder = Text.textfield(.username).text
         $0.backgroundColor = .white
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
-        $0.tag = TextfieldTag.name.rawValue
+        $0.returnKeyType = .continue
         return $0
     }(UITextField())
-
+    
     let passwordTestField: UITextField = {
         $0.placeholder = Text.textfield(.password(.first)).text
         $0.backgroundColor = .white
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
-        $0.tag = TextfieldTag.password.rawValue
+        $0.returnKeyType = .continue
+        $0.textContentType = .password
         return $0
     }(UITextField())
     
@@ -42,16 +41,17 @@ fileprivate final class RegisterUIElements {
         $0.backgroundColor = .white
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
-        $0.tag = TextfieldTag.secondPassword.rawValue
+        $0.returnKeyType = .continue
+        $0.textContentType = .password
         return $0
     }(UITextField())
-
+    
     let submitButton: UIButton = {
         $0.setTitle(Text.button(.register).text, for: .normal)
         $0.backgroundColor = .red
         return $0
     }(UIButton(type: .custom))
-
+    
     let changeStateButton: UIButton = {
         $0.setTitle(Text.button(.auth).text, for: .normal)
         $0.backgroundColor = .gray
@@ -87,24 +87,9 @@ final class RegisterViewController: UIViewController {
     
     //MARK: - Private properties
     private let registerViewModel: RegisterViewModelProtocol
-    private let ui: RegisterUIElements = {
-        $0.submitButton.addTarget(self, action: #selector(submitButtonWasTapped), for: .touchUpInside)
-        $0.changeStateButton.addTarget(self, action: #selector(changeState), for: .touchUpInside)
-        
-        $0.nameTextField.addTarget(self, action: #selector(checkTextfields), for: .editingChanged)
-        $0.passwordTestField.addTarget(self, action: #selector(checkTextfields), for: .editingChanged)
-        $0.passwordSecondTimeTextfield.addTarget(self, action: #selector(checkTextfields), for: .editingChanged)
-        return $0
-    }(RegisterUIElements())
+    private let ui = RegisterUIElements()
     private let constraints = LayoutConstraints()
     private let bag = DisposeBag()
-    
-    // Properties
-    private var name: String?
-    private var password: String?
-    private var secondPassword: String?
-    
-    private var submitButtonState = SubmitButtonState.disable
     
     //MARK: - Init
     init(registerViewModel: RegisterViewModelProtocol) {
@@ -126,10 +111,6 @@ final class RegisterViewController: UIViewController {
         view.backgroundColor = .darkGray // TODO: Удалить
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)
@@ -137,7 +118,9 @@ final class RegisterViewController: UIViewController {
     
     //MARK: - Private methods
     private func subscribe() {
-        registerViewModel.state.subscribe { [weak self] state in
+        
+        // Change registerViewController state
+        registerViewModel.viewControllerState.subscribe { [weak self] state in
             switch state.element {
             case .auth:
                 self?.ui.passwordSecondTimeTextfield.isHidden = true
@@ -152,19 +135,47 @@ final class RegisterViewController: UIViewController {
             self?.layoutButtons()
         }.disposed(by: bag)
         
+        // Change submitButtonState
         registerViewModel.submitButtonState.subscribe { [weak self] buttonState in
             switch buttonState.element {
             case .enable:
-                self?.submitButtonState = .enable
                 self?.ui.submitButton.isEnabled = true
                 self?.ui.submitButton.alpha = RegisterLocalConstants.buttonOpacityIsOpaque
             case .disable:
-                self?.submitButtonState = .disable
                 self?.ui.submitButton.isEnabled = false
                 self?.ui.submitButton.alpha = RegisterLocalConstants.buttonOpacityIsNotOpaque
             default: break
             }
         }.disposed(by: bag)
+        
+        // Textfields checking
+        Observable.combineLatest(ui.nameTextField.rx.text,
+                                 ui.passwordTestField.rx.text,
+                                 ui.passwordSecondTimeTextfield.rx.text)
+            .subscribe { [weak self] _ in
+                self?.checkTextfields()
+            }
+            .disposed(by: bag)
+        
+        // SubmitButton tapped
+        ui.submitButton.rx.tap.subscribe { [weak self] _ in
+            self?.registerViewModel.presentTabBarController()
+        }.disposed(by: bag)
+        
+        // AuthButton tapped
+        ui.changeStateButton.rx.tap.subscribe { [weak self] _ in
+            
+            self?.ui.nameTextField.rx.text.onNext("")
+            self?.ui.passwordTestField.rx.text.onNext("")
+            self?.ui.passwordSecondTimeTextfield.rx.text.onNext("")
+            
+            self?.registerViewModel.viewControllerState.value == .register
+            ? self?.registerViewModel.viewControllerState.accept(.auth)
+            : self?.registerViewModel.viewControllerState.accept(.register)
+            
+            self?.registerViewModel.submitButtonState.accept(.disable)
+        }
+        .disposed(by: bag)
     }
     
     private func addSubviews() {
@@ -179,7 +190,7 @@ final class RegisterViewController: UIViewController {
         for view in view.subviews {
             view.translatesAutoresizingMaskIntoConstraints = false
         }
-
+        
         ui.submitButton.sizeToFit()
         ui.changeStateButton.sizeToFit()
         let submitButtonSize = ui.submitButton.frame.size
@@ -194,7 +205,7 @@ final class RegisterViewController: UIViewController {
         
         constraints.submitButtonWidth?.isActive = true
         constraints.changeStateButtonWidth?.isActive = true
-
+        
         NSLayoutConstraint.activate([
             
             // nameTextField
@@ -254,7 +265,7 @@ final class RegisterViewController: UIViewController {
                 .constraint(equalToConstant: RegisterLocalConstants.textfieldsHeight),
             
             // submitButton
-
+            
             ui.submitButton
                 .heightAnchor
                 .constraint(equalToConstant: submitButtonSize.height),
@@ -273,11 +284,11 @@ final class RegisterViewController: UIViewController {
                 .topAnchor
                 .constraint(equalTo: ui.submitButton.bottomAnchor,
                             constant: RegisterLocalConstants.changeToLoginButtonTopInset),
-
+            
             ui.changeStateButton
                 .centerXAnchor
                 .constraint(equalTo: ui.submitButton.centerXAnchor),
-
+            
             ui.changeStateButton
                 .heightAnchor
                 .constraint(equalToConstant: changeToLoginButtonSize.height)
@@ -317,36 +328,11 @@ final class RegisterViewController: UIViewController {
         present(alertController, animated: true)
     }
     
-    //MARK: - OBJC methods
-    @objc private func submitButtonWasTapped() {
-        registerViewModel.presentTabBarController()
-    }
-    
-    @objc private func changeState() {
-        ui.nameTextField.text = ""
-        ui.passwordTestField.text = ""
-        ui.passwordSecondTimeTextfield.text = ""
+    private func checkTextfields() {
+        let name = ui.nameTextField.text
+        let password = ui.passwordTestField.text
+        let secondPassword = ui.passwordSecondTimeTextfield.text
         
-        ui.nameTextField.isSelected = false
-        ui.passwordTestField.isSelected = false
-        ui.passwordSecondTimeTextfield.isSelected = false
-        
-        registerViewModel.submitButtonState.accept(.disable)
-        
-        name = nil
-        password = nil
-        secondPassword = nil
-        
-        registerViewModel.state.value ==  .register
-        ? registerViewModel.state.accept(.auth)
-        : registerViewModel.state.accept(.register)
-    }
-    
-    @objc private func checkTextfields() {
-        name = ui.nameTextField.text
-        password = ui.passwordTestField.text
-        secondPassword = ui.passwordSecondTimeTextfield.text
-
         registerViewModel.checkTextfields(name: name,
                                           password: password,
                                           secondPassword: secondPassword)
@@ -359,7 +345,7 @@ extension RegisterViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
-        switch submitButtonState {
+        switch registerViewModel.submitButtonState.value {
         case .enable:
             registerViewModel.presentTabBarController()
             
@@ -369,16 +355,16 @@ extension RegisterViewController: UITextFieldDelegate {
                 && ui.passwordSecondTimeTextfield.text != "" {
                 
                 showAlertController()
-                ui.nameTextField.text = ""
-                ui.passwordTestField.text = ""
-                ui.passwordSecondTimeTextfield.text = ""
+                ui.nameTextField.rx.text.onNext("")
+                ui.passwordTestField.rx.text.onNext("")
+                ui.passwordSecondTimeTextfield.rx.text.onNext("")
                 
             } else if  (ui.nameTextField.text != ""
                         || ui.passwordTestField.text != ""
                         || ui.passwordSecondTimeTextfield.text != "")
-            || (ui.nameTextField.text == ""
-                && ui.passwordTestField.text == ""
-                && ui.passwordSecondTimeTextfield.text == "") {
+                        || (ui.nameTextField.text == ""
+                            && ui.passwordTestField.text == ""
+                            && ui.passwordSecondTimeTextfield.text == "") {
                 
                 let textfieldArray = [ui.nameTextField,ui.passwordTestField, ui.passwordSecondTimeTextfield]
                 
