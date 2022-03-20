@@ -6,7 +6,7 @@
 //
 
 final class NewChatModuleBuilder {
-    
+
     func build(coordinator: CoordinatorProtocol) -> NewChatViewController {
         let viewModel = NewChatViewModel(coordinator: coordinator)
         let viewController = NewChatViewController(newChatViewModel: viewModel)

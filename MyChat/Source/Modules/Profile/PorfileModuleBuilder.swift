@@ -8,7 +8,7 @@
 import UIKit
 
 final class ProfileModuleBuilder {
-    
+
     func build(managerFactory: ManagerFactoryProtocol,
                coordinator: CoordinatorProtocol) -> UINavigationController {
         let viewModel = ProfileViewModel(coordinator: coordinator)

@@ -8,14 +8,14 @@
 import Foundation
 
 protocol NetworkManagerProtocol {
-    
+
 }
 
 final class NetworkManager {
-    
+
 }
 
-//MARK: - extension + NetworkManagerProtocol
+// MARK: - extension + NetworkManagerProtocol
 extension NetworkManager: NetworkManagerProtocol {
-    
+
 }

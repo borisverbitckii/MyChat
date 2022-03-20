@@ -11,10 +11,10 @@ protocol AuthManagerProtocol {
 }
 
 final class AuthManager {
-    
+
 }
 
-//MARK: - extension + AuthManagerProtocol
+// MARK: - extension + AuthManagerProtocol
 extension AuthManager: AuthManagerProtocol {
-    
+
 }

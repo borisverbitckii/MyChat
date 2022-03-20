@@ -16,23 +16,21 @@ protocol ProfileViewModelProtocol {
 }
 
 final class ProfileViewModel {
-    
-    //MARK: - Public properties
+
+    // MARK: - Public properties
     var state: ProfileViewControllerState = .normal
-    
-    //MARK: - Private properties
+
+    // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
-    
-    //MARK: - Init
+
+    // MARK: - Init
     init(coordinator: CoordinatorProtocol) {
         self.coordinator = coordinator
     }
-    
+
 }
 
-//MARK: - extension + ProfileViewModelProtocol
+// MARK: - extension + ProfileViewModelProtocol
 extension ProfileViewModel: ProfileViewModelProtocol {
-    
-    
-}
 
+}

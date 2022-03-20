@@ -13,7 +13,7 @@ protocol TransitionHandler {
                                completion: (() -> Void)?)
 }
 
-//MARK: - extension + TransitionHandler
+// MARK: - extension + TransitionHandler
 extension UIViewController: TransitionHandler {
     func presentViewController(viewController: UIViewController,
                                animated: Bool,

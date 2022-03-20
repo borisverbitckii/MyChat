@@ -8,14 +8,14 @@
 import Foundation
 
 protocol StorageManagerProtocol {
-    
+
 }
 
 final class StorageManager {
-    
+
 }
 
-//MARK: - extension + StorageManagerProtocol
+// MARK: - extension + StorageManagerProtocol
 extension StorageManager: StorageManagerProtocol {
-    
+
 }

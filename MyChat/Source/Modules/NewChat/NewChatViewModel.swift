@@ -8,22 +8,22 @@
 import Foundation
 
 protocol NewChatViewModelProtocol {
-    
+
 }
 
 final class NewChatViewModel {
-    
-    //MARK: - Private properties
+
+    // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
-    
-    //MARK: - Init
+
+    // MARK: - Init
     init(coordinator: CoordinatorProtocol) {
         self.coordinator = coordinator
     }
-    
+
 }
 
-//MARK: - extension + NewChatViewModelProtocol
+// MARK: - extension + NewChatViewModelProtocol
 extension NewChatViewModel: NewChatViewModelProtocol {
-    
+
 }

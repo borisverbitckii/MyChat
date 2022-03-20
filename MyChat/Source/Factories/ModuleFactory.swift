@@ -19,12 +19,12 @@ protocol ModuleFactoryProtocol {
 }
 
 final class ModuleFactory {
-    
-    //MARK: - Private properties
+
+    // MARK: - Private properties
     private weak var coordinator: CoordinatorProtocol?
     private let managerFactory: ManagerFactoryProtocol
-    
-    //MARK: - Init
+
+    // MARK: - Init
     init(coordinator: CoordinatorProtocol,
          managerFactory: ManagerFactoryProtocol) {
         self.coordinator = coordinator
@@ -32,7 +32,7 @@ final class ModuleFactory {
     }
 }
 
-//MARK: - extension + ModuleFactoryProtocol
+// MARK: - extension + ModuleFactoryProtocol
 extension ModuleFactory: ModuleFactoryProtocol {
     func getTabBarController(showSplash: Bool) -> UITabBarController {
         guard let coordinator = coordinator else { return UITabBarController() }
@@ -43,32 +43,32 @@ extension ModuleFactory: ModuleFactoryProtocol {
                                                      viewControllers: viewControllers,
                                                      showSplash: showSplash)
     }
-    
+
     func getRegisterViewController() -> UIViewController {
         guard let coordinator = coordinator else { return UIViewController() }
         return RegisterModuleBuilder().build(coordinator: coordinator,
                                       authManager: managerFactory.getAuthManager())
     }
-    
+
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController {
         SplashModuleBuilder().build(managerFactory: managerFactory,
                                     coordinator: coordinator)
     }
-    
+
     func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController {
         ProfileModuleBuilder().build(managerFactory: managerFactory,
                                      coordinator: coordinator)
     }
-    
+
     func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController {
         ChatsListModuleBuilder().build(managerFactory: managerFactory,
                                               coordinator: coordinator)
     }
-    
+
     func getNewChatModule(coordinator: CoordinatorProtocol) -> NewChatViewController {
         NewChatModuleBuilder().build(coordinator: coordinator)
     }
-    
+
     func getChatModule(coordinator: CoordinatorProtocol) -> ChatViewController {
         ChatModuleBuilder().build(managerFactory: managerFactory,
                                   coordinator: coordinator)

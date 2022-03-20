@@ -6,21 +6,21 @@
 //
 
 protocol ChatsListViewModelProtocol {
-    
+
 }
 
 final class ChatsListViewModel {
-    
-    //MARK: - Private properties
+
+    // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
-    
-    //MARK: - Init
+
+    // MARK: - Init
     init(coordinator: CoordinatorProtocol) {
         self.coordinator = coordinator
     }
 }
 
-//MARK: - extension + ChatsListViewModelProtocol
+// MARK: - extension + ChatsListViewModelProtocol
 extension ChatsListViewModel: ChatsListViewModelProtocol {
-    
+
 }

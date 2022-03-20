@@ -11,12 +11,12 @@ protocol SplashViewModelProtocol {
 }
 
 final class SplashViewModel {
-    
-    //MARK: - Private properties
+
+    // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
     private let authManager: AuthManagerProtocol
-    
-    //MARK: - Init
+
+    // MARK: - Init
     init(coordinator: CoordinatorProtocol,
          authManager: AuthManagerProtocol) {
         self.authManager = authManager
@@ -24,6 +24,6 @@ final class SplashViewModel {
     }
 }
 
-//MARK: - extension + SplashViewModelProtocol
+// MARK: - extension + SplashViewModelProtocol
 extension SplashViewModel: SplashViewModelProtocol {
 }

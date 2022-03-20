@@ -14,23 +14,23 @@ protocol ManagerFactoryProtocol {
 }
 
 final class ManagerFactory {
-    //MARK: - Private properties
+    // MARK: - Private properties
     private let networkManager = NetworkManager()
     private let storageManager = StorageManager()
     private let authManager = AuthManager()
-    
+
 }
 
-//MARK: - extension + ManagerFactoryProtocol
+// MARK: - extension + ManagerFactoryProtocol
 extension ManagerFactory: ManagerFactoryProtocol {
     func getNetworkManager() -> NetworkManagerProtocol {
         networkManager
     }
-    
+
     func getStorageManager() -> StorageManagerProtocol {
         storageManager
     }
-    
+
     func getAuthManager() -> AuthManagerProtocol {
         authManager
     }

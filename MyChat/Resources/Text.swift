@@ -25,7 +25,7 @@ enum PasswordPlaceholderType: String {
 enum TextfieldType {
     case username
     case password(PasswordPlaceholderType)
-    
+
     var textFieldPlaceholder: String {
         switch self {
         case .username:
@@ -43,7 +43,7 @@ enum TextfieldType {
 
 enum AlertControllerTitleType {
     case registrationError
-    
+
     var title: String {
         switch self {
         case .registrationError:
@@ -54,7 +54,7 @@ enum AlertControllerTitleType {
 
 enum AlertControllerSubtitleType {
     case registrationError
-    
+
     var message: String {
         switch self {
         case .registrationError:
@@ -74,7 +74,7 @@ enum Text {
     case alertControllerTitle(AlertControllerTitleType)
     case alertControllerMessage(AlertControllerSubtitleType)
     case alertAction(AlertActionType)
-    
+
     var text: String {
         switch self {
         case .navigationTitle(let navigationTitleType):
