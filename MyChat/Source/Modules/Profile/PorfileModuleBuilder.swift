@@ -14,7 +14,9 @@ final class ProfileModuleBuilder {
         let viewModel = ProfileViewModel(coordinator: coordinator)
         let viewController = ProfileViewController(profileViewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.tabBarItem = UITabBarItem(title: "Pofile", image: UIImage(systemName: "heart"), selectedImage: nil) // change image
+        navigationController.tabBarItem = UITabBarItem(title: "Pofile",
+                                                       image: UIImage(systemName: "heart"),
+                                                       selectedImage: nil) // change image
         return navigationController
     }
 }

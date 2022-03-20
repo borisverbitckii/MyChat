@@ -18,11 +18,12 @@ final class AppAssembly {
         let moduleFactory = ModuleFactory(coordinator: coordinator, managerFactory: managerFactory)
         coordinator.injectModuleFactory(moduleFactory: moduleFactory)
 
-        if UserDefaults.standard.value(forKey: UserDefaultsKey.firstTimeLoad.rawValue) == nil {
-            UserDefaults.standard.set(true, forKey: UserDefaultsKey.firstTimeLoad.rawValue)
+//        if UserDefaults.standard.value(forKey: UserDefaultsKey.firstTimeLoad.rawValue) == nil {
+//            UserDefaults.standard.set(true, forKey: UserDefaultsKey.firstTimeLoad.rawValue)
             coordinator.presentRegisterViewController()
-            return
-        }
-        coordinator.presentTabBarViewController(showSplash: true)
+//            return
+//        }
+//
+//        coordinator.presentTabBarViewController(showSplash: true)
     }
 }

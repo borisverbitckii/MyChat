@@ -13,7 +13,9 @@ final class ChatsListModuleBuilder {
         let viewModel = ChatsListViewModel(coordinator: coordinator)
         let viewController = ChatsListViewController(chatsListViewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.tabBarItem = UITabBarItem(title: "Chat List", image: UIImage(systemName: "heart"), selectedImage: nil)
+        navigationController.tabBarItem = UITabBarItem(title: "Chat List",
+                                                       image: UIImage(systemName: "heart"),
+                                                       selectedImage: nil)
 
         return navigationController
     }

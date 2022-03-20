@@ -30,7 +30,7 @@ final class ChatsListViewController: UIViewController {
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .purple // TODO: Remove this
+        view.backgroundColor = .purple
         setupNavigationBar()
     }
 

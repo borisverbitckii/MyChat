@@ -9,7 +9,7 @@ import Foundation
 
 struct Profile: Codable {
 
-    let id: String
+    let profileID: String
     let name: String
     let surname: String
     let avatar: Data

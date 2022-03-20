@@ -53,18 +53,20 @@ enum AlertControllerTitleType {
 }
 
 enum AlertControllerSubtitleType {
-    case registrationError
+    case authError, registerError
 
     var message: String {
         switch self {
-        case .registrationError:
+        case .authError:
             return "Вы ввели не правильный логин или пароль. Попробуйте еще раз:)"
+        case .registerError:
+            return "Пароли не совпадают. Попробуйте еще раз:)"
         }
     }
 }
 
 enum AlertActionType: String {
-    case ok = "Ок"
+    case okAction = "Ок"
 }
 
 enum Text {

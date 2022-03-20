@@ -17,6 +17,10 @@ enum SubmitButtonState {
     case enable, disable
 }
 
+enum AlertControllerType {
+    case allFields, onlyPasswordsFields
+}
+
 private enum RegisterViewModelLocalConstants {
     static let buttonOpacityIsNotOpaque: CGFloat = 0.3
     static let buttonOpacityIsOpaque: CGFloat = 1
@@ -30,12 +34,16 @@ protocol RegisterViewModelProtocol {
     func checkTextfields(name: String?,
                          password: String?,
                          secondPassword: String?)
-    func showAlertController() -> UIAlertController
+    func removeLastFirstResponderTextfield()
     // Textfields
     var nameTextfieldText: PublishRelay<String> { get }
     var passwordTextfieldText: PublishRelay<String> { get }
     var secondPasswordTextfieldText: PublishRelay<String> { get }
     func cleanTextfields()
+    func becomeFirstResponderOrClearOffTextfields(nameTextField: UITextField,
+                                                  passwordTestField: UITextField,
+                                                  passwordSecondTimeTextfield: UITextField,
+                                                  presenter: UIViewController)
     // Submit button
     var submitButtonState: BehaviorRelay<SubmitButtonState> { get }
     var submitButtonTitle: BehaviorRelay<String> { get }
@@ -56,15 +64,15 @@ protocol RegisterViewModelProtocol {
 final class RegisterViewModel {
 
     // MARK: - Public properties
-    var viewControllerState = BehaviorRelay(value: RegisterViewControllerState.register)
+    var viewControllerState = BehaviorRelay(value: RegisterViewControllerState.auth)
     // Submit button
     var submitButtonState = BehaviorRelay(value: SubmitButtonState.disable)
-    var submitButtonTitle = BehaviorRelay<String>(value: Text.button(.register).text)
-    var submitButtonIsEnable = BehaviorRelay<Bool>(value: true)
+    var submitButtonTitle = BehaviorRelay<String>(value: Text.button(.auth).text)
+    var submitButtonIsEnable = BehaviorRelay<Bool>(value: false)
     var submitButtonAlpha = PublishRelay<CGFloat>()
 
-    var changeStateButtonTitle = BehaviorRelay<String>(value: Text.button(.auth).text)
-    var passwordSecondTimeTextfieldIsHidden = BehaviorRelay<Bool>(value: true)
+    var changeStateButtonTitle = BehaviorRelay<String>(value: Text.button(.register).text)
+    var passwordSecondTimeTextfieldIsHidden = BehaviorRelay<Bool>(value: false)
     // Textfields
     var nameTextfieldText = PublishRelay<String>()
     var passwordTextfieldText = PublishRelay<String>()
@@ -73,6 +81,7 @@ final class RegisterViewModel {
     // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
     private let authManager: AuthManagerProtocol
+    private var lastFirstResponderTextfield: UITextField?
 
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
@@ -85,14 +94,16 @@ final class RegisterViewModel {
 // MARK: - extension + RegisterViewModelProtocol
 extension RegisterViewModel: RegisterViewModelProtocol {
     func presentTabBarController() {
-        coordinator.presentTabBarViewController(showSplash: false)
+        if submitButtonState.value == .enable {
+            coordinator.presentTabBarViewController(showSplash: false)
+        }
     }
 
     func checkTextfields(name: String?,
                          password: String?,
                          secondPassword: String?) {
         if viewControllerState.value == .register {
-            (name != nil && password == secondPassword && password != "" && secondPassword != "")
+            ((name != "" && (password == secondPassword)) && password != "" && secondPassword != "")
             ? submitButtonState.accept(.enable)
             : submitButtonState.accept(.disable)
         } else {
@@ -102,12 +113,20 @@ extension RegisterViewModel: RegisterViewModelProtocol {
         }
     }
 
-    func showAlertController() -> UIAlertController {
+    @discardableResult func generateAlertController(type: AlertControllerType) -> UIAlertController {
+
         let alertController = UIAlertController(title: Text.alertControllerTitle(.registrationError).text,
-                                                message: Text.alertControllerMessage(.registrationError).text,
+                                                message: "",
                                                 preferredStyle: .alert)
 
-        let okAction = UIAlertAction(title: Text.alertAction(.ok).text, style: .default) { _ in
+        switch type {
+        case .allFields:
+            alertController.message = Text.alertControllerMessage(.authError).text
+        case .onlyPasswordsFields:
+            alertController.message = Text.alertControllerMessage(.registerError).text
+        }
+
+        let okAction = UIAlertAction(title: Text.alertAction(.okAction).text, style: .default) { _ in
             alertController.dismiss(animated: true)
         }
 
@@ -142,12 +161,47 @@ extension RegisterViewModel: RegisterViewModelProtocol {
         secondPasswordTextfieldText.accept("")
     }
 
+    func cleanPasswordsTextfields() {
+        passwordTextfieldText.accept("")
+        secondPasswordTextfieldText.accept("")
+    }
+
     func submitButtonChangeAlpha() {
         switch submitButtonState.value {
         case .enable:
             submitButtonAlpha.accept(RegisterViewModelLocalConstants.buttonOpacityIsOpaque)
         case .disable:
             submitButtonAlpha.accept(RegisterViewModelLocalConstants.buttonOpacityIsNotOpaque)
+        }
+    }
+
+    func removeLastFirstResponderTextfield() {
+        lastFirstResponderTextfield = nil
+    }
+
+    func becomeFirstResponderOrClearOffTextfields(nameTextField: UITextField,
+                                                  passwordTestField: UITextField,
+                                                  passwordSecondTimeTextfield: UITextField,
+                                                  presenter: UIViewController) {
+
+        if nameTextField.text != ""
+            && passwordTestField.text != ""
+            && passwordSecondTimeTextfield.text != "" {
+
+            passwordTestField.becomeFirstResponder()
+            lastFirstResponderTextfield = passwordTestField
+            presenter.present(generateAlertController(type: .onlyPasswordsFields),
+                              animated: true)
+            cleanPasswordsTextfields()
+        } else {
+            let newTextfieldFirstResponder = [nameTextField,
+                                           passwordTestField,
+                                           passwordSecondTimeTextfield].first { $0.text == ""}
+
+            if newTextfieldFirstResponder?.isFirstResponder == false {
+                newTextfieldFirstResponder?.becomeFirstResponder()
+                lastFirstResponderTextfield = newTextfieldFirstResponder
+            }
         }
     }
 }
