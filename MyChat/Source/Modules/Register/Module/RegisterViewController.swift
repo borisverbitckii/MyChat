@@ -9,6 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+// Все константы для верстки вынесены отдельно
 private enum RegisterViewLocalConstants {
     // Textfields
     static let nameTextfieldTopInset: CGFloat = 200
@@ -23,18 +24,18 @@ private enum RegisterViewLocalConstants {
     static let passwordErrorLabelIndex: CGFloat = -10
 }
 
+// Констрейнты для обновления клавиатуры
 final class RegisterConstraints {
-    static var submitButtonBottomAnchor: NSLayoutConstraint?
     static var changeStateBottomAnchor: NSLayoutConstraint?
 }
 
 // swiftlint:disable:next type_body_length
 final class RegisterViewController: UIViewController {
     // MARK: - Private properties -
-    private let uiElements = RegisterUIElements()
+    private let uiElements = RegisterUIElements() // вынесенные UI элементы
     private let registerViewModel: RegisterViewModelProtocol
     private let bag = DisposeBag()
-    private var isKeyboardShown = false
+    private var isKeyboardShown = false // проперти, чтобы не было глюков для появления/исчезновения клавиатуры
 
     // MARK: - Init -
     init(registerViewModel: RegisterViewModelProtocol) {
@@ -50,24 +51,23 @@ final class RegisterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubviews()
-        bindUIElements()
-        subscribeToObservables()
-        setupDelegates()
-        addKeyboardObservers()
+        layout()
+        bindUIElements() // бинд значений из вью модели напрямую в ui элементы
+        subscribeToObservables() // основное взаимодействие с вьюмоделью
+        setupDelegates() // делегаты для текстфилдов, чтобы по клику на return осуществлялся переход в след текстфилд
+        addKeyboardObservers() // наблюдение за клавиатурой
         view.backgroundColor = .darkGray
     }
 
-    override func viewWillLayoutSubviews() {
-        layout()
-    }
-
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Скрываем клавиатуру при клику на любую область
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)
     }
 
     // MARK: - Private methods -
     private func bindUIElements() {
+        // Бинд всех данных из вью модели в ui елементы
         registerViewModel.submitButtonTitle
             .bind(to: uiElements.submitButton.rx.title(for: .normal))
             .disposed(by: bag)
@@ -80,7 +80,7 @@ final class RegisterViewController: UIViewController {
             .bind(to: uiElements.passwordSecondTimeTextfield.rx.isHidden)
             .disposed(by: bag)
 
-        registerViewModel.submitButtonIsEnable
+        registerViewModel.submitButtonIsEnable // делат кнопку активной или не активной на строке (129)
             .bind(to: uiElements.submitButton.rx.isEnabled)
             .disposed(by: bag)
 
@@ -110,25 +110,36 @@ final class RegisterViewController: UIViewController {
     }
 
     private func subscribeToObservables() {
-        // Change registerViewController state
+        // Изменение состояния registerViewController
+
+        // Всего 2 состояния для контроллера: авторизация и регистрация
+        // - В зависимости от состояния мы либо показываем текст филд для дублирования пароля, или нет(120)
+        // - Меняем текст в кнопке для смены состояния контроллера (самая нижняя) (121)
+        // - Выключаем лейбл, который говорит о несовпадении паролей при регистрации (122)
         registerViewModel.viewControllerState
             .subscribe { [weak self] _ in
                 self?.registerViewModel.secondTimeTextfieldIsHiddenToggle()
                 self?.registerViewModel.changeButtonsTitle()
                 self?.registerViewModel.disableErrorLabel()
-                self?.isKeyboardShown = false
+
+                [self?.uiElements.nameTextField,
+                 self?.uiElements.passwordTestField,
+                 self?.uiElements.passwordSecondTimeTextfield]
+                    .forEach { $0?.resignFirstResponder()}
             }.disposed(by: bag)
 
-        // Change submitButtonState
+        // Изменение состояния submitButton
+        // Подписка на состояние кнопки submitButtonState (активное и не активное)
         registerViewModel.submitButtonState
-            .subscribe { [weak self] event in
-                guard let state = event.element else { return }
-                self?.registerViewModel.submitButtonChangeState(to: state)
-                self?.registerViewModel.submitButtonChangeAlpha()
+            .subscribe { [weak self] _ in
+                self?.registerViewModel.submitButtonChangeIsEnable() // активирует деактивирует кнопку
+                self?.registerViewModel.submitButtonChangeAlpha() // меняет непрозрачность кнопки
+                // иметь в виду, что если кнопка прозрачная, то не обязательно она не активная
 
             }.disposed(by: bag)
 
-        // Textfields checking
+        // Проверка содержимого текстфилдов
+        // Все обновления филдов собираются в единый поток
         Observable
             .combineLatest(uiElements.nameTextField.rx.text,
                            uiElements.passwordTestField.rx.text,
@@ -137,14 +148,15 @@ final class RegisterViewController: UIViewController {
                 let nameTextFieldText = self?.uiElements.nameTextField.text
                 let passwordTestFieldText = self?.uiElements.passwordTestField.text
                 let passwordSecondTimeTextfieldText = self?.uiElements.passwordSecondTimeTextfield.text
-
+                // Проверяются поля для того, чтобы активировать кнопку submitButton или нет
+                // А также включает/выключает лейбл, говорящий о том, что пароли при регистрации не совпадают
                 self?.registerViewModel.checkTextfields(name: nameTextFieldText,
                                                         password: passwordTestFieldText,
                                                         secondPassword: passwordSecondTimeTextfieldText)
             }
             .disposed(by: bag)
 
-        // SubmitButton tapped
+        // Действия при клике на submitButton
         uiElements.submitButton.rx
             .tap
             .subscribe { [weak self] _ in
@@ -152,19 +164,14 @@ final class RegisterViewController: UIViewController {
             }
             .disposed(by: bag)
 
-        // AuthButton tapped
+        // Действия при клике на changeStateButton
         uiElements.changeStateButton.rx
             .tap
             .subscribe { [weak self] _ in
-                self?.registerViewModel.cleanTextfields()
-
-                self?.registerViewModel.removeLastFirstResponderTextfield()
-
-                self?.registerViewModel.viewControllerState.value == .register
-                ? self?.registerViewModel.viewControllerState.accept(.auth)
-                : self?.registerViewModel.viewControllerState.accept(.register)
-
-                self?.registerViewModel.submitButtonState.accept(.disable)
+                self?.registerViewModel.cleanTextfields() // отчищаются текстфилды
+                self?.registerViewModel.changeViewControllerState()
+                // переключаем состояние контроллера между авторизацией и регистрацией
+                self?.registerViewModel.disableSubmitButton() // Отключаем submitButton
             }
             .disposed(by: bag)
     }
@@ -255,16 +262,16 @@ final class RegisterViewController: UIViewController {
     }
 
     private func layoutChangeStateButton() {
-
-        RegisterConstraints.submitButtonBottomAnchor = uiElements.changeStateButton
+        // Вытаскиваем отдельно констрейнт для нижней кнопки, чтобы менять значения при показе клавиатуры
+        RegisterConstraints.changeStateBottomAnchor = uiElements.changeStateButton
             .bottomAnchor
             .constraint(equalTo: view.bottomAnchor,
                         constant: RegisterViewLocalConstants.changeToLoginButtonBottomInset)
 
-        guard let submitButtonBottomAnchor = RegisterConstraints.submitButtonBottomAnchor else { return }
+        guard let changeStateBottomAnchor = RegisterConstraints.changeStateBottomAnchor else { return }
 
         NSLayoutConstraint.activate([
-            submitButtonBottomAnchor,
+            changeStateBottomAnchor,
 
             uiElements.changeStateButton
                 .centerXAnchor
@@ -298,6 +305,7 @@ final class RegisterViewController: UIViewController {
     }
 
     private func setupDelegates() {
+
         uiElements.nameTextField.delegate = self
         uiElements.passwordTestField.delegate = self
         uiElements.passwordSecondTimeTextfield.delegate = self
@@ -315,6 +323,7 @@ final class RegisterViewController: UIViewController {
     }
 
     // MARK: - OBJC methods -
+    // Работа с показом клавиатуры
     @objc private func keyboardWillShow(notification: NSNotification) {
         if !isKeyboardShown {
             isKeyboardShown = true
@@ -322,10 +331,10 @@ final class RegisterViewController: UIViewController {
                   let keyboardFrameValue = keyboardFrame as? NSValue else { return }
 
             let keyboardRectangle = keyboardFrameValue.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
+            let kbHeight = keyboardRectangle.height
 
-            RegisterConstraints.submitButtonBottomAnchor?.constant = RegisterViewLocalConstants.submitButtonBottomInset - keyboardHeight
-            RegisterConstraints.changeStateBottomAnchor?.constant = RegisterViewLocalConstants.changeToLoginButtonBottomInset - keyboardHeight
+            let changeStateBottomAnchor = RegisterConstraints.changeStateBottomAnchor
+            changeStateBottomAnchor?.constant = RegisterViewLocalConstants.changeToLoginButtonBottomInset - kbHeight
 
             self.view.layoutIfNeeded()
         }
@@ -335,8 +344,8 @@ final class RegisterViewController: UIViewController {
         if isKeyboardShown {
             isKeyboardShown = false
 
-            RegisterConstraints.submitButtonBottomAnchor?.constant = RegisterViewLocalConstants.submitButtonBottomInset
-            RegisterConstraints.changeStateBottomAnchor?.constant = RegisterViewLocalConstants.changeToLoginButtonBottomInset
+            let changeStateBottomAnchor = RegisterConstraints.changeStateBottomAnchor
+            changeStateBottomAnchor?.constant = RegisterViewLocalConstants.changeToLoginButtonBottomInset
 
             self.view.layoutIfNeeded()
         }
@@ -347,11 +356,14 @@ final class RegisterViewController: UIViewController {
 extension RegisterViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-
+        // Если кнопка submitButton активна, перекидываем на tabBarController
         switch registerViewModel.submitButtonState.value {
         case .enable:
             registerViewModel.presentTabBarController()
         case .disable:
+            // Если кнопка submitButton не активна, определяем, какой текстфилд сделать респондером
+            // (пример: выбираем 3 текстфилд, кликаем в клавиатуре continue,
+            // респондером сделается тот филд, который самый верхний и не заполненный)
             let nameTF = uiElements.nameTextField
             let passwordTF = uiElements.passwordTestField
             let secondPasswordTF = uiElements.passwordSecondTimeTextfield

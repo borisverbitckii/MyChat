@@ -1,11 +1,11 @@
 //
-//  RegisterDoc.swift
+//  RegisterDocOverview.swift
 //  MyChat
 //
 //  Created by Boris Verbitsky on 23.03.2022.
 //
 
-// Документация модуля Register/Auth
+// Обзор модуля Register/Auth
 
 // Архитектура: MVVM
 
@@ -18,10 +18,3 @@
 // - RegisterUIElements (отдельно вынесенные UI компоненты)
 // - RegisterViewController (контроллер)
 // - RegisterViewModel(вьб модель)
-
-// Схема работы RegisterViewController:
-
-// Все константы для layout вынесены в RegisterViewLocalConstants
-
-// TODO: Исправить клавитуру
-// - Исправить баг в делегате текстфилда
