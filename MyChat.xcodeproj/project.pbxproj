@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		A101D58227B7750C00A38901 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D58127B7750C00A38901 /* AppDelegate.swift */; };
-		A101D58427B7750C00A38901 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D58327B7750C00A38901 /* SceneDelegate.swift */; };
 		A101D58627B7750C00A38901 /* ChatsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A101D58527B7750C00A38901 /* ChatsListViewController.swift */; };
 		A101D58B27B7750C00A38901 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A101D58A27B7750C00A38901 /* Assets.xcassets */; };
 		A101D58E27B7750C00A38901 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A101D58C27B7750C00A38901 /* LaunchScreen.storyboard */; };
@@ -50,12 +49,13 @@
 		A101D5ED27BAA0CC00A38901 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A101D5EC27BAA0CC00A38901 /* GoogleService-Info.plist */; };
 		A101D5F027BAA21700A38901 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A101D5EF27BAA21700A38901 /* FirebaseAuth */; };
 		A101D5F227BAA21700A38901 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = A101D5F127BAA21700A38901 /* FirebaseDatabase */; };
+		D712809127EB2DCA00994433 /* RegisterDoc.swift in Sources */ = {isa = PBXBuildFile; fileRef = D712809027EB2DCA00994433 /* RegisterDoc.swift */; };
+		D746C27B27F1C814009416F7 /* RegisterUIElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = D746C27A27F1C814009416F7 /* RegisterUIElements.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A101D57E27B7750C00A38901 /* MyChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A101D58127B7750C00A38901 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A101D58327B7750C00A38901 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A101D58527B7750C00A38901 /* ChatsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListViewController.swift; sourceTree = "<group>"; };
 		A101D58A27B7750C00A38901 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A101D58D27B7750C00A38901 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -93,6 +93,8 @@
 		A101D5E727BA99EF00A38901 /* NewChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatViewModel.swift; sourceTree = "<group>"; };
 		A101D5E927BA99F500A38901 /* NewChatBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewChatBuilder.swift; sourceTree = "<group>"; };
 		A101D5EC27BAA0CC00A38901 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D712809027EB2DCA00994433 /* RegisterDoc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDoc.swift; sourceTree = "<group>"; };
+		D746C27A27F1C814009416F7 /* RegisterUIElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUIElements.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 			children = (
 				A101D58027B7750C00A38901 /* MyChat */,
 				A101D57F27B7750C00A38901 /* Products */,
+				D778A3D227E9E0F30007A329 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -142,7 +145,6 @@
 			isa = PBXGroup;
 			children = (
 				A101D58127B7750C00A38901 /* AppDelegate.swift */,
-				A101D58327B7750C00A38901 /* SceneDelegate.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -276,9 +278,9 @@
 		A101D5DE27BA845C00A38901 /* Register */ = {
 			isa = PBXGroup;
 			children = (
+				D712809027EB2DCA00994433 /* RegisterDoc.swift */,
 				A101D5E127BA847200A38901 /* RegisterModuleBuilder.swift */,
-				A101D5DC27BA845900A38901 /* RegisterViewController.swift */,
-				A101D5DF27BA846A00A38901 /* RegisterViewModel.swift */,
+				D746C27927F1C803009416F7 /* Module */,
 			);
 			path = Register;
 			sourceTree = "<group>";
@@ -293,6 +295,23 @@
 			path = NewChat;
 			sourceTree = "<group>";
 		};
+		D746C27927F1C803009416F7 /* Module */ = {
+			isa = PBXGroup;
+			children = (
+				D746C27A27F1C814009416F7 /* RegisterUIElements.swift */,
+				A101D5DC27BA845900A38901 /* RegisterViewController.swift */,
+				A101D5DF27BA846A00A38901 /* RegisterViewModel.swift */,
+			);
+			path = Module;
+			sourceTree = "<group>";
+		};
+		D778A3D227E9E0F30007A329 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -300,7 +319,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A101D59227B7750C00A38901 /* Build configuration list for PBXNativeTarget "MyChat" */;
 			buildPhases = (
-				A1681ABD27E721C8001DF0C5 /* SwiftLint */,
+				D7D2E01927EB29690038B82A /* SwiftLint */,
 				A101D57A27B7750C00A38901 /* Sources */,
 				A101D57B27B7750C00A38901 /* Frameworks */,
 				A101D57C27B7750C00A38901 /* Resources */,
@@ -372,9 +391,9 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		A1681ABD27E721C8001DF0C5 /* SwiftLint */ = {
+		D7D2E01927EB29690038B82A /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -404,6 +423,7 @@
 				A101D5E427BA897E00A38901 /* UserDefaultsKey.swift in Sources */,
 				A101D5C727B77D7F00A38901 /* ModuleFactory.swift in Sources */,
 				A101D5C927B77F6400A38901 /* SplashModuleBuilder.swift in Sources */,
+				D712809127EB2DCA00994433 /* RegisterDoc.swift in Sources */,
 				A101D5EA27BA99F500A38901 /* NewChatBuilder.swift in Sources */,
 				A101D5CD27B7838800A38901 /* ChatsListModuleBuilder.swift in Sources */,
 				A101D58627B7750C00A38901 /* ChatsListViewController.swift in Sources */,
@@ -411,6 +431,7 @@
 				A101D5B127B7790F00A38901 /* Coordinator.swift in Sources */,
 				A101D5BE27B77A4600A38901 /* AuthManager.swift in Sources */,
 				A101D5AA27B7788900A38901 /* PorfileViewModel.swift in Sources */,
+				D746C27B27F1C814009416F7 /* RegisterUIElements.swift in Sources */,
 				A101D5DB27B9119F00A38901 /* Text.swift in Sources */,
 				A101D5AF27B778BC00A38901 /* SplashViewModel.swift in Sources */,
 				A101D58227B7750C00A38901 /* AppDelegate.swift in Sources */,
@@ -426,7 +447,6 @@
 				A101D5CF27B783F100A38901 /* ChatModuleBuilder.swift in Sources */,
 				A101D5B927B779C000A38901 /* ChatViewController.swift in Sources */,
 				A101D5A327B7776C00A38901 /* TabBarController.swift in Sources */,
-				A101D58427B7750C00A38901 /* SceneDelegate.swift in Sources */,
 				A101D5D127B78B9C00A38901 /* AppAssembly.swift in Sources */,
 				A101D5AD27B778A900A38901 /* SplashViewController.swift in Sources */,
 				A101D5C027B77AC600A38901 /* StorageManager.swift in Sources */,

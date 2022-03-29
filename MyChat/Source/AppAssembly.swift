@@ -19,7 +19,7 @@ final class AppAssembly {
         coordinator.injectModuleFactory(moduleFactory: moduleFactory)
 
 //        if UserDefaults.standard.value(forKey: UserDefaultsKey.firstTimeLoad.rawValue) == nil {
-//            UserDefaults.standard.set(true, forKey: UserDefaultsKey.firstTimeLoad.rawValue)
+            UserDefaults.standard.set(true, forKey: UserDefaultsKey.firstTimeLoad.rawValue)
             coordinator.presentRegisterViewController()
 //            return
 //        }

@@ -16,72 +16,24 @@ private enum RegisterViewLocalConstants {
     static let textfieldsHeight: CGFloat = 30
     static let textfieldsSpacing: CGFloat = 10
     // SubmitButton
-    static let submitButtonBottomInset: CGFloat = -100
+    static let submitButtonBottomInset: CGFloat = -10
     // ChangeToLoginButton
-    static let changeToLoginButtonTopInset: CGFloat = 10
+    static let changeToLoginButtonBottomInset: CGFloat = -30
+    // PasswordErrorLabel
+    static let passwordErrorLabelIndex: CGFloat = -10
 }
 
-private final class LayoutConstraints {
-    // MARK: - Public properties -
-    var submitButtonWidth: NSLayoutConstraint?
-    var changeStateButtonWidth: NSLayoutConstraint?
+final class RegisterConstraints {
+    static var submitButtonBottomAnchor: NSLayoutConstraint?
+    static var changeStateBottomAnchor: NSLayoutConstraint?
 }
 
-private final class RegisterUIElements {
-    // MARK: - Public methods -
-    let titleLabel: UILabel = {
-        return $0
-    }(UILabel())
-
-    let nameTextField: UITextField = {
-        $0.placeholder = Text.textfield(.username).text
-        $0.backgroundColor = .white
-        $0.autocorrectionType = .no
-        $0.autocapitalizationType = .none
-        $0.returnKeyType = .continue
-        $0.textContentType = .username
-        return $0
-    }(UITextField())
-
-    let passwordTestField: UITextField = {
-        $0.placeholder = Text.textfield(.password(.first)).text
-        $0.backgroundColor = .white
-        $0.autocorrectionType = .no
-        $0.autocapitalizationType = .none
-        $0.returnKeyType = .continue
-        $0.textContentType = .password
-        return $0
-    }(UITextField())
-
-    let passwordSecondTimeTextfield: UITextField = {
-        $0.placeholder = Text.textfield(.password(.second)).text
-        $0.backgroundColor = .white
-        $0.autocorrectionType = .no
-        $0.autocapitalizationType = .none
-        $0.returnKeyType = .continue
-        $0.textContentType = .password
-        return $0
-    }(UITextField())
-
-    let submitButton: UIButton = {
-        $0.backgroundColor = .red
-        return $0
-    }(UIButton(type: .custom))
-
-    let changeStateButton: UIButton = {
-        $0.backgroundColor = .gray
-        return $0
-    }(UIButton(type: .system))
-}
-
+// swiftlint:disable:next type_body_length
 final class RegisterViewController: UIViewController {
     // MARK: - Private properties -
     private let uiElements = RegisterUIElements()
     private let registerViewModel: RegisterViewModelProtocol
     private let bag = DisposeBag()
-
-    private var defaultSubmitButtonsFrame: CGRect?
-    private var defaultChangeStateButtonFrame: CGRect?
     private var isKeyboardShown = false
 
     // MARK: - Init -
@@ -98,12 +50,15 @@ final class RegisterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubviews()
-        layout()
         bindUIElements()
         subscribeToObservables()
         setupDelegates()
         addKeyboardObservers()
         view.backgroundColor = .darkGray
+    }
+
+    override func viewWillLayoutSubviews() {
+        layout()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -144,6 +99,14 @@ final class RegisterViewController: UIViewController {
         registerViewModel.submitButtonAlpha
             .bind(to: uiElements.submitButton.rx.alpha)
             .disposed(by: bag)
+
+        registerViewModel.errorPasswordLabelText
+            .bind(to: uiElements.passwordsErrorLabel.rx.text)
+            .disposed(by: bag)
+
+        registerViewModel.errorPasswordLabelState
+            .bind(to: uiElements.passwordsErrorLabel.rx.isHidden)
+            .disposed(by: bag)
     }
 
     private func subscribeToObservables() {
@@ -152,13 +115,17 @@ final class RegisterViewController: UIViewController {
             .subscribe { [weak self] _ in
                 self?.registerViewModel.secondTimeTextfieldIsHiddenToggle()
                 self?.registerViewModel.changeButtonsTitle()
+                self?.registerViewModel.disableErrorLabel()
+                self?.isKeyboardShown = false
             }.disposed(by: bag)
 
         // Change submitButtonState
         registerViewModel.submitButtonState
-            .subscribe { [weak self] _ in
+            .subscribe { [weak self] event in
+                guard let state = event.element else { return }
+                self?.registerViewModel.submitButtonChangeState(to: state)
                 self?.registerViewModel.submitButtonChangeAlpha()
-                self?.registerViewModel.submitButtonIsEnableToggle()
+
             }.disposed(by: bag)
 
         // Textfields checking
@@ -182,7 +149,8 @@ final class RegisterViewController: UIViewController {
             .tap
             .subscribe { [weak self] _ in
                 self?.registerViewModel.presentTabBarController()
-            }.disposed(by: bag)
+            }
+            .disposed(by: bag)
 
         // AuthButton tapped
         uiElements.changeStateButton.rx
@@ -205,6 +173,7 @@ final class RegisterViewController: UIViewController {
         view.addSubview(uiElements.nameTextField)
         view.addSubview(uiElements.passwordTestField)
         view.addSubview(uiElements.passwordSecondTimeTextfield)
+        view.addSubview(uiElements.passwordsErrorLabel)
         view.addSubview(uiElements.submitButton)
         view.addSubview(uiElements.changeStateButton)
     }
@@ -217,8 +186,9 @@ final class RegisterViewController: UIViewController {
         layoutNameTextField()
         layoutPasswordTestField()
         layoutPasswordSecondTimeTextfield()
-        layoutSubmitButton()
         layoutChangeStateButton()
+        layoutSubmitButton()
+        layoutPasswordErrorLabel()
     }
 
     private func layoutNameTextField() {
@@ -284,11 +254,29 @@ final class RegisterViewController: UIViewController {
         ])
     }
 
+    private func layoutChangeStateButton() {
+
+        RegisterConstraints.submitButtonBottomAnchor = uiElements.changeStateButton
+            .bottomAnchor
+            .constraint(equalTo: view.bottomAnchor,
+                        constant: RegisterViewLocalConstants.changeToLoginButtonBottomInset)
+
+        guard let submitButtonBottomAnchor = RegisterConstraints.submitButtonBottomAnchor else { return }
+
+        NSLayoutConstraint.activate([
+            submitButtonBottomAnchor,
+
+            uiElements.changeStateButton
+                .centerXAnchor
+                .constraint(equalTo: uiElements.submitButton.centerXAnchor)
+        ])
+    }
+
     private func layoutSubmitButton() {
         NSLayoutConstraint.activate([
             uiElements.submitButton
                 .bottomAnchor
-                .constraint(equalTo: view.bottomAnchor,
+                .constraint(equalTo: uiElements.changeStateButton.topAnchor,
                             constant: RegisterViewLocalConstants.submitButtonBottomInset),
 
             uiElements.submitButton
@@ -296,16 +284,16 @@ final class RegisterViewController: UIViewController {
                 .constraint(equalTo: view.centerXAnchor)])
     }
 
-    private func layoutChangeStateButton() {
+    private func layoutPasswordErrorLabel() {
         NSLayoutConstraint.activate([
-            uiElements.changeStateButton
-                .topAnchor
-                .constraint(equalTo: uiElements.submitButton.bottomAnchor,
-                            constant: RegisterViewLocalConstants.changeToLoginButtonTopInset),
+            uiElements.passwordsErrorLabel
+                .bottomAnchor
+                .constraint(equalTo: uiElements.submitButton.topAnchor,
+                            constant: RegisterViewLocalConstants.passwordErrorLabelIndex),
 
-            uiElements.changeStateButton
+            uiElements.passwordsErrorLabel
                 .centerXAnchor
-                .constraint(equalTo: uiElements.submitButton.centerXAnchor)
+                .constraint(equalTo: view.centerXAnchor)
         ])
     }
 
@@ -336,28 +324,21 @@ final class RegisterViewController: UIViewController {
             let keyboardRectangle = keyboardFrameValue.cgRectValue
             let keyboardHeight = keyboardRectangle.height
 
-            defaultSubmitButtonsFrame = uiElements.submitButton.frame
-            defaultChangeStateButtonFrame = uiElements.changeStateButton.frame
+            RegisterConstraints.submitButtonBottomAnchor?.constant = RegisterViewLocalConstants.submitButtonBottomInset - keyboardHeight
+            RegisterConstraints.changeStateBottomAnchor?.constant = RegisterViewLocalConstants.changeToLoginButtonBottomInset - keyboardHeight
 
-            uiElements.submitButton.frame = CGRect(x: uiElements.submitButton.frame.minX,
-                                                   y: uiElements.submitButton.frame.minY - keyboardHeight,
-                                                   width: uiElements.submitButton.frame.width,
-                                                   height: uiElements.submitButton.frame.height)
-            uiElements.changeStateButton.frame = CGRect(x: uiElements.changeStateButton.frame.minX,
-                                                        y: uiElements.changeStateButton.frame.minY - keyboardHeight,
-                                                        width: uiElements.changeStateButton.frame.width,
-                                                        height: uiElements.changeStateButton.frame.height)
+            self.view.layoutIfNeeded()
         }
     }
 
     @objc private func keyboardWillHide(notification: NSNotification) {
         if isKeyboardShown {
             isKeyboardShown = false
-            guard let defaultSubmitButtonsFrame = defaultSubmitButtonsFrame,
-                  let defaultChangeStateButtonFrame = defaultChangeStateButtonFrame else { return }
 
-            uiElements.submitButton.frame = defaultSubmitButtonsFrame
-            uiElements.changeStateButton.frame = defaultChangeStateButtonFrame
+            RegisterConstraints.submitButtonBottomAnchor?.constant = RegisterViewLocalConstants.submitButtonBottomInset
+            RegisterConstraints.changeStateBottomAnchor?.constant = RegisterViewLocalConstants.changeToLoginButtonBottomInset
+
+            self.view.layoutIfNeeded()
         }
     }
 }
@@ -366,6 +347,7 @@ final class RegisterViewController: UIViewController {
 extension RegisterViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+
         switch registerViewModel.submitButtonState.value {
         case .enable:
             registerViewModel.presentTabBarController()

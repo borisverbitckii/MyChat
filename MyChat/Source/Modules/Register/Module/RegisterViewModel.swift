@@ -49,7 +49,7 @@ protocol RegisterViewModelProtocol {
     var submitButtonTitle: BehaviorRelay<String> { get }
     var submitButtonIsEnable: BehaviorRelay<Bool> { get }
     var submitButtonAlpha: PublishRelay<CGFloat> { get }
-    func submitButtonIsEnableToggle()
+    func submitButtonChangeState(to state: SubmitButtonState)
     func submitButtonChangeAlpha()
     // ChangeStateButton
     var changeStateButtonTitle: BehaviorRelay<String> { get }
@@ -59,6 +59,11 @@ protocol RegisterViewModelProtocol {
     var passwordSecondTimeTextfieldIsHidden: BehaviorRelay<Bool> { get }
     // SecondTextfield
     func secondTimeTextfieldIsHiddenToggle()
+    // ErrorPasswordText
+    var errorPasswordLabelText: BehaviorRelay<String> { get }
+    var errorPasswordLabelState: BehaviorRelay<Bool> { get }
+    func errorLabelIsEnableToggle()
+    func disableErrorLabel()
 }
 
 final class RegisterViewModel {
@@ -77,6 +82,10 @@ final class RegisterViewModel {
     var nameTextfieldText = PublishRelay<String>()
     var passwordTextfieldText = PublishRelay<String>()
     var secondPasswordTextfieldText = PublishRelay<String>()
+
+    // ErrorPasswordsLabel
+    var errorPasswordLabelText = BehaviorRelay<String>(value: Text.passwordErrorLabel.text)
+    var errorPasswordLabelState = BehaviorRelay<Bool>(value: true)
 
     // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
@@ -106,6 +115,12 @@ extension RegisterViewModel: RegisterViewModelProtocol {
             ((name != "" && (password == secondPassword)) && password != "" && secondPassword != "")
             ? submitButtonState.accept(.enable)
             : submitButtonState.accept(.disable)
+
+            // Подсветка, что пароли при регистрации не совпадают
+            password != secondPassword && (password != "" && secondPassword != "")
+            ? errorPasswordLabelState.accept(false)
+            : errorPasswordLabelState.accept(true)
+
         } else {
             (name != "" && password != "")
             ? submitButtonState.accept(.enable)
@@ -145,14 +160,28 @@ extension RegisterViewModel: RegisterViewModelProtocol {
         }
     }
 
+    // TODO: Зарефакторить нижние 3 метода
     func secondTimeTextfieldIsHiddenToggle() {
         let value = passwordSecondTimeTextfieldIsHidden.value
         passwordSecondTimeTextfieldIsHidden.accept(!value)
     }
 
-    func submitButtonIsEnableToggle() {
-        let value = submitButtonIsEnable.value
-        submitButtonIsEnable.accept(!value)
+    func submitButtonChangeState(to state: SubmitButtonState) {
+        switch state {
+        case .enable:
+            submitButtonIsEnable.accept(true)
+        case .disable:
+            submitButtonIsEnable.accept(false)
+        }
+    }
+
+    func errorLabelIsEnableToggle() {
+        let value = errorPasswordLabelState.value
+        errorPasswordLabelState.accept(!value)
+    }
+
+    func disableErrorLabel() {
+        errorPasswordLabelState.accept(true)
     }
 
     func cleanTextfields() {

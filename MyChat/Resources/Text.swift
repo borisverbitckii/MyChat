@@ -76,6 +76,7 @@ enum Text {
     case alertControllerTitle(AlertControllerTitleType)
     case alertControllerMessage(AlertControllerSubtitleType)
     case alertAction(AlertActionType)
+    case passwordErrorLabel
 
     var text: String {
         switch self {
@@ -91,6 +92,8 @@ enum Text {
             return alertControllerMessage.message
         case .alertAction(let alertAction):
             return alertAction.rawValue
+        case .passwordErrorLabel:
+            return "Пароли не совпадают"
         }
     }
 }
