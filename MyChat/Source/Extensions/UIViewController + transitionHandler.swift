@@ -8,6 +8,7 @@
 import UIKit
 
 protocol TransitionHandler {
+    // Протокол чтобы скрыть остальные методы UIViewController при переходах на другие VC
     func presentViewController(viewController: UIViewController,
                                animated: Bool,
                                completion: (() -> Void)?)

@@ -8,18 +8,18 @@
 import Foundation
 
 enum NavigationTitleType: String {
-    case chatList = "Список чатов"
-    case profile = "Профиль"
+    case chatList = "Chat list"
+    case profile = "Profile"
 }
 
 enum ButtonTitleType: String {
-    case register = "Зарегистрироваться"
-    case auth = "Авторизироваться"
+    case register = "Sign up"
+    case auth = "Log in"
 }
 
 enum PasswordPlaceholderType: String {
-    case first = "Пароль"
-    case second = "Пароль еще раз"
+    case first = "Password"
+    case second = "Password second time"
 }
 
 enum TextfieldType {
@@ -29,13 +29,13 @@ enum TextfieldType {
     var textFieldPlaceholder: String {
         switch self {
         case .username:
-            return "Имя пользователя"
+            return "Login"
         case .password(let passwordPlaceholderType):
             switch passwordPlaceholderType {
             case .first:
-                return "Пароль"
+                return "Password"
             case .second:
-                return "Пароль еще раз"
+                return "Password second time"
             }
         }
     }
@@ -47,7 +47,7 @@ enum AlertControllerTitleType {
     var title: String {
         switch self {
         case .registrationError:
-            return "Ошибка!"
+            return "Error!"
         }
     }
 }
@@ -58,15 +58,15 @@ enum AlertControllerSubtitleType {
     var message: String {
         switch self {
         case .authError:
-            return "Вы ввели не правильный логин или пароль. Попробуйте еще раз:)"
+            return "Login or password is wrong. Try again:)"
         case .registerError:
-            return "Пароли не совпадают. Попробуйте еще раз:)"
+            return "Passwords dont match. Try again:)"
         }
     }
 }
 
 enum AlertActionType: String {
-    case okAction = "Ок"
+    case okAction = "Ok"
 }
 
 enum Text {
@@ -93,7 +93,7 @@ enum Text {
         case .alertAction(let alertAction):
             return alertAction.rawValue
         case .passwordErrorLabel:
-            return "Пароли не совпадают"
+            return "Argh! Passwords dont match:("
         }
     }
 }

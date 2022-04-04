@@ -18,12 +18,12 @@ protocol CoordinatorProtocol: AnyObject {
 
 final class Coordinator {
 
-    // MARK: - Private properties
+    // MARK: - Private properties -
     private var window: UIWindow?
     private var moduleFactory: ModuleFactory?
 }
 
-// MARK: - extension + CoordinatorProtocol
+// MARK: - Coordinator + CoordinatorProtocol -
 extension Coordinator: CoordinatorProtocol {
 
     func injectWindow(window: UIWindow) {
@@ -35,18 +35,24 @@ extension Coordinator: CoordinatorProtocol {
     }
 
     func presentTabBarViewController(showSplash: Bool) {
+        // В зависимости от showSplash решается, будет ли показан splash для проверки авторизаци
+        // Устанавливается в appAssembly и в RegisterViewModel
+        // В первом случае по дефолту сплеш показывается, так как сразу шлет на табБарКонтроллер
+        // Во втором случае сплеш не показывается, так как попадаем с модуля регистрации/авторизации
         guard let window = window else { return }
         window.rootViewController = moduleFactory?.getTabBarController(showSplash: showSplash)
         window.makeKeyAndVisible()
     }
 
     func presentRegisterViewController() {
+        // Модуль регистрации/авторизации
         guard let window = window else { return }
         window.rootViewController = moduleFactory?.getRegisterViewController()
         window.makeKeyAndVisible()
     }
 
     func presentSplashViewController(transitionHandler: TransitionHandler) {
+        // Модуль сплеша для проверки авторизации и подгрузке всех необходимых данных
         guard let moduleFactory = moduleFactory else { return }
         let splashViewController = moduleFactory.getSplashModule(coordinator: self)
         splashViewController.modalPresentationStyle = .fullScreen

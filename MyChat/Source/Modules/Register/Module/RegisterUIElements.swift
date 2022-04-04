@@ -5,57 +5,51 @@
 //  Created by Boris Verbitsky on 28.03.2022.
 //
 
-import UIKit
+import AsyncDisplayKit
 
 final class RegisterUIElements {
     // MARK: - Public methods -
-    let titleLabel: UILabel = {
+    let titleLabel: ASTextNode = {
         return $0
-    }(UILabel())
+    }(ASTextNode())
 
-    let passwordsErrorLabel: UILabel = {
+    let passwordsErrorLabel: ASTextNode = {
         return $0
-    }(UILabel())
+    }(ASTextNode())
 
-    let nameTextField: UITextField = {
-        $0.placeholder = Text.textfield(.username).text
+    let nameTextField: ASTextFieldNode = {
         $0.backgroundColor = .white
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
         $0.returnKeyType = .continue
-        $0.textContentType = .username
         return $0
-    }(UITextField())
+    }(ASTextFieldNode())
 
-    let passwordTestField: UITextField = {
-        $0.placeholder = Text.textfield(.password(.first)).text
+    let passwordTestField: ASTextFieldNode = {
         $0.backgroundColor = .white
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
         $0.returnKeyType = .continue
-        $0.textContentType = .password
         $0.isSecureTextEntry = true
         return $0
-    }(UITextField())
+    }(ASTextFieldNode())
 
-    let passwordSecondTimeTextfield: UITextField = {
-        $0.placeholder = Text.textfield(.password(.second)).text
+    let passwordSecondTimeTextfield: ASTextFieldNode = {
         $0.backgroundColor = .white
         $0.autocorrectionType = .no
         $0.autocapitalizationType = .none
         $0.returnKeyType = .continue
-        $0.textContentType = .password
         $0.isSecureTextEntry = true
         return $0
-    }(UITextField())
+    }(ASTextFieldNode())
 
-    let submitButton: UIButton = {
+    let submitButton: ASButtonNode = {
         $0.backgroundColor = .red
         return $0
-    }(UIButton(type: .custom))
+    }(ASButtonNode())
 
-    let changeStateButton: UIButton = {
+    let changeStateButton: ASButtonNode = {
         $0.backgroundColor = .gray
         return $0
-    }(UIButton(type: .system))
+    }(ASButtonNode())
 }

@@ -23,12 +23,15 @@ final class ModuleFactory {
     // MARK: - Private properties
     private weak var coordinator: CoordinatorProtocol?
     private let managerFactory: ManagerFactoryProtocol
+    private let fonts: FontsProtocol
 
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
-         managerFactory: ManagerFactoryProtocol) {
+         managerFactory: ManagerFactoryProtocol,
+         fonts: FontsProtocol) {
         self.coordinator = coordinator
         self.managerFactory = managerFactory
+        self.fonts = fonts
     }
 }
 
@@ -47,7 +50,8 @@ extension ModuleFactory: ModuleFactoryProtocol {
     func getRegisterViewController() -> UIViewController {
         guard let coordinator = coordinator else { return UIViewController() }
         return RegisterModuleBuilder().build(coordinator: coordinator,
-                                      authManager: managerFactory.getAuthManager())
+                                             authManager: managerFactory.getAuthManager(),
+                                             fonts: fonts)
     }
 
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController {

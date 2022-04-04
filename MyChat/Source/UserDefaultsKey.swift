@@ -8,5 +8,5 @@
 import Foundation
 
 enum UserDefaultsKey: String {
-    case firstTimeLoad
+    case firstTimeLoad // для того, чтобы чекать впервые ли запущено приложение (в AppAssembly)
 }
