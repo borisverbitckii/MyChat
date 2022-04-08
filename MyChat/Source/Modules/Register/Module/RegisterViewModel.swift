@@ -24,12 +24,6 @@ enum AlertControllerType {
         - onlyPasswordsFields - для того, чтобы вывести "пароли не совпадают" */
 }
 
-private enum RegisterViewModelLocalConstants {
-    // Прозрачность/непрозрачнсть submitButton
-    static let buttonOpacityIsNotOpaque: CGFloat = 0.3
-    static let buttonOpacityIsOpaque: CGFloat = 1
-}
-
 protocol RegisterViewModelProtocol {
     var input: RegisterViewModelInput { get }
     var output: RegisterViewModelOutput { get }
@@ -55,7 +49,17 @@ protocol RegisterViewModelInput {
 }
 
 protocol RegisterViewModelOutput {
-    var viewControllerState: BehaviorRelay<RegisterViewControllerState> { get set }
+    // viewController
+    var viewControllerState: BehaviorRelay<RegisterViewControllerState> { get }
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
+    // submitButton
+    var submitButtonState: BehaviorRelay<SubmitButtonState> { get } // Активна или не активна
+    var submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)> { get }
+        // Для смены заголовка "аворизироваться" и "зарегистрироваться"
+    var submitButtonIsEnable: BehaviorRelay<Bool> { get } // Включение/выключение кнопки
+    var submitButtonColor: PublishRelay<UIColor> { get } // Прозрачность кнопки
+    // changeStateButton
+    var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)> { get } // Заголовок для кнопки
     // Текстфилды
     var textfieldsFont: BehaviorRelay<UIFont> { get } // один шрифт на все текстфилды
         // nameTextfield
@@ -68,19 +72,13 @@ protocol RegisterViewModelOutput {
     var secondPasswordTextfieldText: PublishRelay<String> { get }
     var secondPasswordTextfieldPlaceholder: BehaviorRelay<String> { get }
     var secondPasswordTextfieldIsHidden: BehaviorRelay<Bool> { get } // Скрытие/отобраение 3его текстфилда
-    // submitButton
-    var submitButtonState: BehaviorRelay<SubmitButtonState> { get } // Активна или не активна
-    var submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)> { get }
-        // Для смены заголовка "аворизироваться" и "зарегистрироваться"
-    var submitButtonIsEnable: BehaviorRelay<Bool> { get } // Включение/выключение кнопки
-    var submitButtonAlpha: PublishRelay<CGFloat> { get } // Прозрачность кнопки
-    // changeStateButton
-    var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)> { get } // Заголовок для кнопки
     // errorPasswordText
-    var errorPasswordLabel: BehaviorRelay<(text: String, font: UIFont)> { get } // шрифт для errorPasswordLabel
+    var errorPasswordLabel: BehaviorRelay<(text: String, font: UIFont)> { get } // шрифт и текст для errorPasswordLabel
         // Заголовок для лейбла, который пишет, что пароли не совпадают при регистрации
     var errorPasswordLabelState: BehaviorRelay<Bool> { get }
         // Включение/выключение лейбла, который пишет, что пароли не совпадают при регистрации
+    // orLabel
+    var orLabel: BehaviorRelay<(text: String, font: UIFont)> { get } // шрифт и текст для orLabel
 }
 
 final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutput {
@@ -90,16 +88,15 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
     var output: RegisterViewModelOutput { return self }
 
     // Все описания пропертей сверху в протоколе output
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor>
     var viewControllerState = BehaviorRelay(value: RegisterViewControllerState.auth)
     // Submit button
     var submitButtonState = BehaviorRelay(value: SubmitButtonState.disable)
     var submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
     var submitButtonIsEnable = BehaviorRelay<Bool>(value: false)
-    var submitButtonAlpha = PublishRelay<CGFloat>()
+    var submitButtonColor = PublishRelay<UIColor>()
     // СhangeStateButton
     var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
-    // passwordSecondTimeTextfield
-    var secondPasswordTextfieldIsHidden = BehaviorRelay<Bool>(value: false)
     // Textfields
     var textfieldsFont: BehaviorRelay<UIFont>
         // nameTextfield
@@ -111,57 +108,79 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
         // secondPasswordTextfield
     var secondPasswordTextfieldText = PublishRelay<String>()
     var secondPasswordTextfieldPlaceholder: BehaviorRelay<String>
-    // ErrorPasswordsLabel
+    var secondPasswordTextfieldIsHidden = BehaviorRelay<Bool>(value: false)
+    // errorPasswordsLabel
     var errorPasswordLabel: BehaviorRelay<(text: String, font: UIFont)>
     var errorPasswordLabelState = BehaviorRelay<Bool>(value: true)
+    // orLabel
+    var orLabel: BehaviorRelay<(text: String, font: UIFont)>
 
     // MARK: - Private properties
-    private let coordinator: CoordinatorProtocol // Для флоу между контролллеров
-    private let authManager: AuthManagerProtocol // Менеджер для регистрации/авторизации
-    private let fonts: FontsProtocol             // Для применения шрифтов
+    private let coordinator: CoordinatorProtocol                    // Для флоу между контролллерами
+    private let authManager: AuthManagerProtocol                    // Менеджер для регистрации/авторизации
+    private let fonts: (RegisterViewControllerFonts) -> UIFont      // Для применения шрифтов
+    private let texts: (RegisterViewControllerTexts) -> String      // Для установки всех текстов
+    private let palette: (RegisterViewControllerPalette) -> UIColor // Для установки цветов
 
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
          authManager: AuthManagerProtocol,
-         fonts: FontsProtocol) {
+         fonts: @escaping (RegisterViewControllerFonts) -> UIFont,
+         texts: @escaping (RegisterViewControllerTexts) -> String,
+         palette: @escaping (RegisterViewControllerPalette) -> UIColor) {
         self.coordinator = coordinator
         self.authManager = authManager
         self.fonts = fonts
+        self.texts = texts
+        self.palette = palette
 
         // Стандартные значения для UI
-        let submitButtonTitleText = Text.button(.auth).text
-        let submitButtonTitleFont = fonts.buttons()(.submitButton)
+        // viewController
+        viewControllerBackgroundColor = BehaviorRelay<UIColor>(value: palette(.viewControllerBackgroundColor))
+
+        // submitButton
+        let submitButtonTitleText = texts(.authTextForButton)
+        let submitButtonTitleFont = fonts(.submitButton)
         self.submitButtonTitle = BehaviorRelay<(title: String,
                                                 font: UIFont)>(value: (
                                                     title: submitButtonTitleText,
                                                     font: submitButtonTitleFont))
-
-        let changeStateButtonText = Text.button(.register).text
-        let changeStateButtonFont = fonts.buttons()(.changeStateButton)
+        // changeStateButton
+        let changeStateButtonText = texts(.sighUpTextForButton)
+        let changeStateButtonFont = fonts(.changeStateButton)
         self.changeStateButtonTitle = BehaviorRelay<(title: String,
                                                      font: UIFont)>(value: (
                                                         title: changeStateButtonText,
                                                         font: changeStateButtonFont))
         // nameTextfield
-        let nameTextFieldPlaceholderText = Text.textfield(.username).text
+        let nameTextFieldPlaceholderText = texts(.namePlaceholder)
         self.nameTextfieldPlaceholder = BehaviorRelay<String>(value: nameTextFieldPlaceholderText)
 
         // passwordTextfield
-        let passwordPlaceholderText = Text.textfield(.password(.first)).text
+        let passwordPlaceholderText = texts(.passwordPlaceholder)
         self.passwordTextfieldPlaceholder = BehaviorRelay<String>(value: passwordPlaceholderText)
 
         // secondPasswordTextfield
-        let secondPassPlaceholderText = Text.textfield(.password(.second)).text
+        let secondPassPlaceholderText = texts(.secondPasswordPlaceholder)
         self.secondPasswordTextfieldPlaceholder = BehaviorRelay<String>(value: secondPassPlaceholderText)
 
         // Для всех текстфилдов
-        self.textfieldsFont = BehaviorRelay<UIFont>(value: fonts.textfields()(.registerTextfield))
+        self.textfieldsFont = BehaviorRelay<UIFont>(value: fonts(.registerTextfield))
 
         // errorPasswordLabel
+        let errorPasswordText = texts(.errorPasswordLabel)
         errorPasswordLabel = BehaviorRelay<(text: String,
                                             font: UIFont)>(value: (
-                                                text: Text.passwordErrorLabel.text,
-                                                font: fonts.labels()(.registerErrorLabel)))
+                                                text: errorPasswordText,
+                                                font: fonts(.registerErrorLabel)))
+
+        // orLabel
+        let orLabelText = texts(.orLabelText)
+        let orLabelFont = fonts(.registerOrLabel)
+        orLabel = BehaviorRelay<(text: String,
+                                 font: UIFont)>(value:
+                                                    (text: orLabelText,
+                                                     font: orLabelFont))
     }
 
 }
@@ -248,9 +267,9 @@ extension RegisterViewModel: RegisterViewModelInput {
         // Смена прозрачности для submitButton
         switch submitButtonState.value {
         case .enable:
-            submitButtonAlpha.accept(RegisterViewModelLocalConstants.buttonOpacityIsOpaque)
+            submitButtonColor.accept(palette(.submitButtonActiveTintColor))
         case .disable:
-            submitButtonAlpha.accept(RegisterViewModelLocalConstants.buttonOpacityIsNotOpaque)
+            submitButtonColor.accept(palette(.submitButtonDisableTintColor))
         }
     }
 
@@ -268,11 +287,19 @@ extension RegisterViewModel: RegisterViewModelInput {
         // Смена заголовков кнопок при смене состояния контроллера между "авторизация" и "регистрация"
         switch viewControllerState.value {
         case .auth:
-            submitButtonTitle.accept((title: Text.button(.auth).text, font: fonts.buttons()(.submitButton)))
-            changeStateButtonTitle.accept((Text.button(.register).text, fonts.buttons()(.changeStateButton)))
+            let submitButtonText = texts(.authTextForButton)
+            let changeStateButtonText = texts(.sighUpTextForButton)
+            submitButtonTitle.accept((title: submitButtonText,
+                                      font: fonts(.submitButton)))
+            changeStateButtonTitle.accept((title: changeStateButtonText,
+                                           font: fonts(.changeStateButton)))
         case .register:
-            submitButtonTitle.accept((Text.button(.register).text, font: fonts.buttons()(.submitButton)))
-            changeStateButtonTitle.accept((Text.button(.auth).text, fonts.buttons()(.changeStateButton)))
+            let submitButtonText = texts(.sighUpTextForButton)
+            let changeStateButtonText = texts(.authTextForButton)
+            submitButtonTitle.accept((title: submitButtonText,
+                                      font: fonts(.submitButton)))
+            changeStateButtonTitle.accept((title: changeStateButtonText,
+                                           font: fonts(.changeStateButton)))
         }
     }
 
@@ -294,20 +321,22 @@ extension RegisterViewModel: RegisterViewModelInput {
     // MARK: - Private Methods -
     @discardableResult private func generateAlertController(type: AlertControllerType) -> UIAlertController {
 
-        let alertController = UIAlertController(title: Text.alertControllerTitle(.registrationError).text,
+        let alertControllerTitle = texts(.alertControllerTitle)
+        let alertController = UIAlertController(title: alertControllerTitle,
                                                 message: "",
                                                 preferredStyle: .alert)
 
         switch type {
         case .allFields:
             // Когда ошибка логина и пароля (не удалось авторизироваться)
-            alertController.message = Text.alertControllerMessage(.authError).text
+            alertController.message = texts(.alertControllerAuthError)
         case .onlyPasswordsFields:
             // Когда не совпали пароли
-            alertController.message = Text.alertControllerMessage(.registerError).text
+            alertController.message = texts(.alertControllerSignUpError)
         }
 
-        let okAction = UIAlertAction(title: Text.alertAction(.okAction).text, style: .default) { _ in
+        let okActionText = texts(.alertControllerOKAction)
+        let okAction = UIAlertAction(title: okActionText, style: .default) { _ in
             alertController.dismiss(animated: true)
         }
 

@@ -1,0 +1,26 @@
+//
+//  AuthButtonsNode.swift
+//  MyChat
+//
+//  Created by Boris Verbitsky on 07.04.2022.
+//
+
+import AsyncDisplayKit
+
+final class AuthButtonsNode: ASDisplayNode {
+
+    // MARK: Ovveride methods
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+
+        let buttons = [ASButtonNode(), ASButtonNode(), ASButtonNode()]
+        buttons.forEach { $0.backgroundColor = .gray.withAlphaComponent(0.15) }
+        buttons.forEach { $0.style.preferredSize = CGSize(width: 40, height: 40)}
+
+        let hStack = ASStackLayoutSpec(direction: .horizontal,
+                                       spacing: 10,
+                                       justifyContent: .center,
+                                       alignItems: .center,
+                                       children: buttons)
+        return hStack
+    }
+}

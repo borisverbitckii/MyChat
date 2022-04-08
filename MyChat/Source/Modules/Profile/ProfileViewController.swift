@@ -34,13 +34,13 @@ final class ProfileViewController: UIViewController {
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .darkGray
+        view.backgroundColor = .white
         setupNavigationBar()
     }
 
     // MARK: - Private methods
     private func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
-        title = Text.navigationTitle(.profile).text
+        title = "Profile" // TODO: - Исправить с ремоут текста -
     }
 }

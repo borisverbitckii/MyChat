@@ -23,15 +23,15 @@ final class ModuleFactory {
     // MARK: - Private properties
     private weak var coordinator: CoordinatorProtocol?
     private let managerFactory: ManagerFactoryProtocol
-    private let fonts: FontsProtocol
+    private let resource: ResourceProtocol
 
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
          managerFactory: ManagerFactoryProtocol,
-         fonts: FontsProtocol) {
+         resource: ResourceProtocol) {
         self.coordinator = coordinator
         self.managerFactory = managerFactory
-        self.fonts = fonts
+        self.resource = resource
     }
 }
 
@@ -51,7 +51,9 @@ extension ModuleFactory: ModuleFactoryProtocol {
         guard let coordinator = coordinator else { return UIViewController() }
         return RegisterModuleBuilder().build(coordinator: coordinator,
                                              authManager: managerFactory.getAuthManager(),
-                                             fonts: fonts)
+                                             fonts: resource.fonts.registerViewController(),
+                                             texts: resource.texts.registerViewController(),
+                                             palette: resource.palette.registerViewController())
     }
 
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController {
@@ -66,7 +68,10 @@ extension ModuleFactory: ModuleFactoryProtocol {
 
     func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController {
         ChatsListModuleBuilder().build(managerFactory: managerFactory,
-                                              coordinator: coordinator)
+                                              coordinator: coordinator,
+                                       networkManager: managerFactory.getNetworkManager(),
+                                       fonts: resource.fonts.chatsListViewController(),
+                                       texts: resource.texts.chatsListViewController())
     }
 
     func getNewChatModule(coordinator: CoordinatorProtocol) -> NewChatViewController {

@@ -16,7 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
-        _ = AppAssembly(window: window)
+        let configureManager = ConfigureManager()
+        // swiftlint:disable:next redundant_discardable_let
+        let _ = AppAssembly(window: window, configManager: configureManager)
         return true
     }
 }

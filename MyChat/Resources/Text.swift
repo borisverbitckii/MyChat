@@ -5,95 +5,117 @@
 //  Created by Борис on 13.02.2022.
 //
 
-import Foundation
-
-enum NavigationTitleType: String {
-    case chatList = "Chat list"
-    case profile = "Profile"
+protocol TextProtocol {
+    // Для каждого контроллера создается свой метод, который возвращает
+    // клоужер для локальной настройки
+    func registerViewController() -> (RegisterViewControllerTexts) -> (String)
+    func chatsListViewController() -> (ChatsListViewControllerTexts) -> (String)
+    func profileViewController() -> (ProfileViewControllerTexts) -> (String)
 }
 
-enum ButtonTitleType: String {
-    case register = "Sign up"
-    case auth = "Log in"
+/*
+ Класс для возможности удаленной настройки всех текстов в приложении
+ Обрабатывает удаленный конфиг AppTextsConfig, если он не nil, присваивает
+ стандартные значения. Все текста для приложения устанавливаются здесь
+ */
+
+final class Text {
+
+    // MARK: Private Properties
+    private var config: AppTextsConfig? // удаленный конфиг для настройки текста
+
+    // MARK: Init
+    init(config: AppTextsConfig?) {
+        self.config = config
+    }
 }
 
-enum PasswordPlaceholderType: String {
-    case first = "Password"
-    case second = "Password second time"
-}
+// MARK: - TextSource + TextProtocol -
+extension Text: TextProtocol {
 
-enum TextfieldType {
-    case username
-    case password(PasswordPlaceholderType)
-
-    var textFieldPlaceholder: String {
-        switch self {
-        case .username:
-            return "Login"
-        case .password(let passwordPlaceholderType):
-            switch passwordPlaceholderType {
-            case .first:
-                return "Password"
-            case .second:
-                return "Password second time"
+    // MARK: Public methods
+    // swiftlint:disable:next cyclomatic_complexity
+    func registerViewController() -> (RegisterViewControllerTexts) -> (String) {
+        return { [weak self] uiElement in
+            guard let self = self else { return "" }
+            if let text = self.config?.registerViewController[uiElement.rawValue] {
+                return text
             }
+
+            if uiElement == .namePlaceholder {
+                return "e-mail"
+            }
+
+            if uiElement == .passwordPlaceholder {
+                return "password"
+            }
+
+            if uiElement == .secondPasswordPlaceholder {
+                return "password second time"
+            }
+
+            if uiElement == .authTextForButton {
+                return "Log in"
+            }
+
+            if uiElement == .sighUpTextForButton {
+                return "Sign up"
+            }
+
+            if uiElement == .errorPasswordLabel {
+                return "Argh! Passwords dont match:("
+            }
+
+            if uiElement == .alertControllerTitle {
+                return "Error!"
+            }
+
+            if uiElement == .alertControllerAuthError {
+                return "Login or password is wrong. Try again:)"
+            }
+
+            if uiElement == .alertControllerSignUpError {
+                return "Passwords dont match. Try again:)"
+            }
+
+            if uiElement == .alertControllerOKAction {
+                return "Ok"
+            }
+
+            if uiElement == .orLabelText {
+                return "or"
+            }
+            return ""
         }
     }
-}
 
-enum AlertControllerTitleType {
-    case registrationError
+    func chatsListViewController() -> (ChatsListViewControllerTexts) -> (String) {
+        return { [weak self] uiElement in
+            guard let self = self else { return "" }
+            if let text = self.config?.chatsListViewController[uiElement.rawValue] {
+                return text
+            }
 
-    var title: String {
-        switch self {
-        case .registrationError:
-            return "Error!"
+            if uiElement == .title {
+                return "Chat list"
+            }
+
+            return ""
         }
     }
-}
 
-enum AlertControllerSubtitleType {
-    case authError, registerError
+    func profileViewController() -> (ProfileViewControllerTexts) -> (String) {
+        return { [weak self] uiElement in
+            guard let self = self else { return "" }
+            if let text = self.config?.profileViewController[uiElement.rawValue] {
+                return text
+            }
 
-    var message: String {
-        switch self {
-        case .authError:
-            return "Login or password is wrong. Try again:)"
-        case .registerError:
-            return "Passwords dont match. Try again:)"
-        }
-    }
-}
+            if uiElement == .title {
+                return "Profile"
+            }
 
-enum AlertActionType: String {
-    case okAction = "Ok"
-}
-
-enum Text {
-    case navigationTitle(NavigationTitleType)
-    case button(ButtonTitleType)
-    case textfield(TextfieldType)
-    case alertControllerTitle(AlertControllerTitleType)
-    case alertControllerMessage(AlertControllerSubtitleType)
-    case alertAction(AlertActionType)
-    case passwordErrorLabel
-
-    var text: String {
-        switch self {
-        case .navigationTitle(let navigationTitleType):
-            return navigationTitleType.rawValue
-        case .button(let buttonType):
-            return buttonType.rawValue
-        case .textfield(let textfieldType):
-            return textfieldType.textFieldPlaceholder
-        case .alertControllerTitle(let alertControllerTitle):
-            return alertControllerTitle.title
-        case .alertControllerMessage(let alertControllerMessage):
-            return alertControllerMessage.message
-        case .alertAction(let alertAction):
-            return alertAction.rawValue
-        case .passwordErrorLabel:
-            return "Argh! Passwords dont match:("
+            return ""
         }
     }
 }

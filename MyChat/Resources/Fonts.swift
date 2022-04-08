@@ -7,37 +7,31 @@
 
 import UIKit
 
-enum ButtonFontType: String {
-    // RegisterViewController
-    case submitButton, changeStateButton
-}
-
-enum TextfieldFontType: String {
-    // RegisterViewController
-    case registerTextfield
-}
-
-enum LabelFontType: String {
-    // RegisterViewController
-    case registerErrorLabel
-}
-
 protocol FontsProtocol {
-    func buttons() -> (ButtonFontType) -> (UIFont)
-    func textfields() -> (TextfieldFontType) -> (UIFont)
-    func labels() -> (LabelFontType) -> (UIFont)
+    // Для каждого контроллера создается свой метод, который возвращает
+    // клоужер для локальной настройки
+    func registerViewController() -> (RegisterViewControllerFonts) -> (UIFont)
+    func chatsListViewController() -> (ChatsListViewControllerFonts) -> (UIFont)
+    func profileViewController() -> (ProfileViewControllerFonts) -> (UIFont)
 }
+
+/*
+ Класс для возможности удаленной настройки всех шрифтов в приложении
+ Обрабатывает удаленный конфиг AppFontsConfig, если он не nil, присваивает
+ стандартные значения. Все шрифты для приложения устанавливаются здесь
+ */
 
 final class Fonts {
-    // MARK: - Private Properties -
+
+    // MARK: Private Properties
     private var config: AppFontsConfig? // удаленный конфиг для настройки шрифтов
 
-    // MARK: - Init -
+    // MARK: Init
     init(config: AppFontsConfig?) {
         self.config = config
     }
 
-    // MARK: - Private Methods -
+    // MARK: Private Methods
     private func getBaseFont() -> UIFont {
         if let config = config {
             if let font = UIFont(name: config.baseFontName, size: 20) {
@@ -54,43 +48,65 @@ final class Fonts {
 
 extension Fonts: FontsProtocol {
 
-    // MARK: - Public Methods -
-    func buttons() -> (ButtonFontType) -> (UIFont) {
-        return { [weak self] buttonType in
+    // MARK: Public Methods
+    func registerViewController() -> (RegisterViewControllerFonts) -> (UIFont) {
+        return { [weak self] uiElement in
             guard let self = self else { return UIFont()}
-            if let buttonFontName = self.config?.buttonsFonts[buttonType.rawValue]?.fontName,
-               // buttonType.rawValue - название кнопки
-               let buttonFontSize = self.config?.buttonsFonts[buttonType.rawValue]?.fontSize,
-               let font = UIFont(name: buttonFontName,
-                                 size: buttonFontSize) {
+            if let fontName = self.config?.registerViewController[uiElement.rawValue]?.fontName,
+               // uiElement.rawValue - название ui элемента
+               let fontSize = self.config?.registerViewController[uiElement.rawValue]?.fontSize,
+               let font = UIFont(name: fontName,
+                                 size: fontSize) {
                 return font
-            } // TODO: Доделать стандартные кейсы с размерами
+            }
+
+            if uiElement == .registerOrLabel {
+                return UIFont(name: "Futura Medium", size: 24)!
+            }
+
+            if uiElement == .changeStateButton {
+                return UIFont(name: "Futura Medium", size: 14)!
+            }
+
+            if uiElement == .registerErrorLabel {
+                return UIFont(name: "Futura Medium", size: 14)!
+            }
+
+            if uiElement == .registerTextfield {
+                return UIFont(name: "Futura Medium", size: 16)!
+            }
+
+            if uiElement == .submitButton {
+                return UIFont(name: "Futura Medium", size: 20)!
+            }
             return self.getBaseFont()
         }
     }
 
-    func textfields() -> (TextfieldFontType) -> (UIFont) {
-        return { [weak self] textfieldFontType in
-            guard let self = self else { return UIFont() }
-            if let textfieldFontName = self.config?.textfieldsFonts[textfieldFontType.rawValue]?.fontName,
-               let textfieldFontSize = self.config?.textfieldsFonts[textfieldFontType.rawValue]?.fontSize,
-               let font = UIFont(name: textfieldFontName,
-                                 size: textfieldFontSize) {
+    func chatsListViewController() -> (ChatsListViewControllerFonts) -> (UIFont) {
+        return { [weak self] uiElement in
+            guard let self = self else { return UIFont()}
+            if let fontName = self.config?.chatsListViewController[uiElement.rawValue]?.fontName,
+               // uiElement.rawValue - название ui элемента
+               let fontSize = self.config?.chatsListViewController[uiElement.rawValue]?.fontSize,
+               let font = UIFont(name: fontName,
+                                 size: fontSize) {
                 return font
-            } // TODO: Доделать стандартные кейсы с размерами
+            }
             return self.getBaseFont()
         }
     }
 
-    func labels() -> (LabelFontType) -> (UIFont) {
-        return { [weak self] labelFontType in
-            guard let self = self else { return UIFont() }
-            if let labelFontName = self.config?.labelFonts[labelFontType.rawValue]?.fontName,
-               let labelFontSize = self.config?.labelFonts[labelFontType.rawValue]?.fontSize,
-               let font = UIFont(name: labelFontName,
-                                 size: labelFontSize) {
+    func profileViewController() -> (ProfileViewControllerFonts) -> (UIFont) {
+        return { [weak self] uiElement in
+            guard let self = self else { return UIFont()}
+            if let fontName = self.config?.profileViewController[uiElement.rawValue]?.fontName,
+               // uiElement.rawValue - название ui элемента
+               let fontSize = self.config?.profileViewController[uiElement.rawValue]?.fontSize,
+               let font = UIFont(name: fontName,
+                                 size: fontSize) {
                 return font
-            } // TODO: Доделать стандартные кейсы с размерами
+            }
             return self.getBaseFont()
         }
     }

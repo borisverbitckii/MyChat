@@ -7,32 +7,34 @@
 
 import RxSwift
 import AsyncDisplayKit
-
-// Все константы для верстки вынесены отдельно
-private enum RegisterViewLocalConstants {
-    // Текстфилды
-    static let textfieldsStackSpacing: CGFloat = 20
-    static let textfieldsSize = CGSize(width: 250,
-                                       height: 40)
-    static let textfieldsStackTopInset: CGFloat = 150
-    // Кнопки
-    static let buttonsSize = CGSize(width: 250,
-                                       height: 40)
-    // SafeAreaInsets
-    static let bottomInset: CGFloat = 32
-}
+import Foundation
 
 // swiftlint:disable:next type_body_length
 final class RegisterViewController: ASDKViewController<ASDisplayNode> {
-    // MARK: - Private properties -
-    private let uiElements = RegisterUIElements() // вынесенные UI элементы
+
+    // MARK: Private properties
+    private let uiElements: RegisterUI              // Вынесенные UI элементы
+    private let constants: RegisterConstants           // Все константы размеров
     private let viewModel: RegisterViewModelProtocol
     private let bag = DisposeBag()
-    private var isKeyboardShown = false           // чтобы убрать глюки появления/исчезновения клавиатуры
-    private var keyboardHeight: CGFloat = 0
 
-    // MARK: - Init -
-    init(registerViewModel: RegisterViewModelProtocol) {
+    private var isKeyboardShown = false                     // Чтобы убрать глюки появления/исчезновения клавиатуры
+    private var keyboardHeight: CGFloat = 0
+    private var isPhoneWithHomeButton: Bool {
+        UIApplication.shared.windows[0].safeAreaInsets.bottom  == 0
+    }
+
+    /* Переменные, чтобы исправить баг с прыгающим текстом в текстфилде,
+     когда включен isSecureTextEntry */
+    private var passwordText = ""
+    private var secondPasswordText = ""
+
+    // MARK: Init
+    init(uiElements: RegisterUI,
+         registerViewModel: RegisterViewModelProtocol,
+         constants: RegisterConstants) {
+        self.uiElements = uiElements
+        self.constants = constants
         self.viewModel = registerViewModel
         super.init(node: ASDisplayNode())
         self.node.automaticallyManagesSubnodes = true
@@ -46,7 +48,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     // MARK: - Override methods -
     override func viewDidLoad() {
         super.viewDidLoad()
-        node.backgroundColor = .gray
+        node.backgroundColor = .white
         bindUIElements()          // Бинд значений из вью модели напрямую в ui элементы
         subscribeToObservables()  // Основное взаимодействие с вьюмоделью
         addTargetsForButtons()    // Реализация тапов по кнопкам
@@ -67,18 +69,45 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     private func layout() -> ASLayoutSpecBlock? {
         return { [weak self] _, _ in
             guard let self = self else { return ASLayoutSpec() }
-            // Текстфилды
-            let textfieldsChildren = [self.uiElements.nameTextField,
+
+            // orLabel
+            let centerOrSpec = ASCenterLayoutSpec(centeringOptions: .XY,
+                                                  sizingOptions: [],
+                                                  child: self.uiElements.orLabel)
+
+            // Вертикальный стэк для филдов + orLabel + кнопки авторизации
+            var textfieldsChildren = [ASLayoutElement]()
+
+            switch self.viewModel.output.viewControllerState.value {
+            case .auth:
+                textfieldsChildren = [self.uiElements.nameTextField,
+                                      self.uiElements.passwordTestField,
+                                      centerOrSpec,
+                                      self.uiElements.authButtons]
+
+            case .register:
+                textfieldsChildren = [self.uiElements.nameTextField,
                                       self.uiElements.passwordTestField,
                                       self.uiElements.passwordSecondTimeTextfield]
+            }
 
-            let textfiledsVertivalStack = ASStackLayoutSpec()
-            textfiledsVertivalStack.direction = .vertical
-            textfiledsVertivalStack.spacing = RegisterViewLocalConstants.textfieldsStackSpacing
-            textfiledsVertivalStack.horizontalAlignment = .middle
-            textfiledsVertivalStack.children = textfieldsChildren
+            let vStack = ASStackLayoutSpec()
+            vStack.direction = .vertical
+            vStack.spacing = self.constants.textfieldsStackSpacing
+            vStack.horizontalAlignment = .middle
+            vStack.children = textfieldsChildren
 
-            textfieldsChildren.forEach { $0.style.preferredSize = RegisterViewLocalConstants.textfieldsSize }
+            for node in textfieldsChildren {
+                if let textfield = node as? TextFieldWithBottomBorderNode {
+                    textfield.textfield.style.preferredSize = self.constants.stackElementSize
+                    continue
+                }
+
+                node.style.preferredSize = self.constants.stackElementSize
+            }
+
+            let vStackCenterSpec = ASCenterLayoutSpec(centeringOptions: .XY,
+                                                      sizingOptions: [], child: vStack)
 
             // Кнопки + passwordsErrorLabel
             let labelCenterLayoutSpec = ASCenterLayoutSpec(centeringOptions: .XY,
@@ -94,21 +123,38 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             buttonsVerticalStack.horizontalAlignment = .middle
             buttonsVerticalStack.children = buttonsChildren
 
-            buttonsChildren.forEach { $0.style.preferredSize = RegisterViewLocalConstants.buttonsSize }
+            buttonsChildren.forEach { $0.style.preferredSize = self.constants.buttonsSize }
 
-            let textfieldsInsets = UIEdgeInsets(top: RegisterViewLocalConstants.textfieldsStackTopInset,
-                                                left: .infinity,
-                                                bottom: .infinity,
-                                                right: .infinity)
-            let textfieladInsetsSpec = ASInsetLayoutSpec(insets: textfieldsInsets,
-                                                         child: textfiledsVertivalStack)
+            var bottomInset = self.constants.bottomInsetForPhonesWithoutHomeButton
+
+            // Отступ для айфонов без home кнопки
+            if self.isPhoneWithHomeButton {
+                bottomInset = self.constants.bottomInsetForPhonesWithHomeButton
+            }
+
             var buttonsInsets: UIEdgeInsets?
-            let bottomInset = RegisterViewLocalConstants.bottomInset
+            var vStackTextfieldsInsets = UIEdgeInsets()
+
+            // Обработка появления клавиатуры
             if self.isKeyboardShown {
                 buttonsInsets = UIEdgeInsets(top: .infinity,
                                              left: .infinity,
                                              bottom: self.keyboardHeight + bottomInset ,
                                              right: .infinity)
+
+                if self.isPhoneWithHomeButton {
+                    vStackTextfieldsInsets = UIEdgeInsets(top: .infinity,
+                                                          left: .infinity,
+                                                          bottom: self.constants
+                        .textfieldsStackTopInsetForPhonesWithHomeButton,
+                                                          right: .infinity)
+                } else {
+                    vStackTextfieldsInsets = UIEdgeInsets(top: .infinity,
+                                                          left: .infinity,
+                                                          bottom: self.constants
+                        .textfieldsStackTopInsetForPhonesWithoutHomeButton,
+                                                          right: .infinity)
+                }
             } else {
                 buttonsInsets = UIEdgeInsets(top: .infinity,
                                              left: .infinity,
@@ -116,8 +162,12 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                                              right: .infinity)
             }
             guard let buttonsInsets = buttonsInsets else { return ASLayoutSpec() }
+
             let insetsButtonsSpec = ASInsetLayoutSpec(insets: buttonsInsets, child: buttonsVerticalStack)
-            let overlayButtonSpec = ASOverlayLayoutSpec(child: textfieladInsetsSpec, overlay: insetsButtonsSpec)
+            let vStackWithInsetsTextfieldsSpec = ASInsetLayoutSpec(insets: vStackTextfieldsInsets,
+                                                                   child: vStackCenterSpec)
+            let overlayButtonSpec = ASOverlayLayoutSpec(child: vStackWithInsetsTextfieldsSpec,
+                                                        overlay: insetsButtonsSpec)
 
             return overlayButtonSpec
         }
@@ -127,141 +177,184 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     private func bindUIElements() {
         // Бинд всех данных из вью модели в ui елементы
 
+        // viewController
+        viewModel.output.viewControllerBackgroundColor
+            .subscribe { [node] event in
+                node?.backgroundColor = event.element
+            }
+            .disposed(by: bag)
+
         // submitButton
         viewModel.output.submitButtonTitle
-            .subscribe { [weak self] event in
-                self?.uiElements.submitButton.setTitle(event.element?.title ?? "",
-                                                       with: event.element?.font,
-                                                       with: nil,
-                                                       for: .normal)
+            .subscribe { [uiElements] event in
+                uiElements.submitButton.setTitle(event.element?.title ?? "",
+                                                 with: event.element?.font,
+                                                 with: nil,
+                                                 for: .normal)
             }
             .disposed(by: bag)
 
         viewModel.output.submitButtonIsEnable // делает кнопку активной/не активной в таргете текстфилдов
-            .subscribe { [weak self] event in
-                self?.uiElements.submitButton.isEnabled = event.element ?? false
+            .subscribe { [uiElements] event in
+                uiElements.submitButton.isEnabled = event.element ?? false
             }
             .disposed(by: bag)
 
-        viewModel.output.submitButtonAlpha
-            .subscribe { [weak self] event in
-                guard let alpha = event.element else { return }
-                self?.uiElements.submitButton.alpha = alpha
+        viewModel.output.submitButtonColor
+            .subscribe { [uiElements, constants] event in
+                UIView.animate(withDuration: constants.animationDutation) {
+                    uiElements.submitButton.backgroundColor = event.element
+                }
             }
             .disposed(by: bag)
 
         // changeStateButton
         viewModel.output.changeStateButtonTitle
-            .subscribe { [weak self] event in
-                self?.uiElements.changeStateButton.setTitle(event.element?.title ?? "",
-                                                            with: event.element?.font,
-                                                            with: nil,
-                                                            for: .normal)
+            .subscribe { [uiElements] event in
+                uiElements.changeStateButton.setTitle(event.element?.title ?? "",
+                                                      with: event.element?.font,
+                                                      with: nil,
+                                                      for: .normal)
             }
             .disposed(by: bag)
 
         // Все текстфилды
         viewModel.output.textfieldsFont
-            .subscribe { [weak self] event in
-                self?.uiElements.nameTextField.font = event.element
-                self?.uiElements.passwordTestField.font = event.element
-                self?.uiElements.passwordSecondTimeTextfield.font = event.element
+            .subscribe { [uiElements] event in
+                [ uiElements.nameTextField,
+                  uiElements.passwordTestField,
+                  uiElements.passwordSecondTimeTextfield
+                ].forEach { $0.textfield.font = event.element }
             }
             .disposed(by: bag)
 
         // nameTextfield
         viewModel.output.nameTextfieldText
-            .subscribe { [weak self] event in
-                self?.uiElements.nameTextField.text = event.element as NSString?
+            .subscribe { [uiElements] event in
+                uiElements.nameTextField.textfield.text = event.element as NSString?
             }
             .disposed(by: bag)
 
         viewModel.output.nameTextfieldPlaceholder
-            .subscribe { [weak self] event in
-                self?.uiElements.nameTextField.placeholder = event.element as NSString?
+            .subscribe { [uiElements] event in
+                uiElements.nameTextField.textfield.placeholder = event.element as NSString?
             }.disposed(by: bag)
 
         // passwordTextfield
         viewModel.output.passwordTextfieldText
             .subscribe { [weak self] event in
-                self?.uiElements.passwordTestField.text = event.element as NSString?
+                self?.uiElements.passwordTestField.textfield.text = event.element as NSString?
+                self?.passwordText = ""
             }
             .disposed(by: bag)
 
         viewModel.output.passwordTextfieldPlaceholder
-            .subscribe { [weak self] event in
-                self?.uiElements.passwordTestField.placeholder = event.element as NSString?
+            .subscribe { [uiElements] event in
+                uiElements.passwordTestField.textfield.placeholder = event.element as NSString?
             }
             .disposed(by: bag)
 
         // secondPasswordTextfieldTex
         viewModel.output.secondPasswordTextfieldText
             .subscribe { [weak self] event in
-                self?.uiElements.passwordSecondTimeTextfield.text = event.element as? NSString
+                self?.uiElements.passwordSecondTimeTextfield.textfield.text = event.element as? NSString
+                self?.secondPasswordText = ""
             }
             .disposed(by: bag)
 
         viewModel.output.secondPasswordTextfieldPlaceholder
-            .subscribe { [weak self] event in
-                self?.uiElements.passwordSecondTimeTextfield.placeholder = event.element as NSString?
+            .subscribe { [uiElements] event in
+                uiElements.passwordSecondTimeTextfield.textfield.placeholder = event.element as NSString?
             }
             .disposed(by: bag)
 
         viewModel.output.secondPasswordTextfieldIsHidden
-            .subscribe { [weak self] event in
-                self?.uiElements.passwordSecondTimeTextfield.isHidden = event.element ?? false
+            .subscribe { [uiElements, constants] event in
+                if event.element == true {
+                    UIView.animate(withDuration: constants.animationDutation) {
+                        uiElements.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
+                    } completion: { _ in
+                        uiElements.passwordSecondTimeTextfield.isHidden = event.element ?? false
+                    }
+                } else {
+                    UIView.animate(withDuration: constants.animationDutation) {
+                        uiElements.passwordSecondTimeTextfield.isHidden = event.element ?? false
+                        uiElements.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
+                    }
+                }
             }
             .disposed(by: bag)
 
         // errorPasswordLabelText
         viewModel.output.errorPasswordLabel
-            .subscribe { [weak self] event in
+            .subscribe { [uiElements] event in
                 guard let text = event.element?.text,
                       let font = event.element?.font else { return }
                 let attributes = [NSAttributedString.Key.font: font]
                 let attributedStringText = NSAttributedString(string: text,
                                                               attributes: attributes)
-                self?.uiElements.passwordsErrorLabel.attributedText = attributedStringText
+                uiElements.passwordsErrorLabel.attributedText = attributedStringText
             }
             .disposed(by: bag)
 
         viewModel.output.errorPasswordLabelState
-            .subscribe { [weak self] event in
-                guard let isHidden = event.element else { return }
-                self?.uiElements.passwordsErrorLabel.isHidden = isHidden
+            .subscribe { [uiElements, constants] event in
+                if event.element == true {
+                    UIView.animate(withDuration: constants.animationDutation) {
+                        uiElements.passwordsErrorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
+                    } completion: { _ in
+                        uiElements.passwordsErrorLabel.isHidden = event.element ?? false
+                    }
+                } else {
+                    UIView.animate(withDuration: constants.animationDutation) {
+                        uiElements.passwordsErrorLabel.isHidden = event.element ?? false
+                        uiElements.passwordsErrorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
+                    }
+                }
             }
             .disposed(by: bag)
 
+        // orLabel
+        viewModel.output.orLabel
+            .subscribe { [uiElements] event in
+                guard let text = event.element?.text,
+                      let font = event.element?.font else { return }
+                let attributes = [NSAttributedString.Key.font: font]
+                let attributedStringText = NSAttributedString(string: text,
+                                                              attributes: attributes)
+                uiElements.orLabel.attributedText = attributedStringText
+            }
+            .disposed(by: bag)
     }
 
     private func subscribeToObservables() {
         // Подписка на все обсервабл
 
         /* Изменение состояния registerViewController
-
          Всего 2 состояния для контроллера: авторизация и регистрация
          - В зависимости от состояния мы либо показываем текст филд для дублирования пароля, или нет
          - Меняем текст в кнопке для смены состояния контроллера (самая нижняя)
          - Выключаем лейбл, который говорит о несовпадении паролей при регистрации
-         - ResignFirstResponder для текстфилдов при переключении состояния */
+         - ResignFirstResponder для текстфилдов при переключении состояния
+         */
 
         viewModel.output.viewControllerState
-            .subscribe { [weak self] _ in
-                self?.viewModel.input.secondTimeTextfieldIsHiddenToggle()
-                self?.viewModel.input.changeButtonsTitle()
-                self?.viewModel.input.disableErrorLabel()
+            .subscribe { [viewModel, uiElements] _ in
+                viewModel.input.secondTimeTextfieldIsHiddenToggle()
+                viewModel.input.changeButtonsTitle()
+                viewModel.input.disableErrorLabel()
 
-                [self?.uiElements.nameTextField,
-                 self?.uiElements.passwordTestField,
-                 self?.uiElements.passwordSecondTimeTextfield]
+                [uiElements.nameTextField,
+                 uiElements.passwordTestField,
+                 uiElements.passwordSecondTimeTextfield]
                     .forEach { $0?.resignFirstResponder()}
             }.disposed(by: bag)
 
         // Изменение состояния submitButton
         viewModel.output.submitButtonState
-            .subscribe { [weak self] _ in
-                self?.viewModel.input.submitButtonChangeIsEnable() // активирует/деактивирует кнопку
-                self?.viewModel.input.submitButtonChangeAlpha()    // меняет непрозрачность кнопки
+            .subscribe { [viewModel] _ in
+                viewModel.input.submitButtonChangeIsEnable() // активирует/деактивирует кнопку
+                viewModel.input.submitButtonChangeAlpha()    // меняет непрозрачность кнопки
                 // иметь в виду, что если кнопка прозрачная, то не обязательно она не активная
             }.disposed(by: bag)
     }
@@ -284,16 +377,18 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
          uiElements.passwordTestField,
          uiElements.passwordSecondTimeTextfield]
             .forEach {
-                $0.textField.addTarget(self,
-                                       action: #selector(textfieldTextDidChange),
-                                       for: .editingChanged)
+                $0.textfield
+                    .textField
+                    .addTarget(self,
+                               action: #selector(textfieldTextDidChange(sender:)),
+                               for: .editingChanged)
             }
     }
 
     private func setupDelegates() {
-        uiElements.nameTextField.delegate = self
-        uiElements.passwordTestField.delegate = self
-        uiElements.passwordSecondTimeTextfield.delegate = self
+        uiElements.nameTextField.textfield.delegate = self
+        uiElements.passwordTestField.textfield.delegate = self
+        uiElements.passwordSecondTimeTextfield.textfield.delegate = self
     }
 
     // Наблюдатели за появлением/исчезновением клавиатуры
@@ -308,6 +403,18 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                                                object: nil)
     }
 
+    // Валидация текстфилдов, чтобы активировать кнопку submitButton
+    @objc private func textfieldTextDidChange(sender: UITextField) {
+        let nameTextFieldText = uiElements.nameTextField.textfield.text as String
+
+        /* Проверяются поля для того, чтобы активировать кнопку submitButton или нет
+         А также включает/выключает лейбл, говорящий о том, что пароли при регистрации не совпадают */
+        self.viewModel.input.checkTextfields(
+            name: nameTextFieldText,
+            password: passwordText,
+            secondPassword: secondPasswordText)
+    }
+
     // MARK: - OBJC methods -
     // Реализация тапа кнопки submitButton
     @objc private func submitButtonTapped() {
@@ -316,23 +423,15 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
     // Реализация тапа кнопки changeStateButton
     @objc private func changeStateButtonTapped() {
+        // стираем заранее сохраненные пароли их текстфилдов
+        passwordText = ""
+        secondPasswordText = ""
+        // обновление вертикального стека, чтобы добавить 3ий филд или убрать orLabel
         viewModel.input.cleanTextfields() // отчищаются текстфилды
         viewModel.input.changeViewControllerState()
         // переключаем состояние контроллера между авторизацией и регистрацией
         viewModel.input.disableSubmitButton() // Отключаем submitButton
-    }
-
-    @objc private func textfieldTextDidChange() {
-        let nameTextFieldText = uiElements.nameTextField.text as String
-        let passwordTestFieldText = uiElements.passwordTestField.text as String
-        let passwordSecondTimeTextfieldText = uiElements.passwordSecondTimeTextfield.text as String
-
-        /* Проверяются поля для того, чтобы активировать кнопку submitButton или нет
-         А также включает/выключает лейбл, говорящий о том, что пароли при регистрации не совпадают */
-        self.viewModel.input.checkTextfields(
-            name: nameTextFieldText,
-            password: passwordTestFieldText,
-            secondPassword: passwordSecondTimeTextfieldText)
+        node.transitionLayout(withAnimation: true, shouldMeasureAsync: false) // обновляем лейаут
     }
 
     // Работа с показом клавиатуры
@@ -344,7 +443,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             let keyboardRectangle = keyboardFrameValue.cgRectValue
             let kbHeight = keyboardRectangle.height
             keyboardHeight = kbHeight
-            node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+            node.transitionLayout(withAnimation: true, shouldMeasureAsync: false) // обновляем лейаут
         }
     }
 
@@ -352,7 +451,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         if isKeyboardShown {
             isKeyboardShown = false
             keyboardHeight = 0
-            node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+            node.transitionLayout(withAnimation: true, shouldMeasureAsync: false) // обновляем лейаут
         }
     }
 }
@@ -367,13 +466,13 @@ extension RegisterViewController: UITextFieldDelegate {
             viewModel.input.presentTabBarController()
         case .disable:
             /*
-            Если кнопка submitButton не активна, определяем, какой текстфилд сделать респондером
-            (пример: выбираем 3 текстфилд, кликаем в клавиатуре continue,
-            респондером сделается тот филд, который самый верхний и не заполненный)
+             Если кнопка submitButton не активна, определяем, какой текстфилд сделать респондером
+             (пример: выбираем 3 текстфилд, кликаем в клавиатуре continue,
+             респондером сделается тот филд, который самый верхний и не заполненный)
              */
-            let nameTF = uiElements.nameTextField
-            let passwordTF = uiElements.passwordTestField
-            let secondPasswordTF = uiElements.passwordSecondTimeTextfield
+            let nameTF = uiElements.nameTextField.textfield
+            let passwordTF = uiElements.passwordTestField.textfield
+            let secondPasswordTF = uiElements.passwordSecondTimeTextfield.textfield
 
             viewModel.input
                 .becomeFirstResponderOrClearOffTextfields(nameTextField: nameTF,
@@ -383,4 +482,60 @@ extension RegisterViewController: UITextFieldDelegate {
         }
         return true
     }
-}
+
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+
+        if  textField == uiElements.passwordTestField.textfield.textField ||
+                textField == uiElements.passwordSecondTimeTextfield.textfield.textField {
+            return savePasswordFromTextfieldBeforeReplacementWithDot(string: string,
+                                                                     range: range,
+                                                                     textfield: textField)
+        }
+        return true
+    }
+
+    /* Метод для того, чтобы сохранить пароль из текстфилдов и заменить символы
+     на точки( исправления бага с isSecureTextEntry, когда текст прыгает при стирании с кастомным ширфтом)
+     Работает вместе с textfieldTextDidChange(sender:) */
+
+    private func savePasswordFromTextfieldBeforeReplacementWithDot(string: String,
+                                                                   range: NSRange,
+                                                                   textfield: UITextField) -> Bool {
+        var hashPassword = String()
+        let newChar = string.first
+
+        if textfield == uiElements.passwordTestField.textfield.textField {
+            let offsetToUpdate = passwordText.index(passwordText.startIndex, offsetBy: range.location)
+
+            if string == "" {
+                passwordText.remove(at: offsetToUpdate)
+                textfieldTextDidChange(sender: textfield)
+                return true
+            } else {
+                passwordText.insert(newChar!, at: offsetToUpdate)
+            }
+
+            for _ in 0..<passwordText.count {  hashPassword += "\u{2022}" }
+            textfield.text = hashPassword
+            textfieldTextDidChange(sender: textfield)
+        } else if textfield == uiElements.passwordSecondTimeTextfield.textfield.textField {
+            let offsetToUpdate = secondPasswordText.index(secondPasswordText.startIndex, offsetBy: range.location)
+
+            if string == "" {
+                secondPasswordText.remove(at: offsetToUpdate)
+                textfieldTextDidChange(sender: textfield)
+                return true
+            } else {
+                secondPasswordText.insert(newChar!, at: offsetToUpdate)
+            }
+
+            for _ in 0..<secondPasswordText.count {  hashPassword += "\u{2022}" }
+            textfield.text = hashPassword
+            textfieldTextDidChange(sender: textfield)
+        }
+
+        return false
+    }
+} // swiftlint:disable:this file_length

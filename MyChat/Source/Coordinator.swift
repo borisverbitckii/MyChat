@@ -35,10 +35,11 @@ extension Coordinator: CoordinatorProtocol {
     }
 
     func presentTabBarViewController(showSplash: Bool) {
-        // В зависимости от showSplash решается, будет ли показан splash для проверки авторизаци
-        // Устанавливается в appAssembly и в RegisterViewModel
-        // В первом случае по дефолту сплеш показывается, так как сразу шлет на табБарКонтроллер
-        // Во втором случае сплеш не показывается, так как попадаем с модуля регистрации/авторизации
+        /* В зависимости от showSplash решается, будет ли показан splash для проверки авторизаци
+           Устанавливается в appAssembly и в RegisterViewModel
+           В первом случае по дефолту сплеш показывается, так как сразу шлет на табБарКонтроллер
+           Во втором случае сплеш не показывается, так как попадаем с модуля регистрации/авторизации */
+
         guard let window = window else { return }
         window.rootViewController = moduleFactory?.getTabBarController(showSplash: showSplash)
         window.makeKeyAndVisible()

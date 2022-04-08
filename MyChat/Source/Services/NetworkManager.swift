@@ -7,7 +7,11 @@
 
 import Foundation
 
-protocol NetworkManagerProtocol {
+protocol NetworkManagerProtocol: NetworkManagerChatListProtocol {
+
+}
+
+protocol NetworkManagerChatListProtocol {
 
 }
 
@@ -17,5 +21,10 @@ final class NetworkManager {
 
 // MARK: - extension + NetworkManagerProtocol
 extension NetworkManager: NetworkManagerProtocol {
+
+}
+
+// MARK: - extension + NetworkManagerСontactListProtocol
+extension NetworkManager: NetworkManagerChatListProtocol {
 
 }

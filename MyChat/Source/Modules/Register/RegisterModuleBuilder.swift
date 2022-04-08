@@ -10,11 +10,19 @@ import UIKit
 final class RegisterModuleBuilder {
     func build(coordinator: CoordinatorProtocol,
                authManager: AuthManagerProtocol,
-               fonts: FontsProtocol) -> RegisterViewController {
+               fonts: @escaping (RegisterViewControllerFonts) -> UIFont,
+               texts: @escaping  (RegisterViewControllerTexts) -> String,
+               palette: @escaping (RegisterViewControllerPalette) -> UIColor) -> RegisterViewController {
+
+        let uiElements = RegisterUI(palette: palette)
         let viewModel = RegisterViewModel(coordinator: coordinator,
                                           authManager: authManager,
-                                          fonts: fonts)
-        let viewController = RegisterViewController(registerViewModel: viewModel)
+                                          fonts: fonts,
+                                          texts: texts,
+                                          palette: palette)
+        let viewController = RegisterViewController(uiElements: uiElements,
+                                                    registerViewModel: viewModel,
+                                                    constants: RegisterConstants())
         return viewController
     }
 }
