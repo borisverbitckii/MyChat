@@ -24,13 +24,21 @@ enum AlertControllerType {
         - onlyPasswordsFields - для того, чтобы вывести "пароли не совпадают" */
 }
 
+// Для определения, по какой кнопке совершена попытка авторизации
+enum RegisterAuthButtonType {
+    case googleButton, appleButton, facebookButton, submitButtonOrReturnButton
+}
+
 protocol RegisterViewModelProtocol {
     var input: RegisterViewModelInput { get }
     var output: RegisterViewModelOutput { get }
 }
 
 protocol RegisterViewModelInput {
-    func presentTabBarController()
+    func presentTabBarController(withUsername username: String?,
+                                 password: String?,
+                                 sourceButtonType: RegisterAuthButtonType,
+                                 presenter: UIViewController?)
     func checkTextfields(name: String?,
                          password: String?,
                          secondPassword: String?)
@@ -38,7 +46,7 @@ protocol RegisterViewModelInput {
     func becomeFirstResponderOrClearOffTextfields(nameTextField: ASTextFieldNode,
                                                   passwordTestField: ASTextFieldNode,
                                                   passwordSecondTimeTextfield: ASTextFieldNode,
-                                                  presenter: UIViewController)
+                                                  presenter: TransitionHandler)
     func submitButtonChangeIsEnable()        // Включение/выключение кнопки submitButton
     func submitButtonChangeAlpha()           // Прозрачность кнопки
     func disableSubmitButton()               // Выключение кнопки submitButton
@@ -83,7 +91,7 @@ protocol RegisterViewModelOutput {
 
 final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutput {
 
-    // MARK: - Public properties
+    // MARK: Public properties
     var input: RegisterViewModelInput { return self }
     var output: RegisterViewModelOutput { return self }
 
@@ -115,16 +123,17 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
     // orLabel
     var orLabel: BehaviorRelay<(text: String, font: UIFont)>
 
-    // MARK: - Private properties
+    // MARK: Private properties
+    private let dispodeBag = DisposeBag()
     private let coordinator: CoordinatorProtocol                    // Для флоу между контролллерами
-    private let authManager: AuthManagerProtocol                    // Менеджер для регистрации/авторизации
+    private let authManager: AuthManagerRegisterProtocol                    // Менеджер для регистрации/авторизации
     private let fonts: (RegisterViewControllerFonts) -> UIFont      // Для применения шрифтов
     private let texts: (RegisterViewControllerTexts) -> String      // Для установки всех текстов
     private let palette: (RegisterViewControllerPalette) -> UIColor // Для установки цветов
 
-    // MARK: - Init
+    // MARK: Init
     init(coordinator: CoordinatorProtocol,
-         authManager: AuthManagerProtocol,
+         authManager: AuthManagerRegisterProtocol,
          fonts: @escaping (RegisterViewControllerFonts) -> UIFont,
          texts: @escaping (RegisterViewControllerTexts) -> String,
          palette: @escaping (RegisterViewControllerPalette) -> UIColor) {
@@ -182,16 +191,54 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
                                                     (text: orLabelText,
                                                      font: orLabelFont))
     }
-
 }
 
 // MARK: - RegisterViewModel + RegisterViewModelInput -
 extension RegisterViewModel: RegisterViewModelInput {
 
-    // MARK: - Public Methods -
-    func presentTabBarController() {
-        if submitButtonState.value == .enable {
-            coordinator.presentTabBarViewController(showSplash: false)
+    // MARK: Public Methods
+    func presentTabBarController(withUsername username: String?,
+                                 password: String?,
+                                 sourceButtonType: RegisterAuthButtonType,
+                                 presenter: UIViewController?) {
+
+        switch viewControllerState.value {
+        case .auth:
+            switch sourceButtonType {
+            case .googleButton:
+                if let presenter = presenter {
+                    authManager.sighInWithGoogle(presenterVC: presenter)
+                        .subscribe { [coordinator] authResult in
+                            switch authResult {
+                            case .success(let auth):
+                                coordinator.presentTabBarViewController(withUser: auth?.user, showSplash: false)
+                            case .failure(let error):
+                                print(error) // TODO: Обработать ошибки
+                            }
+                        }.disposed(by: dispodeBag)
+                }
+            case .appleButton: break
+            case .facebookButton: break
+            case .submitButtonOrReturnButton:
+                guard let username = username, let password = password else { return }
+                authManager.signIn(withEmail: username, password: password)
+                    .subscribe { [coordinator] authResult in
+                        coordinator.presentTabBarViewController(withUser: authResult?.user, showSplash: false)
+                    } onFailure: { error in
+                        print(error) // TODO: Обработать ошибки
+                    }
+                    .disposed(by: dispodeBag)
+            }
+
+        case .register:
+            guard let username = username, let password = password else { return }
+            authManager.createUser(withEmail: username, password: password)
+                .subscribe { [coordinator] authResult in
+                    coordinator.presentTabBarViewController(withUser: authResult?.user, showSplash: false)
+                } onFailure: { error in
+                    print(error)
+                }
+                .disposed(by: dispodeBag)
         }
     }
 
@@ -226,7 +273,7 @@ extension RegisterViewModel: RegisterViewModelInput {
     func becomeFirstResponderOrClearOffTextfields(nameTextField: ASTextFieldNode,
                                                   passwordTestField: ASTextFieldNode,
                                                   passwordSecondTimeTextfield: ASTextFieldNode,
-                                                  presenter: UIViewController) {
+                                                  presenter: TransitionHandler) {
 
         if nameTextField.text != ""
             && passwordTestField.text != ""
@@ -235,8 +282,9 @@ extension RegisterViewModel: RegisterViewModelInput {
             passwordTestField.textField.becomeFirstResponder()
             // в случае, если пароли не совпадают при регистрации,
             // респондером становится текст филд с паролем, а не филд с его дублированием
-            presenter.present(generateAlertController(type: .onlyPasswordsFields),
-                              animated: true) // алертКонтроллер с ошибкой
+            presenter.presentViewController(viewController: generateAlertController(type: .onlyPasswordsFields),
+                                            animated: true,
+                                            completion: nil) // алертКонтроллер с ошибкой
             errorPasswordLabelState.accept(true) // true == isHidden
             cleanPasswordsTextfields()
         } else {
@@ -319,7 +367,7 @@ extension RegisterViewModel: RegisterViewModelInput {
     }
 
     // MARK: - Private Methods -
-    @discardableResult private func generateAlertController(type: AlertControllerType) -> UIAlertController {
+    private func generateAlertController(type: AlertControllerType) -> UIAlertController {
 
         let alertControllerTitle = texts(.alertControllerTitle)
         let alertController = UIAlertController(title: alertControllerTitle,

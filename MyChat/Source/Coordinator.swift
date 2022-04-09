@@ -5,15 +5,16 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import Foundation
 import UIKit
+import FirebaseAuth
 
 protocol CoordinatorProtocol: AnyObject {
     func injectWindow(window: UIWindow)
     func injectModuleFactory(moduleFactory: ModuleFactory)
 
-    func presentTabBarViewController(showSplash: Bool)
+    func presentTabBarViewController(withUser user: User?, showSplash: Bool)
     func presentSplashViewController(transitionHandler: TransitionHandler)
+    func presentRegisterViewController()
 }
 
 final class Coordinator {
@@ -34,7 +35,7 @@ extension Coordinator: CoordinatorProtocol {
         self.moduleFactory = moduleFactory
     }
 
-    func presentTabBarViewController(showSplash: Bool) {
+    func presentTabBarViewController(withUser user: User?, showSplash: Bool) {
         /* В зависимости от showSplash решается, будет ли показан splash для проверки авторизаци
            Устанавливается в appAssembly и в RegisterViewModel
            В первом случае по дефолту сплеш показывается, так как сразу шлет на табБарКонтроллер

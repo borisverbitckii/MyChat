@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ManagerFactoryProtocol {
-    func getAuthManager() -> AuthManagerProtocol
+    func getAuthManager() -> AuthManager
     func getNetworkManager() -> NetworkManagerProtocol
     func getStorageManager() -> StorageManagerProtocol
 }
@@ -31,7 +31,7 @@ extension ManagerFactory: ManagerFactoryProtocol {
         storageManager
     }
 
-    func getAuthManager() -> AuthManagerProtocol {
+    func getAuthManager() -> AuthManager {
         authManager
     }
 }

@@ -369,6 +369,21 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         uiElements.changeStateButton.addTarget(self,
                                                action: #selector(changeStateButtonTapped),
                                                forControlEvents: .touchUpInside)
+
+        // Авторизация через google
+        uiElements.authButtons.googleButton.addTarget(self,
+                                                      action: #selector(googleSignInButtonTapped),
+                                                      forControlEvents: .touchUpInside)
+
+        // Авторизация через apple
+        uiElements.authButtons.appleButton.addTarget(self,
+                                                      action: #selector(appleSignInButtonTapped),
+                                                      forControlEvents: .touchUpInside)
+
+        // Авторизация через facebook
+        uiElements.authButtons.facebookButton.addTarget(self,
+                                                      action: #selector(facebookSignInButtonTapped),
+                                                      forControlEvents: .touchUpInside)
     }
 
     private func addTargetsForTextfields() {
@@ -418,7 +433,30 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     // MARK: - OBJC methods -
     // Реализация тапа кнопки submitButton
     @objc private func submitButtonTapped() {
-        viewModel.input.presentTabBarController()
+        let username = uiElements.nameTextField.textfield.text as String
+        viewModel.input.presentTabBarController(withUsername: username,
+                                                password: passwordText,
+                                                sourceButtonType: .submitButtonOrReturnButton,
+                                                presenter: self)
+    }
+
+    @objc private func googleSignInButtonTapped() {
+        viewModel.input.presentTabBarController(withUsername: nil,
+                                                password: nil,
+                                                sourceButtonType: .googleButton,
+                                                presenter: self)
+    }
+    @objc private func appleSignInButtonTapped() {
+        viewModel.input.presentTabBarController(withUsername: nil,
+                                                password: nil,
+                                                sourceButtonType: .appleButton,
+                                                presenter: self)
+    }
+    @objc private func facebookSignInButtonTapped() {
+        viewModel.input.presentTabBarController(withUsername: nil,
+                                                password: nil,
+                                                sourceButtonType: .facebookButton,
+                                                presenter: self)
     }
 
     // Реализация тапа кнопки changeStateButton
@@ -463,7 +501,10 @@ extension RegisterViewController: UITextFieldDelegate {
         // Если кнопка submitButton активна, перекидываем на tabBarController
         switch viewModel.output.submitButtonState.value {
         case .enable:
-            viewModel.input.presentTabBarController()
+            viewModel.input.presentTabBarController(withUsername: uiElements.nameTextField.textfield.text as String,
+                                                    password: passwordText,
+                                                    sourceButtonType: .submitButtonOrReturnButton,
+                                                    presenter: self)
         case .disable:
             /*
              Если кнопка submitButton не активна, определяем, какой текстфилд сделать респондером

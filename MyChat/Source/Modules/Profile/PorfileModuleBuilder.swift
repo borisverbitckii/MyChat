@@ -11,7 +11,8 @@ final class ProfileModuleBuilder {
 
     func build(managerFactory: ManagerFactoryProtocol,
                coordinator: CoordinatorProtocol) -> UINavigationController {
-        let viewModel = ProfileViewModel(coordinator: coordinator)
+        let viewModel = ProfileViewModel(coordinator: coordinator,
+                                         authManager: managerFactory.getAuthManager())
         let viewController = ProfileViewController(profileViewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.tabBarItem = UITabBarItem(title: "Pofile",

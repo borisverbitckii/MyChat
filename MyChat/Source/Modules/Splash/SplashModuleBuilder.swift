@@ -13,7 +13,7 @@ final class SplashModuleBuilder {
         let authManager = managerFactory.getAuthManager()
         let viewModel = SplashViewModel(coordinator: coordinator,
                                         authManager: authManager)
-        let viewController = SplashViewController(splashViewModel: viewModel)
+        let viewController = SplashViewController(viewModel: viewModel)
         return viewController
     }
 }

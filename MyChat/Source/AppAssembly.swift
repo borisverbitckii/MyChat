@@ -55,13 +55,13 @@ final class AppAssembly {
                                           resource: resource)
         coordinator.injectModuleFactory(moduleFactory: moduleFactory)
 
-        //        if UserDefaults.standard.value(forKey: UserDefaultsKey.firstTimeLoad.rawValue) == nil {
-        //            UserDefaults.standard.set(true, forKey: UserDefaultsKey.firstTimeLoad.rawValue)
-        coordinator.presentRegisterViewController()
-        //            return
-        //        }
-        //
-        //        coordinator.presentTabBarViewController(showSplash: true)
+        if UserDefaults.standard.value(forKey: UserDefaultsKey.firstTimeLoad.rawValue) == nil {
+            UserDefaults.standard.set(true, forKey: UserDefaultsKey.firstTimeLoad.rawValue)
+            coordinator.presentRegisterViewController()
+            return
+        }
+        
+        coordinator.presentTabBarViewController(withUser: nil, showSplash: true)
 
         singleDispose?.dispose()
     }

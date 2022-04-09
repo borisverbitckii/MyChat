@@ -10,7 +10,7 @@ import UIKit
 final class ProfileViewController: UIViewController {
 
     // MARK: - Private properties
-    private let profileViewModel: ProfileViewModelProtocol
+    private let viewModel: ProfileViewModelProtocol
 
     // UIElements
     private let avatar: UIImageView = {
@@ -23,7 +23,7 @@ final class ProfileViewController: UIViewController {
 
     // MARK: - Init
     init(profileViewModel: ProfileViewModelProtocol) {
-        self.profileViewModel = profileViewModel
+        self.viewModel = profileViewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,11 +36,19 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupNavigationBar()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close,
+                                                            target: self,
+                                                            action: #selector(logOutButtonPressed))
     }
 
     // MARK: - Private methods
     private func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "Profile" // TODO: - Исправить с ремоут текста -
+    }
+
+    // MARK: OBJC methods
+    @objc private func logOutButtonPressed() {
+        viewModel.input.signOut()
     }
 }

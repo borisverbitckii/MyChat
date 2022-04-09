@@ -9,7 +9,7 @@ import UIKit
 
 final class RegisterModuleBuilder {
     func build(coordinator: CoordinatorProtocol,
-               authManager: AuthManagerProtocol,
+               authManager: AuthManagerRegisterProtocol,
                fonts: @escaping (RegisterViewControllerFonts) -> UIFont,
                texts: @escaping  (RegisterViewControllerTexts) -> String,
                palette: @escaping (RegisterViewControllerPalette) -> UIColor) -> RegisterViewController {

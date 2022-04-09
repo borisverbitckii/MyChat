@@ -9,10 +9,14 @@ import AsyncDisplayKit
 
 final class AuthButtonsNode: ASDisplayNode {
 
+    let googleButton = ASButtonNode()
+    let appleButton = ASButtonNode()
+    let facebookButton = ASButtonNode()
+
     // MARK: Ovveride methods
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
 
-        let buttons = [ASButtonNode(), ASButtonNode(), ASButtonNode()]
+        let buttons = [googleButton, appleButton, facebookButton]
         buttons.forEach { $0.backgroundColor = .gray.withAlphaComponent(0.15) }
         buttons.forEach { $0.style.preferredSize = CGSize(width: 40, height: 40)}
 
