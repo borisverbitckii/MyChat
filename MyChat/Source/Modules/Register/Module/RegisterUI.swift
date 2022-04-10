@@ -6,6 +6,7 @@
 //
 
 import AsyncDisplayKit
+import UI
 
 final class RegisterUI {
 

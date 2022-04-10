@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Services
 
 protocol ManagerFactoryProtocol {
     func getAuthManager() -> AuthManager

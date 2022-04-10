@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Models
 
 protocol FontsProtocol {
     // Для каждого контроллера создается свой метод, который возвращает

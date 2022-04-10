@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Services
 
 final class RegisterModuleBuilder {
     func build(coordinator: CoordinatorProtocol,

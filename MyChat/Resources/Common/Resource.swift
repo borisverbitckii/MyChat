@@ -5,6 +5,8 @@
 //  Created by Boris Verbitsky on 07.04.2022.
 //
 
+import Models
+
 protocol ResourceProtocol {
     var fonts: FontsProtocol { get }
     var texts: TextProtocol { get }

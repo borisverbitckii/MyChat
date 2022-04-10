@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import Services
 
 enum ProfileViewControllerState {
     case normal, edit

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Models
 
 protocol PaletteProtocol {
     // Для каждого контроллера создается свой метод, который возвращает

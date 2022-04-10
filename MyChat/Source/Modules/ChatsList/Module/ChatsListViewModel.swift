@@ -6,7 +6,8 @@
 //
 
 import RxRelay
-import CoreAudio
+import Models
+import Services
 
 protocol ChatsListViewModelProtocol {
     var input: ChatsListViewModelInput { get }

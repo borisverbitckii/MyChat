@@ -8,6 +8,7 @@
 import RxRelay
 import RxSwift
 import AsyncDisplayKit
+import Services
 
 enum RegisterViewControllerState {
     case auth, register // состояния контроллера, чтобы отображать вид авторизации или регистрации
