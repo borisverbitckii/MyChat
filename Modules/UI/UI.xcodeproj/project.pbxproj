@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		867141BE518915C572E1C42E /* Pods_UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 25DA6A414AE407B16175167E /* Pods_UI.framework */; };
+		29A8BA647FB72AF14E76645E /* Pods_UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC1421DAECEE3EDD8FBF0F2 /* Pods_UI.framework */; };
 		D73FD4EB2801D87B00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; };
 		D73FD4EC2801D87B00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7708ED528032AC900D1E41D /* TextFieldWithBottomBorderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */; };
@@ -35,7 +35,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		25DA6A414AE407B16175167E /* Pods_UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		37F14DE98C1685B99A9BBA6B /* Pods-UI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.release.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.release.xcconfig"; sourceTree = "<group>"; };
 		B9CED2F57CCA7B34EC73A333 /* Pods-UI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.debug.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.debug.xcconfig"; sourceTree = "<group>"; };
 		D73FD4C22801D67800912D46 /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,6 +47,7 @@
 		D7708ED328032AC900D1E41D /* ASTextFieldNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTextFieldNode.h; sourceTree = "<group>"; };
 		D7708ED428032AC900D1E41D /* ASTextFieldNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASTextFieldNode.m; sourceTree = "<group>"; };
 		D7708EDD28032DFE00D1E41D /* UI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UI.h; sourceTree = "<group>"; };
+		FAC1421DAECEE3EDD8FBF0F2 /* Pods_UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +56,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D73FD4EB2801D87B00912D46 /* Models.framework in Frameworks */,
-				867141BE518915C572E1C42E /* Pods_UI.framework in Frameworks */,
+				29A8BA647FB72AF14E76645E /* Pods_UI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				D73FD4EA2801D87B00912D46 /* Models.framework */,
-				25DA6A414AE407B16175167E /* Pods_UI.framework */,
+				FAC1421DAECEE3EDD8FBF0F2 /* Pods_UI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -104,19 +104,11 @@
 		D7708EC928032AC900D1E41D /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
-				D7708ECB28032AC900D1E41D /* RegisterViewControllerViews */,
 				D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */,
 				D7708ECC28032AC900D1E41D /* ChatCellNode.swift */,
 				D7708ECD28032AC900D1E41D /* AuthButtonsNode.swift */,
 			);
 			path = Nodes;
-			sourceTree = "<group>";
-		};
-		D7708ECB28032AC900D1E41D /* RegisterViewControllerViews */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = RegisterViewControllerViews;
 			sourceTree = "<group>";
 		};
 		D7708ECE28032AC900D1E41D /* Objective-C */ = {

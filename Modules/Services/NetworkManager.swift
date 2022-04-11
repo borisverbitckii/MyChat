@@ -5,8 +5,6 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import Foundation
-
 public protocol NetworkManagerProtocol: NetworkManagerChatListProtocol {
 
 }

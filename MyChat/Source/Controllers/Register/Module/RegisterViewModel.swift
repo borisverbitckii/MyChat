@@ -27,7 +27,7 @@ enum AlertControllerType {
 
 // Для определения, по какой кнопке совершена попытка авторизации
 enum RegisterAuthButtonType {
-    case googleButton, appleButton, facebookButton, submitButtonOrReturnButton
+    case googleButton, facebookButton, submitButtonOrReturnButton
 }
 
 protocol RegisterViewModelProtocol {
@@ -125,9 +125,9 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
     var orLabel: BehaviorRelay<(text: String, font: UIFont)>
 
     // MARK: Private properties
-    private let dispodeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     private let coordinator: CoordinatorProtocol                    // Для флоу между контролллерами
-    private let authManager: AuthManagerRegisterProtocol                    // Менеджер для регистрации/авторизации
+    private let authManager: AuthManagerRegisterProtocol            // Менеджер для регистрации/авторизации
     private let fonts: (RegisterViewControllerFonts) -> UIFont      // Для применения шрифтов
     private let texts: (RegisterViewControllerTexts) -> String      // Для установки всех текстов
     private let palette: (RegisterViewControllerPalette) -> UIColor // Для установки цветов
@@ -208,27 +208,46 @@ extension RegisterViewModel: RegisterViewModelInput {
             switch sourceButtonType {
             case .googleButton:
                 if let presenter = presenter {
-                    authManager.sighInWithGoogle(presenterVC: presenter)
+                    authManager.signInWithGoogle(presenterVC: presenter)
                         .subscribe { [coordinator] authResult in
                             switch authResult {
                             case .success(let auth):
-                                coordinator.presentTabBarViewController(withUser: auth?.user, showSplash: false)
+                                coordinator.presentTabBarViewController(withUser: auth?.user,
+                                                                        showSplash: false)
                             case .failure(let error):
                                 print(error) // TODO: Обработать ошибки
                             }
-                        }.disposed(by: dispodeBag)
+                        } // TODO: Обработать ошибки для onFailure
+                        .disposed(by: disposeBag)
                 }
-            case .appleButton: break
-            case .facebookButton: break
+            case .facebookButton:
+                if let presenter = presenter {
+                    authManager.signInWithFacebook(presenterVC: presenter)
+                        .subscribe { [coordinator] authResult in
+                            switch authResult {
+                            case .success(let auth):
+                                coordinator.presentTabBarViewController(withUser: auth?.user,
+                                                                        showSplash: false)
+                            case .failure(let error):
+                                print(error) // TODO: Обработать ошибки
+                            }
+                        } // TODO: Обработать ошибки для onFailure
+                        .disposed(by: disposeBag)
+                }
             case .submitButtonOrReturnButton:
                 guard let username = username, let password = password else { return }
+
                 authManager.signIn(withEmail: username, password: password)
                     .subscribe { [coordinator] authResult in
-                        coordinator.presentTabBarViewController(withUser: authResult?.user, showSplash: false)
-                    } onFailure: { error in
-                        print(error) // TODO: Обработать ошибки
+                        switch authResult {
+                        case .success(let auth):
+                            coordinator.presentTabBarViewController(withUser: auth?.user,
+                                                                    showSplash: false)
+                        case .failure(let error):
+                            print(error) // TODO: Обработать ошибки
+                        }
                     }
-                    .disposed(by: dispodeBag)
+                    .disposed(by: disposeBag)
             }
 
         case .register:
@@ -239,7 +258,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                 } onFailure: { error in
                     print(error)
                 }
-                .disposed(by: dispodeBag)
+                .disposed(by: disposeBag)
         }
     }
 

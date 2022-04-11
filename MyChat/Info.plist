@@ -10,8 +10,15 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.236565682646-3k7l6i9092tgd9q1vc55b74n191eq5pc</string>
+				<string>fb274726851530866</string>
 			</array>
 		</dict>
 	</array>
+	<key>FacebookAppID</key>
+	<string>274726851530866</string>
+	<key>FacebookClientToken</key>
+	<string>43bed41f8de7537a671b9e66a9d851d1</string>
+	<key>FacebookDisplayName</key>
+	<string>myChat</string>
 </dict>
 </plist>

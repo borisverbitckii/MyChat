@@ -5,10 +5,10 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import Firebase
-import FirebaseAuth
 import RxSwift
+import Firebase
 import GoogleSignIn
+import FBSDKLoginKit
 
 public protocol AuthManagerSplashProtocol { // для SplashViewController
     func checkIsUserAlreadyLoginedIn() -> Single<(isLoginedIn: Bool, user: User?)>
@@ -18,7 +18,8 @@ public protocol AuthManagerRegisterProtocol {       // для RegisterViewContro
     func createUser(withEmail email: String, password: String) -> Single<AuthDataResult?>
     func signIn(withEmail email: String,
                 password: String) -> Single<AuthDataResult?>
-    func sighInWithGoogle(presenterVC: UIViewController) -> Single<AuthDataResult?>
+    func signInWithFacebook(presenterVC: UIViewController) -> Single<AuthDataResult?>
+    func signInWithGoogle(presenterVC: UIViewController) -> Single<AuthDataResult?>
     func signOut() -> Single<Any?>
 }
 
@@ -57,7 +58,6 @@ extension AuthManager: AuthManagerRegisterProtocol {
 
     public func createUser(withEmail email: String, password: String) -> Single<AuthDataResult?> {
         Single<AuthDataResult?>.create { [auth] observer in
-
             auth.createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error {
                     observer(.failure(error))
@@ -71,12 +71,13 @@ extension AuthManager: AuthManagerRegisterProtocol {
     }
 
     public func signIn(withEmail email: String,
-                password: String) -> Single<AuthDataResult?> {
+                       password: String) -> Single<AuthDataResult?> {
         Single<AuthDataResult?>.create { [auth] observer in
             auth.signIn(withEmail: email,
-                               password: password) { authResult, error in
+                        password: password) { authResult, error in
                 if let error = error {
                     observer(.failure(error))
+                    return
                 }
                 observer(.success(authResult))
             }
@@ -84,7 +85,40 @@ extension AuthManager: AuthManagerRegisterProtocol {
         }
     }
 
-    public func sighInWithGoogle(presenterVC: UIViewController) -> Single<AuthDataResult?> {
+    public func signInWithFacebook(presenterVC: UIViewController) -> Single<AuthDataResult?> {
+        return Single<AuthDataResult?>.create { observer in
+            let fbLoginManager = LoginManager()
+            fbLoginManager.logIn(permissions: [], from: presenterVC) { result, error in
+                if let error = error {
+                    observer(.failure(error))
+                    return
+                }
+
+                if let result = result {
+                    if result.isCancelled {
+                        return
+                    }
+
+                    let credential = FacebookAuthProvider
+                        .credential(withAccessToken: AccessToken.current!.tokenString)
+
+                    Auth.auth().signIn(with: credential) { authResult, error in
+                        if let error = error {
+                            observer(.failure(error))
+                            return
+                        }
+
+                        if let authResult = authResult {
+                            observer(.success(authResult))
+                        }
+                    }
+                }
+            }
+            return Disposables.create()
+        }
+    }
+
+    public func signInWithGoogle(presenterVC: UIViewController) -> Single<AuthDataResult?> {
         Single<AuthDataResult?>.create { observer in
             if let clientID = FirebaseApp.app()?.options.clientID {
                 let config = GIDConfiguration(clientID: clientID)

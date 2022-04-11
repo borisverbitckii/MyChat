@@ -7,7 +7,6 @@
 
 import RxSwift
 import AsyncDisplayKit
-import Foundation
 
 // swiftlint:disable:next type_body_length
 final class RegisterViewController: ASDKViewController<ASDisplayNode> {
@@ -375,11 +374,6 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                                                       action: #selector(googleSignInButtonTapped),
                                                       forControlEvents: .touchUpInside)
 
-        // Авторизация через apple
-        uiElements.authButtons.appleButton.addTarget(self,
-                                                      action: #selector(appleSignInButtonTapped),
-                                                      forControlEvents: .touchUpInside)
-
         // Авторизация через facebook
         uiElements.authButtons.facebookButton.addTarget(self,
                                                       action: #selector(facebookSignInButtonTapped),
@@ -446,12 +440,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                                                 sourceButtonType: .googleButton,
                                                 presenter: self)
     }
-    @objc private func appleSignInButtonTapped() {
-        viewModel.input.presentTabBarController(withUsername: nil,
-                                                password: nil,
-                                                sourceButtonType: .appleButton,
-                                                presenter: self)
-    }
+
     @objc private func facebookSignInButtonTapped() {
         viewModel.input.presentTabBarController(withUsername: nil,
                                                 password: nil,

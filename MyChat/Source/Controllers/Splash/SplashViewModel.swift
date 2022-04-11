@@ -8,8 +8,8 @@
 import UIKit
 import RxRelay
 import RxSwift
-import FirebaseAuth
 import Services
+import Firebase
 
 protocol SplashViewModelProtocol {
     var input: SplashViewModelInputProtocol { get }

@@ -6,7 +6,8 @@
 //
 
 import UIKit
-import FirebaseAuth
+import Services
+import Firebase
 
 protocol CoordinatorProtocol: AnyObject {
     func injectWindow(window: UIWindow)

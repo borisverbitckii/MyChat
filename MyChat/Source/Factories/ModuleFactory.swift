@@ -5,7 +5,6 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import Foundation
 import UIKit
 
 protocol ModuleFactoryProtocol {

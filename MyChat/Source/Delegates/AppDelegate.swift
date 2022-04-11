@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import Firebase
-import GoogleSignIn
 import Services
 
 @main
@@ -17,8 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Firebase
+        Firebase.setupFirebase()
 
-        FirebaseApp.configure()
+        // Facebook
+        Facebook.setupFacebook(application: application,
+                               didFinishLaunchingWithOptions: launchOptions)
+
         let window = UIWindow(frame: UIScreen.main.bounds)
         let configureManager = ConfigureManager()
         // swiftlint:disable:next redundant_discardable_let
@@ -26,10 +29,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    // Для авторизации через гугл
+    // Для авторизации через гугл и facebool
     func application(_ application: UIApplication, open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any])
       -> Bool {
-      return GIDSignIn.sharedInstance.handle(url)
+
+          Facebook.setupFacebookURLHandler(application: application,
+                                           open: url,
+                                           sourceApplication: options)
+
+          return Google.googleURLHandler(url)
     }
 }
