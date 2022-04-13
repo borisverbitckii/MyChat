@@ -6,30 +6,20 @@
 //
 
 protocol TabBarControllerViewModelProtocol {
-    func presentSplashModule(transitionHandler: TransitionHandler)
 }
 
 final class TabBarControllerViewModel {
 
     // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
-    private let showSplash: Bool
 
     // MARK: - Init
-    init(coordinator: CoordinatorProtocol,
-         showSplash: Bool) {
+    init(coordinator: CoordinatorProtocol) {
         self.coordinator = coordinator
-        self.showSplash = showSplash
     }
 }
 
 // MARK: - extension + TabBarControllerViewModelProtocol
 extension TabBarControllerViewModel: TabBarControllerViewModelProtocol {
 
-    func presentSplashModule(transitionHandler: TransitionHandler) {
-        if showSplash {
-            coordinator.presentSplashViewController(transitionHandler: transitionHandler)
-            return
-        }
-    }
 }

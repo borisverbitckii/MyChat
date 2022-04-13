@@ -9,7 +9,7 @@ import UIKit
 import RxRelay
 import RxSwift
 import Services
-import Firebase
+import Models
 
 protocol SplashViewModelProtocol {
     var input: SplashViewModelInputProtocol { get }
@@ -17,11 +17,11 @@ protocol SplashViewModelProtocol {
 }
 
 protocol SplashViewModelInputProtocol {
-    func presentNextViewController(withUser user: User?, presenter: TransitionHandler)
+    func presentNextViewController(withChatUser user: ChatUser?, presenter: TransitionHandler)
 }
 
 protocol SplashViewModelOutputProtocol {
-    var authState: PublishRelay<User?> { get }
+    var authState: PublishRelay<ChatUser?> { get }
 }
 
 final class SplashViewModel {
@@ -30,7 +30,7 @@ final class SplashViewModel {
     var input: SplashViewModelInputProtocol { return self }
     var output: SplashViewModelOutputProtocol { return self }
 
-    var authState = PublishRelay<User?>()
+    var authState = PublishRelay<ChatUser?>()
 
     // MARK: Private properties
     private let coordinator: CoordinatorProtocol
@@ -43,17 +43,12 @@ final class SplashViewModel {
         self.authManager = authManager
         self.coordinator = coordinator
 
-        authManager.checkIsUserAlreadyLoginedIn()
+        authManager.checkIsUserAlreadyLoggedInIn()
             .subscribe { [authState] result in
 
                 switch result {
-                case .success((let isLoginedIn, let user)):
-                    if isLoginedIn, let user = user {
-                        authState.accept(user)
-                        break
-                    } else if !isLoginedIn {
-                        authState.accept(nil)
-                    }
+                case .success(let chatUser):
+                    authState.accept(chatUser)
                 case .failure: break
                 }
             }
@@ -68,11 +63,11 @@ extension SplashViewModel: SplashViewModelProtocol {
 
 // MARK: - extension + SplashViewModelInputProtocol -
 extension SplashViewModel: SplashViewModelInputProtocol {
-    func presentNextViewController(withUser user: User?, presenter: TransitionHandler) {
+    func presentNextViewController(withChatUser user: ChatUser?, presenter: TransitionHandler) {
         if let user = user {
-            coordinator.presentTabBarViewController(withUser: user, showSplash: false)
+            coordinator.presentTabBarViewController(withChatUser: user)
         } else {
-            coordinator.presentRegisterViewController()
+            coordinator.presentRegisterViewController(presenter: presenter)
         }
     }
 }

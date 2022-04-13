@@ -9,17 +9,18 @@ import RxSwift
 import Firebase
 import GoogleSignIn
 import FBSDKLoginKit
+import Models
 
 public protocol AuthManagerSplashProtocol { // для SplashViewController
-    func checkIsUserAlreadyLoginedIn() -> Single<(isLoginedIn: Bool, user: User?)>
+    func checkIsUserAlreadyLoggedInIn() -> Single<ChatUser?>
 }
 
 public protocol AuthManagerRegisterProtocol {       // для RegisterViewController
-    func createUser(withEmail email: String, password: String) -> Single<AuthDataResult?>
+    func createUser(withEmail email: String, password: String) -> Single<ChatUser?>
     func signIn(withEmail email: String,
-                password: String) -> Single<AuthDataResult?>
-    func signInWithFacebook(presenterVC: UIViewController) -> Single<AuthDataResult?>
-    func signInWithGoogle(presenterVC: UIViewController) -> Single<AuthDataResult?>
+                password: String) -> Single<ChatUser?>
+    func signInWithFacebook(presenterVC: UIViewController) -> Single<ChatUser?>
+    func signInWithGoogle(presenterVC: UIViewController) -> Single<ChatUser?>
     func signOut() -> Single<Any?>
 }
 
@@ -39,13 +40,18 @@ public final class AuthManager {
 // MARK: - extension + AuthManagerSplashProtocol -
 extension AuthManager: AuthManagerSplashProtocol {
 
-    public func checkIsUserAlreadyLoginedIn() -> Single<(isLoginedIn: Bool, user: User?)> {
-        Single<(isLoginedIn: Bool, user: User?)>.create { [auth] observer in
+    public func checkIsUserAlreadyLoggedInIn() -> Single<ChatUser?> {
+        Single<ChatUser?>.create { [auth] observer in
             auth.addStateDidChangeListener { _, user in
                 if let user = user {
-                    observer(.success((isLoginedIn: true, user: user)))
+                    let chatUser = ChatUser(uid: user.uid,
+                                            email: user.email,
+                                            name: user.displayName,
+                                            surname: nil,
+                                            avatarURL: user.photoURL)
+                    observer(.success(chatUser))
                 } else {
-                    observer(.success((isLoginedIn: false, user: user)))
+                    observer(.success(nil))
                 }
             }
             return Disposables.create()
@@ -56,13 +62,29 @@ extension AuthManager: AuthManagerSplashProtocol {
 // MARK: - extension + AuthManagerProtocol -
 extension AuthManager: AuthManagerRegisterProtocol {
 
-    public func createUser(withEmail email: String, password: String) -> Single<AuthDataResult?> {
-        Single<AuthDataResult?>.create { [auth] observer in
+    public func createUser(withEmail email: String, password: String) -> Single<ChatUser?> {
+        Single<ChatUser?>.create { [auth] observer in
             auth.createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error {
                     observer(.failure(error))
                 }
-                observer(.success(authResult))
+
+                if let uid = authResult?.user.uid {
+                    let chatUser = ChatUser(uid: uid,
+                                            name: authResult?.user.displayName,
+                                            surname: nil,
+                                            avatarURL: authResult?.user.photoURL)
+                    
+                    observer(.success(chatUser))
+                }
+
+
+                auth.currentUser?.sendEmailVerification(completion: { error in
+                    if let error = error {
+                        observer(.failure(error))
+                    }
+                })
+
             }
             return Disposables.create()
         }
@@ -71,22 +93,30 @@ extension AuthManager: AuthManagerRegisterProtocol {
     }
 
     public func signIn(withEmail email: String,
-                       password: String) -> Single<AuthDataResult?> {
-        Single<AuthDataResult?>.create { [auth] observer in
+                       password: String) -> Single<ChatUser?> {
+        Single<ChatUser?>.create { [auth] observer in
             auth.signIn(withEmail: email,
                         password: password) { authResult, error in
                 if let error = error {
                     observer(.failure(error))
                     return
                 }
-                observer(.success(authResult))
+
+                if let uid = authResult?.user.uid {
+                    let chatUser = ChatUser(uid: uid,
+                                            name: authResult?.user.displayName,
+                                            surname: nil,
+                                            avatarURL: authResult?.user.photoURL)
+
+                    observer(.success(chatUser))
+                }
             }
             return Disposables.create()
         }
     }
 
-    public func signInWithFacebook(presenterVC: UIViewController) -> Single<AuthDataResult?> {
-        return Single<AuthDataResult?>.create { observer in
+    public func signInWithFacebook(presenterVC: UIViewController) -> Single<ChatUser?> {
+        return Single<ChatUser?>.create { observer in
             let fbLoginManager = LoginManager()
             fbLoginManager.logIn(permissions: [], from: presenterVC) { result, error in
                 if let error = error {
@@ -108,8 +138,13 @@ extension AuthManager: AuthManagerRegisterProtocol {
                             return
                         }
 
-                        if let authResult = authResult {
-                            observer(.success(authResult))
+                        if let uid = authResult?.user.uid {
+                            let chatUser = ChatUser(uid: uid,
+                                                    name: authResult?.user.displayName,
+                                                    surname: nil,
+                                                    avatarURL: authResult?.user.photoURL)
+
+                            observer(.success(chatUser))
                         }
                     }
                 }
@@ -118,8 +153,8 @@ extension AuthManager: AuthManagerRegisterProtocol {
         }
     }
 
-    public func signInWithGoogle(presenterVC: UIViewController) -> Single<AuthDataResult?> {
-        Single<AuthDataResult?>.create { observer in
+    public func signInWithGoogle(presenterVC: UIViewController) -> Single<ChatUser?> {
+        Single<ChatUser?>.create { observer in
             if let clientID = FirebaseApp.app()?.options.clientID {
                 let config = GIDConfiguration(clientID: clientID)
                 GIDSignIn.sharedInstance.signIn(with: config,
@@ -138,7 +173,14 @@ extension AuthManager: AuthManagerRegisterProtocol {
                             observer(.failure(error))
                             return
                         }
-                        observer(.success(authResult))
+                        if let uid = authResult?.user.uid {
+                            let chatUser = ChatUser(uid: uid,
+                                                    name: authResult?.user.displayName,
+                                                    surname: nil,
+                                                    avatarURL: authResult?.user.photoURL)
+
+                            observer(.success(chatUser))
+                        }
                     }
                 }
             }

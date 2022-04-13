@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import RxRelay
 import Services
 
 enum ProfileViewControllerState {
@@ -19,11 +20,12 @@ protocol ProfileViewModelProtocol {
 }
 
 protocol ProfileViewModelInputProtocol {
-    func signOut()
+    func signOut(presenter: TransitionHandler)
 }
 
 protocol ProfileViewModelOutputProtocol {
-    var state: ProfileViewControllerState { get set }
+    var state: ProfileViewControllerState { get }
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
 }
 
 final class ProfileViewModel {
@@ -32,20 +34,36 @@ final class ProfileViewModel {
     var input: ProfileViewModelInputProtocol { return self }
     var output: ProfileViewModelOutputProtocol { return self }
 
-    var state: ProfileViewControllerState = .normal
-
     // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
     private let authManager: AuthManagerProfileProtocol
     private let disposeBag = DisposeBag()
 
+    private let texts: (ProfileViewControllerTexts) -> String
+    private let fonts: (ProfileViewControllerFonts) -> UIFont
+    private let palette: (ProfileViewControllerPalette) -> UIColor
+
+    var state: ProfileViewControllerState = .normal
+
+    // UI
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor>
+
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
-         authManager: AuthManagerProfileProtocol) {
+         authManager: AuthManagerProfileProtocol,
+         texts: @escaping (ProfileViewControllerTexts) -> String,
+         fonts: @escaping (ProfileViewControllerFonts) -> UIFont,
+         palette: @escaping (ProfileViewControllerPalette) -> UIColor) {
         self.coordinator = coordinator
         self.authManager = authManager
-    }
 
+        self.texts = texts
+        self.fonts = fonts
+        self.palette = palette
+
+        let vcBackgroundColor = palette(.profileViewControllerBackgroundColor)
+        viewControllerBackgroundColor = BehaviorRelay<UIColor>(value: vcBackgroundColor)
+    }
 }
 
 // MARK: - extension + ProfileViewModelProtocol
@@ -55,10 +73,10 @@ extension ProfileViewModel: ProfileViewModelProtocol {
 
 // MARK: - extension + ProfileViewModelInputProtocol
 extension ProfileViewModel: ProfileViewModelInputProtocol {
-    func signOut() {
+    func signOut(presenter: TransitionHandler) {
         authManager.signOut()
             .subscribe { [coordinator] _ in
-                coordinator.presentRegisterViewController()
+                coordinator.presentRegisterViewController(presenter: presenter)
             }
             .disposed(by: disposeBag)
     }

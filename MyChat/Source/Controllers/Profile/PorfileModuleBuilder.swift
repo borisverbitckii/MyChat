@@ -10,9 +10,15 @@ import UIKit
 final class ProfileModuleBuilder {
 
     func build(managerFactory: ManagerFactoryProtocol,
-               coordinator: CoordinatorProtocol) -> UINavigationController {
+               coordinator: CoordinatorProtocol,
+               texts: @escaping (ProfileViewControllerTexts) -> String,
+               fonts: @escaping (ProfileViewControllerFonts) -> UIFont,
+               palette: @escaping (ProfileViewControllerPalette) -> UIColor) -> UINavigationController {
         let viewModel = ProfileViewModel(coordinator: coordinator,
-                                         authManager: managerFactory.getAuthManager())
+                                         authManager: managerFactory.getAuthManager(),
+                                         texts: texts,
+                                         fonts: fonts,
+                                         palette: palette)
         let viewController = ProfileViewController(profileViewModel: viewModel)
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.tabBarItem = UITabBarItem(title: "Pofile",

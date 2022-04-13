@@ -48,8 +48,14 @@ final class ChatsListViewController: ASDKViewController<ASCollectionNode> {
 
     private func bindUIElements() {
         viewModel.output.titleText
-            .subscribe { event in
-                self.title = event.element
+            .subscribe { [weak self] event in
+                self?.title = event.element
+            }
+            .disposed(by: bag)
+
+        viewModel.output.viewControllerBackgroundColor
+            .subscribe { [weak view] event in
+                view?.backgroundColor = event.element
             }
             .disposed(by: bag)
     }

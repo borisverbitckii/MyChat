@@ -11,7 +11,6 @@ final class TabBarController: UITabBarController {
 
     // MARK: - Private properties
     private let tabBarViewModel: TabBarControllerViewModelProtocol
-    private var splashIsShown = false
 
     // MARK: - Init
     init(tabBarViewModel: TabBarControllerViewModelProtocol) {
@@ -26,14 +25,6 @@ final class TabBarController: UITabBarController {
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        tabBar.backgroundColor = .white
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if !splashIsShown {
-            splashIsShown = true
-            tabBarViewModel.presentSplashModule(transitionHandler: self)
-        }
+        tabBar.isTranslucent = true
     }
 }

@@ -7,15 +7,15 @@
 
 import UIKit
 import Services
-import Firebase
+import Models
 
 protocol CoordinatorProtocol: AnyObject {
     func injectWindow(window: UIWindow)
     func injectModuleFactory(moduleFactory: ModuleFactory)
 
-    func presentTabBarViewController(withUser user: User?, showSplash: Bool)
-    func presentSplashViewController(transitionHandler: TransitionHandler)
-    func presentRegisterViewController()
+    func presentTabBarViewController(withChatUser user: ChatUser)
+    func presentSplashViewController(presenter: TransitionHandler)
+    func presentRegisterViewController(presenter: TransitionHandler)
 }
 
 final class Coordinator {
@@ -36,31 +36,32 @@ extension Coordinator: CoordinatorProtocol {
         self.moduleFactory = moduleFactory
     }
 
-    func presentTabBarViewController(withUser user: User?, showSplash: Bool) {
-        /* В зависимости от showSplash решается, будет ли показан splash для проверки авторизаци
-           Устанавливается в appAssembly и в RegisterViewModel
-           В первом случае по дефолту сплеш показывается, так как сразу шлет на табБарКонтроллер
-           Во втором случае сплеш не показывается, так как попадаем с модуля регистрации/авторизации */
-
+    func presentTabBarViewController(withChatUser user: ChatUser) {
         guard let window = window else { return }
-        window.rootViewController = moduleFactory?.getTabBarController(showSplash: showSplash)
+        window.rootViewController = moduleFactory?.getTabBarController()
         window.makeKeyAndVisible()
+
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
     }
 
-    func presentRegisterViewController() {
-        // Модуль регистрации/авторизации
-        guard let window = window else { return }
-        window.rootViewController = moduleFactory?.getRegisterViewController()
+    func presentRegisterViewController(presenter: TransitionHandler) {
+        guard let window = window,
+              let registerViewController = self.moduleFactory?.getRegisterViewController() else { return }
+        window.rootViewController = registerViewController
         window.makeKeyAndVisible()
+
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
     }
 
-    func presentSplashViewController(transitionHandler: TransitionHandler) {
-        // Модуль сплеша для проверки авторизации и подгрузке всех необходимых данных
-        guard let moduleFactory = moduleFactory else { return }
-        let splashViewController = moduleFactory.getSplashModule(coordinator: self)
-        splashViewController.modalPresentationStyle = .fullScreen
-        transitionHandler.presentViewController(viewController: splashViewController,
-                                                animated: false,
-                                                completion: nil)
+    /// Презентация SplashViewController
+    /// - Parameter presenter: Презентующий контролллер
+    ///
+    /// Модуль сплеша для проверки авторизации
+    func presentSplashViewController(presenter: TransitionHandler) {
+        guard let transitionViewController = moduleFactory?.getSplashModule(coordinator: self) else { return }
+        transitionViewController.modalPresentationStyle = .fullScreen
+        presenter.presentViewController(viewController: transitionViewController,
+                                        animated: false,
+                                        completion: nil)
     }
 }

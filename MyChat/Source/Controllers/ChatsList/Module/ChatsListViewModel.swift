@@ -22,8 +22,12 @@ protocol ChatsListViewModelInput {
 protocol ChatsListViewModelOutput {
     var chatsCount: Int { get }
     func chatForIndexPath(index: Int) -> Chat
+
+    // UI
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
     var titleText: BehaviorRelay<String> { get }
     var titleFont: BehaviorRelay<UIFont> { get }
+
 }
 
 final class ChatsListViewModel {
@@ -36,6 +40,8 @@ final class ChatsListViewModel {
         chats.count
     }
 
+    // UI
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor>
     var titleText: BehaviorRelay<String>
     var titleFont: BehaviorRelay<UIFont>
 
@@ -44,6 +50,7 @@ final class ChatsListViewModel {
     private let networkManager: NetworkManagerChatListProtocol
     private let fonts: (ChatsListViewControllerFonts) -> UIFont
     private let texts: (ChatsListViewControllerTexts) -> String
+    private let palette: (ChatsListViewControllerPalette) -> UIColor
 
     private let chats = [Chat]()
 
@@ -51,11 +58,17 @@ final class ChatsListViewModel {
     init(coordinator: CoordinatorProtocol,
          networkManager: NetworkManagerChatListProtocol,
          fonts: @escaping (ChatsListViewControllerFonts) -> UIFont,
-         texts: @escaping (ChatsListViewControllerTexts) -> String) {
+         texts: @escaping (ChatsListViewControllerTexts) -> String,
+         palette: @escaping (ChatsListViewControllerPalette) -> UIColor) {
         self.coordinator = coordinator
         self.networkManager = networkManager
+
         self.fonts = fonts
         self.texts = texts
+        self.palette = palette
+
+        let vcBackgroundColor = palette(.chatsListViewControllerBackgroundColor)
+        self.viewControllerBackgroundColor = BehaviorRelay<UIColor>(value: vcBackgroundColor)
 
         let text = texts(.title)
         self.titleText = BehaviorRelay<String>(value: text)

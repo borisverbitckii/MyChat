@@ -9,6 +9,7 @@ import RxRelay
 import RxSwift
 import AsyncDisplayKit
 import Services
+import UIKit
 
 enum RegisterViewControllerState {
     case auth, register // состояния контроллера, чтобы отображать вид авторизации или регистрации
@@ -30,7 +31,7 @@ enum RegisterAuthButtonType {
     case googleButton, facebookButton, submitButtonOrReturnButton
 }
 
-protocol RegisterViewModelProtocol {
+protocol RegisterViewModelProtocol: AnyObject {
     var input: RegisterViewModelInput { get }
     var output: RegisterViewModelOutput { get }
 }
@@ -87,7 +88,9 @@ protocol RegisterViewModelOutput {
     var errorPasswordLabelState: BehaviorRelay<Bool> { get }
         // Включение/выключение лейбла, который пишет, что пароли не совпадают при регистрации
     // orLabel
-    var orLabel: BehaviorRelay<(text: String, font: UIFont)> { get } // шрифт и текст для orLabel
+    var orLabel: BehaviorRelay<(text: String,            // swiftlint:disable:this large_tuple
+                                font: UIFont,
+                                color: UIColor)> { get } // шрифт и текст для orLabel
 }
 
 final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutput {
@@ -104,7 +107,7 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
     var submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
     var submitButtonIsEnable = BehaviorRelay<Bool>(value: false)
     var submitButtonColor = PublishRelay<UIColor>()
-    // СhangeStateButton
+    // ChangeStateButton
     var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
     // Textfields
     var textfieldsFont: BehaviorRelay<UIFont>
@@ -122,7 +125,9 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
     var errorPasswordLabel: BehaviorRelay<(text: String, font: UIFont)>
     var errorPasswordLabelState = BehaviorRelay<Bool>(value: true)
     // orLabel
-    var orLabel: BehaviorRelay<(text: String, font: UIFont)>
+    var orLabel: BehaviorRelay<(text: String,
+                                font: UIFont,
+                                color: UIColor)>
 
     // MARK: Private properties
     private let disposeBag = DisposeBag()
@@ -187,10 +192,13 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
         // orLabel
         let orLabelText = texts(.orLabelText)
         let orLabelFont = fonts(.registerOrLabel)
+        let orLabelColor = palette(.orLabelTextColor)
         orLabel = BehaviorRelay<(text: String,
-                                 font: UIFont)>(value:
+                                 font: UIFont,
+                                 color: UIColor)>(value:
                                                     (text: orLabelText,
-                                                     font: orLabelFont))
+                                                     font: orLabelFont,
+                                                     color: orLabelColor))
     }
 }
 
@@ -211,9 +219,9 @@ extension RegisterViewModel: RegisterViewModelInput {
                     authManager.signInWithGoogle(presenterVC: presenter)
                         .subscribe { [coordinator] authResult in
                             switch authResult {
-                            case .success(let auth):
-                                coordinator.presentTabBarViewController(withUser: auth?.user,
-                                                                        showSplash: false)
+                            case .success(let chatUser):
+                                guard let chatUser = chatUser else { return }
+                                coordinator.presentTabBarViewController(withChatUser: chatUser)
                             case .failure(let error):
                                 print(error) // TODO: Обработать ошибки
                             }
@@ -225,9 +233,9 @@ extension RegisterViewModel: RegisterViewModelInput {
                     authManager.signInWithFacebook(presenterVC: presenter)
                         .subscribe { [coordinator] authResult in
                             switch authResult {
-                            case .success(let auth):
-                                coordinator.presentTabBarViewController(withUser: auth?.user,
-                                                                        showSplash: false)
+                            case .success(let chatUser):
+                                guard let chatUser = chatUser else { return }
+                                coordinator.presentTabBarViewController(withChatUser: chatUser)
                             case .failure(let error):
                                 print(error) // TODO: Обработать ошибки
                             }
@@ -240,9 +248,9 @@ extension RegisterViewModel: RegisterViewModelInput {
                 authManager.signIn(withEmail: username, password: password)
                     .subscribe { [coordinator] authResult in
                         switch authResult {
-                        case .success(let auth):
-                            coordinator.presentTabBarViewController(withUser: auth?.user,
-                                                                    showSplash: false)
+                        case .success(let chatUser):
+                            guard let chatUser = chatUser else { return }
+                            coordinator.presentTabBarViewController(withChatUser: chatUser)
                         case .failure(let error):
                             print(error) // TODO: Обработать ошибки
                         }
@@ -253,10 +261,11 @@ extension RegisterViewModel: RegisterViewModelInput {
         case .register:
             guard let username = username, let password = password else { return }
             authManager.createUser(withEmail: username, password: password)
-                .subscribe { [coordinator] authResult in
-                    coordinator.presentTabBarViewController(withUser: authResult?.user, showSplash: false)
+                .subscribe { [coordinator] chatUser in
+                    guard let chatUser = chatUser else { return }
+                    coordinator.presentTabBarViewController(withChatUser: chatUser)
                 } onFailure: { error in
-                    print(error)
+                    print(error) // TODO: Обработать ошибки
                 }
                 .disposed(by: disposeBag)
         }

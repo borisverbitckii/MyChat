@@ -11,12 +11,12 @@ import UI
 final class RegisterUI {
 
     // MARK: Public properties
-    let passwordsErrorLabel = ASTextNode()
-    let orLabel = ASTextNode()
-    let submitButton = ASButtonNode()
-    let changeStateButton = ASButtonNode()
+    lazy var passwordsErrorLabel = ASTextNode()
+    lazy var orLabel = ASTextNode()
+    lazy var submitButton = ASButtonNode()
+    lazy var changeStateButton = ASButtonNode()
 
-    let nameTextField: TextFieldWithBottomBorderNode = {
+    lazy var nameTextField: TextFieldWithBottomBorderNode = {
         $0.textfield.autocorrectionType = .no
         $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
@@ -24,7 +24,7 @@ final class RegisterUI {
         return $0
     }(TextFieldWithBottomBorderNode())
 
-    let passwordTestField: TextFieldWithBottomBorderNode = {
+    lazy var passwordTestField: TextFieldWithBottomBorderNode = {
         $0.textfield.autocorrectionType = .no
         $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
@@ -32,7 +32,7 @@ final class RegisterUI {
         return $0
     }(TextFieldWithBottomBorderNode())
 
-    let passwordSecondTimeTextfield: TextFieldWithBottomBorderNode = {
+    lazy var passwordSecondTimeTextfield: TextFieldWithBottomBorderNode = {
         $0.textfield.autocorrectionType = .no
         $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
@@ -40,10 +40,10 @@ final class RegisterUI {
         return $0
     }(TextFieldWithBottomBorderNode())
 
-    let authButtons: AuthButtonsNode = {
+    lazy var authButtons: AuthButtonsStackNode = {
         $0.automaticallyManagesSubnodes = true
         return $0
-    }(AuthButtonsNode())
+    }(AuthButtonsStackNode())
 
     // MARK: Private Properties
     private let palette: (RegisterViewControllerPalette) -> UIColor // удаленная установка цветов
@@ -58,5 +58,7 @@ final class RegisterUI {
          passwordTestField,
          passwordSecondTimeTextfield]
             .forEach { $0.backgroundColor = palette(.textFieldBackgroundColor) }
+
+        authButtons.configureBackground(withColor: palette(.authButtonBackground))
     }
 }

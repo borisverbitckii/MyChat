@@ -10,14 +10,14 @@ import Services
 
 final class RegisterModuleBuilder {
     func build(coordinator: CoordinatorProtocol,
-               authManager: AuthManagerRegisterProtocol,
+               managers: ManagerFactoryProtocol,
                fonts: @escaping (RegisterViewControllerFonts) -> UIFont,
                texts: @escaping  (RegisterViewControllerTexts) -> String,
                palette: @escaping (RegisterViewControllerPalette) -> UIColor) -> RegisterViewController {
 
         let uiElements = RegisterUI(palette: palette)
         let viewModel = RegisterViewModel(coordinator: coordinator,
-                                          authManager: authManager,
+                                          authManager: managers.getAuthManager(),
                                           fonts: fonts,
                                           texts: texts,
                                           palette: palette)

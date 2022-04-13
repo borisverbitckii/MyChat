@@ -9,7 +9,7 @@ import AsyncDisplayKit
 
 final class ChatsListUI {
 
-    let chatsCollectionView: ASCollectionNode = {
+    lazy var chatsCollectionView: ASCollectionNode = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .vertical
         return ASCollectionNode(frame: .zero, collectionViewLayout: flowLayout)

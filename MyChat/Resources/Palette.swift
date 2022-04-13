@@ -39,6 +39,31 @@ final class Palette {
 extension Palette: PaletteProtocol {
 
     // MARK: Public methods
+    func splashViewController() -> (SplashViewControllerPalette) -> (UIColor) {
+        return { [weak self] color in
+            guard let self = self else { return UIColor()}
+            if let color = self.config?.splashViewController[color.rawValue] {
+                return color
+            }
+
+            assert(UIColor(named: color.rawValue) != nil)
+            return UIColor(named: color.rawValue)!
+        }
+    }
+
+    // MARK: Public methods
+    func splachViewController() -> (EmptyViewControllerPalette) -> (UIColor) {
+        return { [weak self] color in
+            guard let self = self else { return UIColor()}
+            if let color = self.config?.emptyViewController[color.rawValue] {
+                return color
+            }
+
+            assert(UIColor(named: color.rawValue) != nil)
+            return UIColor(named: color.rawValue)!
+        }
+    }
+
     func registerViewController() -> (RegisterViewControllerPalette) -> (UIColor) {
         return { [weak self] color in
 
@@ -47,31 +72,8 @@ extension Palette: PaletteProtocol {
                 return color
             }
 
-            if color == .viewControllerBackgroundColor {
-                return UIColor(named: "viewControllerBackgroundColor")!
-            }
-
-            if color == .changeStateButtonColor {
-                return UIColor(named: "changeStateButtonColor")!
-            }
-
-            if color == .textFieldBackgroundColor {
-                return UIColor(named: "textfieldsBackgroundColor")!
-            }
-
-            if color == .submitButtonDisableTintColor {
-                return UIColor(named: "submitButtonDisableColor")!
-            }
-
-            if color == .submitButtonTextColor {
-                return UIColor(named: "submitButtonTintColor")!
-            }
-
-            if color == .submitButtonActiveTintColor {
-                return UIColor(named: "submitButtonActiveColor")!
-            }
-
-            return UIColor()
+            assert(UIColor(named: color.rawValue) != nil)
+            return UIColor(named: color.rawValue)!
         }
     }
 
@@ -83,7 +85,8 @@ extension Palette: PaletteProtocol {
                 return color
             }
 
-            return UIColor()
+            assert(UIColor(named: color.rawValue) != nil)
+            return UIColor(named: color.rawValue)!
         }
     }
 
@@ -95,7 +98,8 @@ extension Palette: PaletteProtocol {
                 return color
             }
 
-            return UIColor()
+            assert(UIColor(named: color.rawValue) != nil)
+            return UIColor(named: color.rawValue)!
         }
     }
 }

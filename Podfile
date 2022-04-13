@@ -15,6 +15,7 @@ target 'MyChat' do
  pod 'Firebase/Auth'
  pod 'FBSDKLoginKit'
  pod 'GoogleSignIn'
+ pod 'lottie-ios'
 
 end
 
@@ -35,7 +36,8 @@ target 'UI' do
   xcodeproj './Modules/UI/UI.xcodeproj'
   # Comment the next line if you don't want to use dynamic frameworks
 
-  pod 'Texture'
+ pod 'Texture'
+ pod 'lottie-ios'
 
 end
 

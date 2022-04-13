@@ -13,7 +13,7 @@
 		D75FD6E02801D285001B1359 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D72801D285001B1359 /* AppConfig.swift */; };
 		D75FD6E12801D285001B1359 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D92801D285001B1359 /* Chat.swift */; };
 		D75FD6E22801D285001B1359 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6DA2801D285001B1359 /* Message.swift */; };
-		D75FD6E32801D285001B1359 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6DB2801D285001B1359 /* Profile.swift */; };
+		D75FD6E32801D285001B1359 /* ChatUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6DB2801D285001B1359 /* ChatUser.swift */; };
 		D75FD6E42801D285001B1359 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6DC2801D285001B1359 /* Contact.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,7 +25,7 @@
 		D75FD6D72801D285001B1359 /* AppConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		D75FD6D92801D285001B1359 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		D75FD6DA2801D285001B1359 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		D75FD6DB2801D285001B1359 /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		D75FD6DB2801D285001B1359 /* ChatUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 		D75FD6DC2801D285001B1359 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,7 +73,7 @@
 			children = (
 				D75FD6D92801D285001B1359 /* Chat.swift */,
 				D75FD6DA2801D285001B1359 /* Message.swift */,
-				D75FD6DB2801D285001B1359 /* Profile.swift */,
+				D75FD6DB2801D285001B1359 /* ChatUser.swift */,
 				D75FD6DC2801D285001B1359 /* Contact.swift */,
 			);
 			path = Entities;
@@ -157,7 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D75FD6E32801D285001B1359 /* Profile.swift in Sources */,
+				D75FD6E32801D285001B1359 /* ChatUser.swift in Sources */,
 				D75FD6DD2801D285001B1359 /* AppTextsConfig.swift in Sources */,
 				D75FD6E12801D285001B1359 /* Chat.swift in Sources */,
 				D75FD6E02801D285001B1359 /* AppConfig.swift in Sources */,

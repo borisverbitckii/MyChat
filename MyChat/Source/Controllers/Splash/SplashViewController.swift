@@ -18,6 +18,7 @@ final class SplashViewController: UIViewController {
     init(viewModel: SplashViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        view.backgroundColor = .white
         subscribe()
     }
 
@@ -28,12 +29,11 @@ final class SplashViewController: UIViewController {
     // MARK: Private methods
     private func subscribe() {
         viewModel.output.authState
-            .subscribe { [weak self] userEvent in
-                guard let self = self else { return }
-                if let user = userEvent.element {
-                    self.viewModel.input.presentNextViewController(withUser: user, presenter: self)
+            .subscribe { [viewModel] chatUserEvent in
+                if let chatUser = chatUserEvent.element {
+                    viewModel.input.presentNextViewController(withChatUser: chatUser, presenter: self)
                 } else {
-                    self.viewModel.input.presentNextViewController(withUser: nil, presenter: self)
+                    viewModel.input.presentNextViewController(withChatUser: nil, presenter: self)
                 }
             }
             .disposed(by: dispodeBag)

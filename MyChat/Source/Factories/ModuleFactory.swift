@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ModuleFactoryProtocol {
-    func getTabBarController(showSplash: Bool) -> UITabBarController
+    func getTabBarController() -> UITabBarController
     func getRegisterViewController() -> UIViewController
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController
     func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController
@@ -36,20 +36,19 @@ final class ModuleFactory {
 
 // MARK: - extension + ModuleFactoryProtocol
 extension ModuleFactory: ModuleFactoryProtocol {
-    func getTabBarController(showSplash: Bool) -> UITabBarController {
+    func getTabBarController() -> UITabBarController {
         guard let coordinator = coordinator else { return UITabBarController() }
         let chatsListVC = getChatsListModule(coordinator: coordinator)
         let profileVC = getProfileModule(coordinator: coordinator)
         let viewControllers = [chatsListVC, profileVC]
         return TabBarControllerModuleBuilder().build(coordinator: coordinator,
-                                                     viewControllers: viewControllers,
-                                                     showSplash: showSplash)
+                                                     viewControllers: viewControllers)
     }
 
     func getRegisterViewController() -> UIViewController {
         guard let coordinator = coordinator else { return UIViewController() }
         return RegisterModuleBuilder().build(coordinator: coordinator,
-                                             authManager: managerFactory.getAuthManager(),
+                                             managers: managerFactory,
                                              fonts: resource.fonts.registerViewController(),
                                              texts: resource.texts.registerViewController(),
                                              palette: resource.palette.registerViewController())
@@ -62,15 +61,18 @@ extension ModuleFactory: ModuleFactoryProtocol {
 
     func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController {
         ProfileModuleBuilder().build(managerFactory: managerFactory,
-                                     coordinator: coordinator)
+                                     coordinator: coordinator,
+                                     texts: resource.texts.profileViewController(),
+                                     fonts: resource.fonts.profileViewController(),
+                                     palette: resource.palette.profileViewController())
     }
 
     func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController {
         ChatsListModuleBuilder().build(managerFactory: managerFactory,
                                               coordinator: coordinator,
-                                       networkManager: managerFactory.getNetworkManager(),
                                        fonts: resource.fonts.chatsListViewController(),
-                                       texts: resource.texts.chatsListViewController())
+                                       texts: resource.texts.chatsListViewController(),
+                                       palette: resource.palette.chatsListViewController())
     }
 
     func getNewChatModule(coordinator: CoordinatorProtocol) -> NewChatViewController {

@@ -9,10 +9,8 @@ import UIKit
 
 final class TabBarControllerModuleBuilder {
     func build(coordinator: CoordinatorProtocol,
-               viewControllers: [UIViewController],
-               showSplash: Bool) -> TabBarController {
-        let tabBarViewModel = TabBarControllerViewModel(coordinator: coordinator,
-                                                        showSplash: showSplash)
+               viewControllers: [UIViewController]) -> TabBarController {
+        let tabBarViewModel = TabBarControllerViewModel(coordinator: coordinator)
         let tabBarController = TabBarController(tabBarViewModel: tabBarViewModel)
         tabBarController.viewControllers = viewControllers
         return tabBarController

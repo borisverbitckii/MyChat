@@ -14,14 +14,23 @@ final class AppAssembly {
 
     // MARK: Private Properties
     private let window: UIWindow
+    /// Заглушка, чтобы не было мерциний при переходе на splashViewController, пока грузится config
+    private lazy var emptyViewController: UIViewController = {
+        $0.view.backgroundColor = .white
+        return $0
+    }(UIViewController())
+
     private let configManager: ConfigureManagerProtocol
     private var singleDispose: Disposable?
 
     // MARK: Init
-    init(window: UIWindow,
-         configManager: ConfigureManagerProtocol) {
+    @discardableResult  init(window: UIWindow,
+                             configManager: ConfigureManagerProtocol) {
         self.window = window
         self.configManager = configManager
+
+        window.rootViewController = emptyViewController
+        window.makeKeyAndVisible()
         getConfig()
     }
 
@@ -56,14 +65,7 @@ final class AppAssembly {
                                           managerFactory: managerFactory,
                                           resource: resource)
         coordinator.injectModuleFactory(moduleFactory: moduleFactory)
-
-        if UserDefaults.standard.value(forKey: UserDefaultsKey.firstTimeLoad.rawValue) == nil {
-            UserDefaults.standard.set(true, forKey: UserDefaultsKey.firstTimeLoad.rawValue)
-            coordinator.presentRegisterViewController()
-            return
-        }
-        
-        coordinator.presentTabBarViewController(withUser: nil, showSplash: true)
+        coordinator.presentSplashViewController(presenter: emptyViewController)
 
         singleDispose?.dispose()
     }

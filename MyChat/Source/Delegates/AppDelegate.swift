@@ -23,9 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                didFinishLaunchingWithOptions: launchOptions)
 
         let window = UIWindow(frame: UIScreen.main.bounds)
+
+        // Конфигурация приложения
         let configureManager = ConfigureManager()
-        // swiftlint:disable:next redundant_discardable_let
-        let _ = AppAssembly(window: window, configManager: configureManager)
+        AppAssembly(window: window, configManager: configureManager)
         return true
     }
 

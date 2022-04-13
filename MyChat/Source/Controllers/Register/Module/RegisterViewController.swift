@@ -178,15 +178,15 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // viewController
         viewModel.output.viewControllerBackgroundColor
-            .subscribe { [node] event in
+            .subscribe { [weak node] event in
                 node?.backgroundColor = event.element
             }
             .disposed(by: bag)
 
         // submitButton
         viewModel.output.submitButtonTitle
-            .subscribe { [uiElements] event in
-                uiElements.submitButton.setTitle(event.element?.title ?? "",
+            .subscribe { [weak uiElements] event in
+                uiElements?.submitButton.setTitle(event.element?.title ?? "",
                                                  with: event.element?.font,
                                                  with: nil,
                                                  for: .normal)
@@ -194,14 +194,14 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.submitButtonIsEnable // делает кнопку активной/не активной в таргете текстфилдов
-            .subscribe { [uiElements] event in
-                uiElements.submitButton.isEnabled = event.element ?? false
+            .subscribe { [weak uiElements] event in
+                uiElements?.submitButton.isEnabled = event.element ?? false
             }
             .disposed(by: bag)
 
         viewModel.output.submitButtonColor
             .subscribe { [uiElements, constants] event in
-                UIView.animate(withDuration: constants.animationDutation) {
+                UIView.animate(withDuration: constants.animationDuration) {
                     uiElements.submitButton.backgroundColor = event.element
                 }
             }
@@ -209,8 +209,8 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // changeStateButton
         viewModel.output.changeStateButtonTitle
-            .subscribe { [uiElements] event in
-                uiElements.changeStateButton.setTitle(event.element?.title ?? "",
+            .subscribe { [weak uiElements] event in
+                uiElements?.changeStateButton.setTitle(event.element?.title ?? "",
                                                       with: event.element?.font,
                                                       with: nil,
                                                       for: .normal)
@@ -219,24 +219,24 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // Все текстфилды
         viewModel.output.textfieldsFont
-            .subscribe { [uiElements] event in
-                [ uiElements.nameTextField,
-                  uiElements.passwordTestField,
-                  uiElements.passwordSecondTimeTextfield
-                ].forEach { $0.textfield.font = event.element }
+            .subscribe { [weak uiElements] event in
+                [ uiElements?.nameTextField,
+                  uiElements?.passwordTestField,
+                  uiElements?.passwordSecondTimeTextfield
+                ].forEach { $0?.textfield.font = event.element }
             }
             .disposed(by: bag)
 
         // nameTextfield
         viewModel.output.nameTextfieldText
-            .subscribe { [uiElements] event in
-                uiElements.nameTextField.textfield.text = event.element as NSString?
+            .subscribe { [weak uiElements] event in
+                uiElements?.nameTextField.textfield.text = event.element as NSString?
             }
             .disposed(by: bag)
 
         viewModel.output.nameTextfieldPlaceholder
-            .subscribe { [uiElements] event in
-                uiElements.nameTextField.textfield.placeholder = event.element as NSString?
+            .subscribe { [weak uiElements] event in
+                uiElements?.nameTextField.textfield.placeholder = event.element as NSString?
             }.disposed(by: bag)
 
         // passwordTextfield
@@ -248,8 +248,8 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.passwordTextfieldPlaceholder
-            .subscribe { [uiElements] event in
-                uiElements.passwordTestField.textfield.placeholder = event.element as NSString?
+            .subscribe { [weak uiElements] event in
+                uiElements?.passwordTestField.textfield.placeholder = event.element as NSString?
             }
             .disposed(by: bag)
 
@@ -262,23 +262,24 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.secondPasswordTextfieldPlaceholder
-            .subscribe { [uiElements] event in
-                uiElements.passwordSecondTimeTextfield.textfield.placeholder = event.element as NSString?
+            .subscribe { [weak uiElements] event in
+                uiElements?.passwordSecondTimeTextfield.textfield.placeholder = event.element as NSString?
             }
             .disposed(by: bag)
 
         viewModel.output.secondPasswordTextfieldIsHidden
-            .subscribe { [uiElements, constants] event in
+            .subscribe { [weak uiElements, constants] event in
                 if event.element == true {
-                    UIView.animate(withDuration: constants.animationDutation) {
-                        uiElements.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
+                    UIView.animate(withDuration: constants.animationDuration) {
+                        // swiftlint:disable:next line_length
+                        uiElements?.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
                     } completion: { _ in
-                        uiElements.passwordSecondTimeTextfield.isHidden = event.element ?? false
+                        uiElements?.passwordSecondTimeTextfield.isHidden = event.element ?? false
                     }
                 } else {
-                    UIView.animate(withDuration: constants.animationDutation) {
-                        uiElements.passwordSecondTimeTextfield.isHidden = event.element ?? false
-                        uiElements.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
+                    UIView.animate(withDuration: constants.animationDuration) {
+                        uiElements?.passwordSecondTimeTextfield.isHidden = event.element ?? false
+                        uiElements?.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
                     }
                 }
             }
@@ -286,26 +287,26 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // errorPasswordLabelText
         viewModel.output.errorPasswordLabel
-            .subscribe { [uiElements] event in
+            .subscribe { [weak uiElements] event in
                 guard let text = event.element?.text,
                       let font = event.element?.font else { return }
                 let attributes = [NSAttributedString.Key.font: font]
                 let attributedStringText = NSAttributedString(string: text,
                                                               attributes: attributes)
-                uiElements.passwordsErrorLabel.attributedText = attributedStringText
+                uiElements?.passwordsErrorLabel.attributedText = attributedStringText
             }
             .disposed(by: bag)
 
         viewModel.output.errorPasswordLabelState
             .subscribe { [uiElements, constants] event in
                 if event.element == true {
-                    UIView.animate(withDuration: constants.animationDutation) {
+                    UIView.animate(withDuration: constants.animationDuration) {
                         uiElements.passwordsErrorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
                     } completion: { _ in
                         uiElements.passwordsErrorLabel.isHidden = event.element ?? false
                     }
                 } else {
-                    UIView.animate(withDuration: constants.animationDutation) {
+                    UIView.animate(withDuration: constants.animationDuration) {
                         uiElements.passwordsErrorLabel.isHidden = event.element ?? false
                         uiElements.passwordsErrorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
                     }
@@ -315,13 +316,14 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // orLabel
         viewModel.output.orLabel
-            .subscribe { [uiElements] event in
+            .subscribe { [weak uiElements] event in
                 guard let text = event.element?.text,
-                      let font = event.element?.font else { return }
-                let attributes = [NSAttributedString.Key.font: font]
+                      let font = event.element?.font,
+                      let color = event.element?.color else { return }
+                let attributes = [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: color]
                 let attributedStringText = NSAttributedString(string: text,
                                                               attributes: attributes)
-                uiElements.orLabel.attributedText = attributedStringText
+                uiElements?.orLabel.attributedText = attributedStringText
             }
             .disposed(by: bag)
     }
@@ -338,22 +340,22 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
          */
 
         viewModel.output.viewControllerState
-            .subscribe { [viewModel, uiElements] _ in
-                viewModel.input.secondTimeTextfieldIsHiddenToggle()
-                viewModel.input.changeButtonsTitle()
-                viewModel.input.disableErrorLabel()
+            .subscribe { [weak viewModel, weak uiElements] _ in
+                viewModel?.input.secondTimeTextfieldIsHiddenToggle()
+                viewModel?.input.changeButtonsTitle()
+                viewModel?.input.disableErrorLabel()
 
-                [uiElements.nameTextField,
-                 uiElements.passwordTestField,
-                 uiElements.passwordSecondTimeTextfield]
+                [uiElements?.nameTextField,
+                 uiElements?.passwordTestField,
+                 uiElements?.passwordSecondTimeTextfield]
                     .forEach { $0?.resignFirstResponder()}
             }.disposed(by: bag)
 
         // Изменение состояния submitButton
         viewModel.output.submitButtonState
-            .subscribe { [viewModel] _ in
-                viewModel.input.submitButtonChangeIsEnable() // активирует/деактивирует кнопку
-                viewModel.input.submitButtonChangeAlpha()    // меняет непрозрачность кнопки
+            .subscribe { [weak viewModel] _ in
+                viewModel?.input.submitButtonChangeIsEnable() // активирует/деактивирует кнопку
+                viewModel?.input.submitButtonChangeAlpha()    // меняет непрозрачность кнопки
                 // иметь в виду, что если кнопка прозрачная, то не обязательно она не активная
             }.disposed(by: bag)
     }

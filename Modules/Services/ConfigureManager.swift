@@ -42,7 +42,9 @@ extension ConfigureManager: ConfigureManagerProtocol {
                                             chatsListViewController: [:],
                                             profileViewController: [:])
 
-        let paletteConfig = AppPaletteConfig(registerViewController: [:],
+        let paletteConfig = AppPaletteConfig(emptyViewController: [:],
+                                             splashViewController: [:],
+                                             registerViewController: [:],
                                              chatsListViewController: [:],
                                              profileViewController: [:])
 

@@ -10,9 +10,11 @@
 		29A8BA647FB72AF14E76645E /* Pods_UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC1421DAECEE3EDD8FBF0F2 /* Pods_UI.framework */; };
 		D73FD4EB2801D87B00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; };
 		D73FD4EC2801D87B00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D7627DF028069DAC004DAD16 /* ActivityIndicacotorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */; };
+		D7627EAC2806C6C6004DAD16 /* AuthButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */; };
 		D7708ED528032AC900D1E41D /* TextFieldWithBottomBorderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */; };
 		D7708ED628032AC900D1E41D /* ChatCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7708ECC28032AC900D1E41D /* ChatCellNode.swift */; };
-		D7708ED728032AC900D1E41D /* AuthButtonsNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7708ECD28032AC900D1E41D /* AuthButtonsNode.swift */; };
+		D7708ED728032AC900D1E41D /* AuthButtonsStackNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7708ECD28032AC900D1E41D /* AuthButtonsStackNode.swift */; };
 		D7708ED828032AC900D1E41D /* ASTextFieldView.h in Headers */ = {isa = PBXBuildFile; fileRef = D7708ED028032AC900D1E41D /* ASTextFieldView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D7708ED928032AC900D1E41D /* ASTextFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = D7708ED128032AC900D1E41D /* ASTextFieldView.m */; };
 		D7708EDA28032AC900D1E41D /* ASTextFieldNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D7708ED328032AC900D1E41D /* ASTextFieldNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -39,9 +41,12 @@
 		B9CED2F57CCA7B34EC73A333 /* Pods-UI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.debug.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.debug.xcconfig"; sourceTree = "<group>"; };
 		D73FD4C22801D67800912D46 /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D73FD4EA2801D87B00912D46 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicacotorNode.swift; sourceTree = "<group>"; };
+		D7627EAA2806C415004DAD16 /* activityAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = activityAnimation.json; sourceTree = "<group>"; };
+		D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthButtonNode.swift; sourceTree = "<group>"; };
 		D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldWithBottomBorderNode.swift; sourceTree = "<group>"; };
 		D7708ECC28032AC900D1E41D /* ChatCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCellNode.swift; sourceTree = "<group>"; };
-		D7708ECD28032AC900D1E41D /* AuthButtonsNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthButtonsNode.swift; sourceTree = "<group>"; };
+		D7708ECD28032AC900D1E41D /* AuthButtonsStackNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthButtonsStackNode.swift; sourceTree = "<group>"; };
 		D7708ED028032AC900D1E41D /* ASTextFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTextFieldView.h; sourceTree = "<group>"; };
 		D7708ED128032AC900D1E41D /* ASTextFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASTextFieldView.m; sourceTree = "<group>"; };
 		D7708ED328032AC900D1E41D /* ASTextFieldNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTextFieldNode.h; sourceTree = "<group>"; };
@@ -86,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				D7708EC928032AC900D1E41D /* Nodes */,
+				D7627EA92806C40B004DAD16 /* Resource */,
 				D7708ECE28032AC900D1E41D /* Objective-C */,
 				D73FD4C32801D67800912D46 /* Products */,
 				739E55F840AAE5865BA90C5A /* Pods */,
@@ -101,12 +107,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D7627EA92806C40B004DAD16 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				D7627EAA2806C415004DAD16 /* activityAnimation.json */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		D7627EAD2806C9A8004DAD16 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */,
+				D7708ECD28032AC900D1E41D /* AuthButtonsStackNode.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 		D7708EC928032AC900D1E41D /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
+				D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */,
 				D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */,
 				D7708ECC28032AC900D1E41D /* ChatCellNode.swift */,
-				D7708ECD28032AC900D1E41D /* AuthButtonsNode.swift */,
+				D7627EAD2806C9A8004DAD16 /* Auth */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -248,9 +272,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7708EDB28032AC900D1E41D /* ASTextFieldNode.m in Sources */,
+				D7627EAC2806C6C6004DAD16 /* AuthButtonNode.swift in Sources */,
 				D7708ED928032AC900D1E41D /* ASTextFieldView.m in Sources */,
+				D7627DF028069DAC004DAD16 /* ActivityIndicacotorNode.swift in Sources */,
 				D7708ED528032AC900D1E41D /* TextFieldWithBottomBorderNode.swift in Sources */,
-				D7708ED728032AC900D1E41D /* AuthButtonsNode.swift in Sources */,
+				D7708ED728032AC900D1E41D /* AuthButtonsStackNode.swift in Sources */,
 				D7708ED628032AC900D1E41D /* ChatCellNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
