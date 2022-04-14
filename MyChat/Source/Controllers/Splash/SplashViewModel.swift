@@ -49,7 +49,8 @@ final class SplashViewModel {
                 switch result {
                 case .success(let chatUser):
                     authState.accept(chatUser)
-                case .failure: break
+                case .failure: // TODO: Залогировать
+                    print(Errors.cantCheckIsLoggedInOrNot)
                 }
             }
             .disposed(by: disposeBag)

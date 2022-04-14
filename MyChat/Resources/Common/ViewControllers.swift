@@ -5,6 +5,13 @@
 //  Created by Boris Verbitsky on 07.04.2022.
 //
 
+/*
+ Набор перечислений для всех ресурсов контроллеров:
+ - Шрифты для всех ui элементов
+ - Тексты для всех ui элементов
+ - Цвета для всех ui элементов
+ */
+
 enum ViewControllers {
     case registerViewController
     case chatsListViewController
@@ -29,11 +36,20 @@ enum RegisterViewControllerTexts: String {
     case secondPasswordPlaceholder
     case authTextForButton
     case sighUpTextForButton
-    case errorPasswordLabel
+    // ErrorLabel
+    case errorLabelPasswordsNotTheSame
+    case errorLabelEmailInvalid
+    case errorLabelPasswordInvalid
     // AlertController
     case alertControllerTitle
     case alertControllerAuthError
+    case alertControllerGoogleAuthError
+    case alertControllerAppleAuthError
+    case alertControllerFacebookAuthError
     case alertControllerSignUpError
+    case alertControllerInvalidEmail
+    case alertControllerInvalidPassword
+    case alertControllerIsAlreadySignUp
     case alertControllerOKAction
     case orLabelText
 }

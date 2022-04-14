@@ -13,8 +13,7 @@ struct RegisterConstants {
     // MARK: Public properties
     // Текстфилды
     let textfieldsStackSpacing: CGFloat = 20
-    let stackElementSize = CGSize(width: 250,
-                                         height: 40)
+    let stackElementSize = CGSize(width: 260, height: 40)
     // swiftlint:disable:next identifier_name
     let textfieldsStackTopInsetForPhonesWithoutHomeButton: CGFloat = 280
     // swiftlint:disable:next identifier_name
@@ -22,12 +21,11 @@ struct RegisterConstants {
     let passwordSecondTimeTextfieldAlphaEnable: CGFloat = 1
     let passwordSecondTimeTextfieldAlphaDisable: CGFloat = 0
     // Кнопки
-    let buttonsSize = CGSize(width: 250,
-                                    height: 40)
+    let buttonsSize = CGSize(width: 250, height: 40)
     // SafeAreaInsets
     let bottomInsetForPhonesWithoutHomeButton: CGFloat = 32
     let bottomInsetForPhonesWithHomeButton: CGFloat = 16
-
     // Время анимации
-    let animationDuration: TimeInterval = 0.25
+    let animationDurationForSubmitButtonColor: TimeInterval = 0.25
+    let animationDurationForErrorLabel: TimeInterval = 0.15
 }

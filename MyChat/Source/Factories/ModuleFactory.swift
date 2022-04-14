@@ -55,12 +55,12 @@ extension ModuleFactory: ModuleFactoryProtocol {
     }
 
     func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController {
-        SplashModuleBuilder().build(managerFactory: managerFactory,
+        SplashModuleBuilder().build(managers: managerFactory,
                                     coordinator: coordinator)
     }
 
     func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController {
-        ProfileModuleBuilder().build(managerFactory: managerFactory,
+        ProfileModuleBuilder().build(managers: managerFactory,
                                      coordinator: coordinator,
                                      texts: resource.texts.profileViewController(),
                                      fonts: resource.fonts.profileViewController(),
@@ -68,7 +68,7 @@ extension ModuleFactory: ModuleFactoryProtocol {
     }
 
     func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController {
-        ChatsListModuleBuilder().build(managerFactory: managerFactory,
+        ChatsListModuleBuilder().build(managers: managerFactory,
                                               coordinator: coordinator,
                                        fonts: resource.fonts.chatsListViewController(),
                                        texts: resource.texts.chatsListViewController(),

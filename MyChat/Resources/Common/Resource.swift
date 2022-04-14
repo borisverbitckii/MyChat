@@ -14,6 +14,11 @@ protocol ResourceProtocol {
 
 }
 
+/// Ресурсы всего приложения
+///
+/// Включает в себя шрифты, тексты, а также все цвета.
+/// Все это устанавливается удаленно с помощью ConfigureManager,
+/// но также имеет дефолтные параметры
 final class Resource: ResourceProtocol {
 
     // MARK: Public properties

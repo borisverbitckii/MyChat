@@ -14,7 +14,7 @@ final class AppAssembly {
 
     // MARK: Private Properties
     private let window: UIWindow
-    /// Заглушка, чтобы не было мерциний при переходе на splashViewController, пока грузится config
+    /// Заглушка, чтобы не было мерцаний при переходе на splashViewController, пока грузится config
     private lazy var emptyViewController: UIViewController = {
         $0.view.backgroundColor = .white
         return $0
@@ -40,7 +40,7 @@ final class AppAssembly {
             .subscribe { [configureApp] config in
                 configureApp(.success(config))
             } onFailure: { [configureApp] error in
-                configureApp(.failure(error))
+                configureApp(.failure(error)) // TODO: Залогировать
             }
     }
 
@@ -56,14 +56,13 @@ final class AppAssembly {
         }
 
         let resource = Resource(config: config)
-
-        let coordinator = Coordinator()
-        coordinator.injectWindow(window: window)
-
+        let coordinator = Coordinator(window: window)
         let managerFactory = ManagerFactory()
+
         let moduleFactory = ModuleFactory(coordinator: coordinator,
                                           managerFactory: managerFactory,
                                           resource: resource)
+
         coordinator.injectModuleFactory(moduleFactory: moduleFactory)
         coordinator.presentSplashViewController(presenter: emptyViewController)
 

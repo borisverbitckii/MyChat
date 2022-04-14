@@ -49,6 +49,7 @@
 		D746C27B27F1C814009416F7 /* RegisterUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D746C27A27F1C814009416F7 /* RegisterUI.swift */; };
 		D74D044B27FAC6FE00222699 /* Fonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74D044A27FAC6FE00222699 /* Fonts.swift */; };
 		D75FD5FE28017363001B1359 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D764EDB12807F82700963C61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D764EDB02807F82700963C61 /* Utils.swift */; };
 		D7708EE0280334BB00D1E41D /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7708EDF280334BB00D1E41D /* Models.framework */; };
 		D7708EE1280334BB00D1E41D /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7708EDF280334BB00D1E41D /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D79CBCCA2804368E004722FE /* Services.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D79CBCC92804368E004722FE /* Services.framework */; };
@@ -121,6 +122,7 @@
 		D746C27A27F1C814009416F7 /* RegisterUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUI.swift; sourceTree = "<group>"; };
 		D74D044A27FAC6FE00222699 /* Fonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fonts.swift; sourceTree = "<group>"; };
 		D75FD66B2801CD48001B1359 /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D764EDB02807F82700963C61 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		D7708EDF280334BB00D1E41D /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D79CBCC92804368E004722FE /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7D15EF427FFF68C00072821 /* RegisterConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterConstants.swift; sourceTree = "<group>"; };
@@ -186,14 +188,6 @@
 			path = MyChat;
 			sourceTree = "<group>";
 		};
-		A101D59527B775ED00A38901 /* Delegates */ = {
-			isa = PBXGroup;
-			children = (
-				A101D58127B7750C00A38901 /* AppDelegate.swift */,
-			);
-			path = Delegates;
-			sourceTree = "<group>";
-		};
 		A101D59D27B7762600A38901 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -212,7 +206,6 @@
 			isa = PBXGroup;
 			children = (
 				D7D15EEF27FEB50600072821 /* Common */,
-				D7DE73B7280063BB00DF2037 /* Errors.swift */,
 				A101D5DA27B9119F00A38901 /* Text.swift */,
 				D74D044A27FAC6FE00222699 /* Fonts.swift */,
 				D72FFE1327FDADD9003F6E9A /* Palette.swift */,
@@ -224,10 +217,8 @@
 		A101D59F27B7764900A38901 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				A101D5D027B78B9C00A38901 /* AppAssembly.swift */,
-				A101D5B027B7790F00A38901 /* Coordinator.swift */,
 				A101D58C27B7750C00A38901 /* LaunchScreen.storyboard */,
-				A101D59527B775ED00A38901 /* Delegates */,
+				D764EDAF2807F76100963C61 /* Core */,
 				A101D5C327B77D5100A38901 /* Factories */,
 				A101D59D27B7762600A38901 /* Controllers */,
 				A101D5D227B7A49D00A38901 /* Extensions */,
@@ -341,6 +332,18 @@
 				A101D5DF27BA846A00A38901 /* RegisterViewModel.swift */,
 			);
 			path = Module;
+			sourceTree = "<group>";
+		};
+		D764EDAF2807F76100963C61 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A101D58127B7750C00A38901 /* AppDelegate.swift */,
+				A101D5D027B78B9C00A38901 /* AppAssembly.swift */,
+				A101D5B027B7790F00A38901 /* Coordinator.swift */,
+				D7DE73B7280063BB00DF2037 /* Errors.swift */,
+				D764EDB02807F82700963C61 /* Utils.swift */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 		D7D15EEF27FEB50600072821 /* Common */ = {
@@ -502,6 +505,7 @@
 				A101D5C527B77D5B00A38901 /* ManagerFactory.swift in Sources */,
 				A101D5C727B77D7F00A38901 /* ModuleFactory.swift in Sources */,
 				D72FFE0D27FC8EBF003F6E9A /* ChatsListDocOverview.swift in Sources */,
+				D764EDB12807F82700963C61 /* Utils.swift in Sources */,
 				A101D5C927B77F6400A38901 /* SplashModuleBuilder.swift in Sources */,
 				D712809127EB2DCA00994433 /* RegisterDocOverview.swift in Sources */,
 				A101D5EA27BA99F500A38901 /* NewChatBuilder.swift in Sources */,
@@ -678,10 +682,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_COMPLETION_HANDLER_MISUSE = YES;
 				CODE_SIGN_ENTITLEMENTS = MyChat/MyChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PQ6LM8W269;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyChat/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -714,10 +721,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_COMPLETION_HANDLER_MISUSE = YES;
 				CODE_SIGN_ENTITLEMENTS = MyChat/MyChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = PQ6LM8W269;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyChat/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

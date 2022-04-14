@@ -20,20 +20,25 @@ public final class ChatCellNode: ASCellNode {
 
         // UIElements
     private let title: ASTextNode = {
+        $0.placeholderEnabled = true
         return $0
     }(ASTextNode())
 
     private let userIcon: ASNetworkImageNode = {
+        $0.defaultImage = nil // TODO: Заменить на дефолтную картинку
+        $0.placeholderEnabled = true // TODO: Проверить duration
         $0.clipsToBounds = true
         return $0
     }(ASNetworkImageNode())
 
     private let messageTime: ASTextNode = {
-        $0
+        $0.placeholderEnabled = true
+        return $0
     }(ASTextNode())
 
     private let messageText: ASTextNode = {
-        $0
+        $0.placeholderEnabled = true
+        return $0
     }(ASTextNode())
 
     // MARK: Public methods

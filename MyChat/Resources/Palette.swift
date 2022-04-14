@@ -16,12 +16,10 @@ protocol PaletteProtocol {
     func profileViewController() -> (ProfileViewControllerPalette) -> (UIColor)
 }
 
-/*
- Класс для возможности удаленной настройки всех цветов в приложении
+/* Класс для возможности удаленной настройки всех цветов в приложении
  Обрабатывает удаленный конфиг AppPaletteConfig, если он не nil, присваивает
- стандартные значения. Все цвета для приложения устанавливаются здесь,
- задаются в Assets для светлой и темной темы
- */
+ стандартные значения из Assets. Все цвета для приложения устанавливаются здесь,
+ задаются в Assets для светлой и темной темы */
 
 final class Palette {
 
@@ -46,7 +44,7 @@ extension Palette: PaletteProtocol {
                 return color
             }
 
-            assert(UIColor(named: color.rawValue) != nil)
+            assert(UIColor(named: color.rawValue) != nil, "Цвет не найден")
             return UIColor(named: color.rawValue)!
         }
     }
@@ -58,8 +56,7 @@ extension Palette: PaletteProtocol {
             if let color = self.config?.emptyViewController[color.rawValue] {
                 return color
             }
-
-            assert(UIColor(named: color.rawValue) != nil)
+            assert(UIColor(named: color.rawValue) != nil, "Цвет не найден")
             return UIColor(named: color.rawValue)!
         }
     }
@@ -72,7 +69,7 @@ extension Palette: PaletteProtocol {
                 return color
             }
 
-            assert(UIColor(named: color.rawValue) != nil)
+            assert(UIColor(named: color.rawValue) != nil, "Цвет не найден")
             return UIColor(named: color.rawValue)!
         }
     }
@@ -85,7 +82,7 @@ extension Palette: PaletteProtocol {
                 return color
             }
 
-            assert(UIColor(named: color.rawValue) != nil)
+            assert(UIColor(named: color.rawValue) != nil, "Цвет не найден")
             return UIColor(named: color.rawValue)!
         }
     }
@@ -98,7 +95,7 @@ extension Palette: PaletteProtocol {
                 return color
             }
 
-            assert(UIColor(named: color.rawValue) != nil)
+            assert(UIColor(named: color.rawValue) != nil, "Цвет не найден")
             return UIColor(named: color.rawValue)!
         }
     }

@@ -8,9 +8,9 @@
 final class SplashModuleBuilder {
 
     // MARK: - Public methods
-    func build(managerFactory: ManagerFactoryProtocol,
+    func build(managers: ManagerFactoryProtocol,
                coordinator: CoordinatorProtocol) -> SplashViewController {
-        let authManager = managerFactory.getAuthManager()
+        let authManager = managers.getAuthManager()
         let viewModel = SplashViewModel(coordinator: coordinator,
                                         authManager: authManager)
         let viewController = SplashViewController(viewModel: viewModel)

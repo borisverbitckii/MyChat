@@ -11,7 +11,7 @@ import UI
 final class RegisterUI {
 
     // MARK: Public properties
-    lazy var passwordsErrorLabel = ASTextNode()
+    lazy var errorLabel = ASTextNode()
     lazy var orLabel = ASTextNode()
     lazy var submitButton = ASButtonNode()
     lazy var changeStateButton = ASButtonNode()
@@ -25,6 +25,7 @@ final class RegisterUI {
     }(TextFieldWithBottomBorderNode())
 
     lazy var passwordTestField: TextFieldWithBottomBorderNode = {
+        $0.textfield.textField.clearButtonMode = .whileEditing
         $0.textfield.autocorrectionType = .no
         $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
@@ -33,6 +34,7 @@ final class RegisterUI {
     }(TextFieldWithBottomBorderNode())
 
     lazy var passwordSecondTimeTextfield: TextFieldWithBottomBorderNode = {
+        $0.textfield.textField.clearButtonMode = .whileEditing
         $0.textfield.autocorrectionType = .no
         $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
@@ -45,12 +47,8 @@ final class RegisterUI {
         return $0
     }(AuthButtonsStackNode())
 
-    // MARK: Private Properties
-    private let palette: (RegisterViewControllerPalette) -> UIColor // удаленная установка цветов
-
     // MARK: Init
     init(palette: @escaping (RegisterViewControllerPalette) -> (UIColor)) {
-        self.palette = palette
         changeStateButton.tintColor = palette(.changeStateButtonColor)
         submitButton.tintColor = palette(.submitButtonTextColor)
 

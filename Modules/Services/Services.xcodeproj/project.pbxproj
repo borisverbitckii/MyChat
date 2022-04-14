@@ -83,8 +83,8 @@
 		D75FD6522801C775001B1359 = {
 			isa = PBXGroup;
 			children = (
-				D75FD6842801D1C5001B1359 /* ConfigureManager */,
 				D781F94328042E1800F401D7 /* AuthManager */,
+				D75FD67E2801D195001B1359 /* ConfigureManager.swift */,
 				D75FD67F2801D195001B1359 /* NetworkManager.swift */,
 				D75FD6802801D195001B1359 /* StorageManager.swift */,
 				D75FD65D2801C775001B1359 /* Products */,
@@ -99,14 +99,6 @@
 				D75FD65C2801C775001B1359 /* Services.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		D75FD6842801D1C5001B1359 /* ConfigureManager */ = {
-			isa = PBXGroup;
-			children = (
-				D75FD67E2801D195001B1359 /* ConfigureManager.swift */,
-			);
-			name = ConfigureManager;
 			sourceTree = "<group>";
 		};
 		D781F94328042E1800F401D7 /* AuthManager */ = {

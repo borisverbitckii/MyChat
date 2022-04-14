@@ -10,14 +10,14 @@ import Services
 
 final class ChatsListModuleBuilder {
 
-    func build(managerFactory: ManagerFactoryProtocol,
+    func build(managers: ManagerFactoryProtocol,
                coordinator: CoordinatorProtocol,
                fonts: @escaping (ChatsListViewControllerFonts) -> UIFont,
                texts: @escaping (ChatsListViewControllerTexts) -> String,
                palette: @escaping (ChatsListViewControllerPalette) -> UIColor) -> UINavigationController {
 
         let viewModel = ChatsListViewModel(coordinator: coordinator,
-                                           networkManager: managerFactory.getNetworkManager(),
+                                           networkManager: managers.getNetworkManager(),
                                            fonts: fonts,
                                            texts: texts,
                                            palette: palette)

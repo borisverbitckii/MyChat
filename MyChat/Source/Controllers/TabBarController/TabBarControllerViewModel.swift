@@ -10,16 +10,16 @@ protocol TabBarControllerViewModelProtocol {
 
 final class TabBarControllerViewModel {
 
-    // MARK: - Private properties
+    // MARK: Private properties
     private let coordinator: CoordinatorProtocol
 
-    // MARK: - Init
+    // MARK: Init
     init(coordinator: CoordinatorProtocol) {
         self.coordinator = coordinator
     }
 }
 
-// MARK: - extension + TabBarControllerViewModelProtocol
+// MARK: - extension + TabBarControllerViewModelProtocol -
 extension TabBarControllerViewModel: TabBarControllerViewModelProtocol {
 
 }

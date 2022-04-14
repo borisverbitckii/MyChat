@@ -10,7 +10,6 @@ import Services
 import Models
 
 protocol CoordinatorProtocol: AnyObject {
-    func injectWindow(window: UIWindow)
     func injectModuleFactory(moduleFactory: ModuleFactory)
 
     func presentTabBarViewController(withChatUser user: ChatUser)
@@ -20,41 +19,46 @@ protocol CoordinatorProtocol: AnyObject {
 
 final class Coordinator {
 
-    // MARK: - Private properties -
-    private var window: UIWindow?
+    // MARK: Private properties
+    private var window: UIWindow
     private var moduleFactory: ModuleFactory?
+
+    // MARK: Init
+    init(window: UIWindow) {
+        self.window = window
+    }
 }
 
 // MARK: - Coordinator + CoordinatorProtocol -
 extension Coordinator: CoordinatorProtocol {
-
-    func injectWindow(window: UIWindow) {
-        self.window = window
-    }
 
     func injectModuleFactory(moduleFactory: ModuleFactory) {
         self.moduleFactory = moduleFactory
     }
 
     func presentTabBarViewController(withChatUser user: ChatUser) {
-        guard let window = window else { return }
         window.rootViewController = moduleFactory?.getTabBarController()
         window.makeKeyAndVisible()
 
-        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+        UIView.transition(with: window,
+                          duration: 0.3,
+                          options: .transitionCrossDissolve,
+                          animations: nil)
     }
 
     func presentRegisterViewController(presenter: TransitionHandler) {
-        guard let window = window,
-              let registerViewController = self.moduleFactory?.getRegisterViewController() else { return }
+        guard let registerViewController = self.moduleFactory?.getRegisterViewController() else { return }
         window.rootViewController = registerViewController
         window.makeKeyAndVisible()
 
-        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+        UIView.transition(with: window,
+                          duration: 0.3,
+                          options: .transitionCrossDissolve,
+                          animations: nil)
     }
 
     /// Презентация SplashViewController
-    /// - Parameter presenter: Презентующий контролллер
+    /// - Parameter presenter: Презентующий контроллер
     ///
     /// Модуль сплеша для проверки авторизации
     func presentSplashViewController(presenter: TransitionHandler) {

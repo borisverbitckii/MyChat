@@ -9,13 +9,13 @@ import UIKit
 
 final class ProfileModuleBuilder {
 
-    func build(managerFactory: ManagerFactoryProtocol,
+    func build(managers: ManagerFactoryProtocol,
                coordinator: CoordinatorProtocol,
                texts: @escaping (ProfileViewControllerTexts) -> String,
                fonts: @escaping (ProfileViewControllerFonts) -> UIFont,
                palette: @escaping (ProfileViewControllerPalette) -> UIColor) -> UINavigationController {
         let viewModel = ProfileViewModel(coordinator: coordinator,
-                                         authManager: managerFactory.getAuthManager(),
+                                         authManager: managers.getAuthManager(),
                                          texts: texts,
                                          fonts: fonts,
                                          palette: palette)

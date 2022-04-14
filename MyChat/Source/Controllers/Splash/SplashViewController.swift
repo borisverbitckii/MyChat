@@ -12,7 +12,7 @@ final class SplashViewController: UIViewController {
 
     // MARK: - Private properties
     private let viewModel: SplashViewModelProtocol
-    private let dispodeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
 
     // MARK: - Init
     init(viewModel: SplashViewModelProtocol) {
@@ -36,7 +36,7 @@ final class SplashViewController: UIViewController {
                     viewModel.input.presentNextViewController(withChatUser: nil, presenter: self)
                 }
             }
-            .disposed(by: dispodeBag)
+            .disposed(by: disposeBag)
 
     }
 }

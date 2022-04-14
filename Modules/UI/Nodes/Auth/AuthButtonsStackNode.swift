@@ -16,17 +16,23 @@ public final class AuthButtonsStackNode: ASDisplayNode {
         return AuthButtonNode(image: image)
     }()
 
+    public lazy var appleButton: AuthButtonNode = {
+        let image = ASImageNode()
+        image.image = UIImage(named: "apple")
+        return AuthButtonNode(image: image)
+    }()
+
     public lazy var facebookButton: AuthButtonNode = {
         let image = ASImageNode()
         image.image = UIImage(named: "facebook")
         return AuthButtonNode(image: image)
     }()
 
-    // MARK: Ovveride methods
+    // MARK: Override methods
     public override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
 
-        let buttons = [googleButton, facebookButton]
-        buttons.forEach { $0.style.preferredSize = CGSize(width: 100, height: 40)}
+        let buttons = [googleButton, appleButton , facebookButton]
+        buttons.forEach { $0.style.preferredSize = CGSize(width: 80, height: 40)}
 
         let hStack = ASStackLayoutSpec(direction: .horizontal,
                                        spacing: 10,
@@ -37,7 +43,6 @@ public final class AuthButtonsStackNode: ASDisplayNode {
     }
 
     public func configureBackground(withColor color: UIColor) {
-        googleButton.backgroundColor = color
-        facebookButton.backgroundColor = color
+        [googleButton, appleButton, facebookButton].forEach { $0.backgroundColor = color}
     }
 }

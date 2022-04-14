@@ -62,24 +62,36 @@ extension Fonts: FontsProtocol {
             }
 
             if uiElement == .registerOrLabel {
-                return UIFont(name: "Futura Medium", size: 24)!
+                let font = UIFont(name: "Futura Medium", size: 24)
+                assert(font != nil, "Такого шрифта нет в базе")
+                return font!
             }
 
             if uiElement == .changeStateButton {
-                return UIFont(name: "Futura Medium", size: 14)!
+                let font = UIFont(name: "Futura Medium", size: 14)
+                assert(font != nil, "Такого шрифта нет в базе")
+                return font!
             }
 
             if uiElement == .registerErrorLabel {
-                return UIFont(name: "Futura Medium", size: 14)!
+                let font = UIFont(name: "Futura Medium", size: 14)
+                assert(font != nil, "Такого шрифта нет в базе")
+                return font!
             }
 
             if uiElement == .registerTextfield {
-                return UIFont(name: "Futura Medium", size: 16)!
+                let font = UIFont(name: "Futura Medium", size: 16)
+                assert(font != nil, "Такого шрифта нет в базе")
+                return font!
             }
 
             if uiElement == .submitButton {
-                return UIFont(name: "Futura Medium", size: 20)!
+                let font = UIFont(name: "Futura Medium", size: 20)
+                assert(font != nil, "Такого шрифта нет в базе")
+                return font!
             }
+
+            assertionFailure("Случился кейс, в котором не назначен шрифт для ui элемента")
             return self.getBaseFont()
         }
     }
@@ -94,7 +106,11 @@ extension Fonts: FontsProtocol {
                                  size: fontSize) {
                 return font
             }
-            return self.getBaseFont()
+
+            switch uiElement {
+            case .empty:
+                return self.getBaseFont()
+            }
         }
     }
 
@@ -108,7 +124,11 @@ extension Fonts: FontsProtocol {
                                  size: fontSize) {
                 return font
             }
-            return self.getBaseFont()
+
+            switch uiElement {
+            case .empty:
+                return self.getBaseFont()
+            }
         }
     }
 }

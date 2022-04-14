@@ -11,7 +11,7 @@ import GoogleSignIn
 import FBSDKLoginKit
 import Models
 
-public protocol AuthManagerSplashProtocol { // для SplashViewController
+public protocol AuthManagerSplashProtocol {         // для SplashViewController
     func checkIsUserAlreadyLoggedInIn() -> Single<ChatUser?>
 }
 
@@ -19,12 +19,13 @@ public protocol AuthManagerRegisterProtocol {       // для RegisterViewContro
     func createUser(withEmail email: String, password: String) -> Single<ChatUser?>
     func signIn(withEmail email: String,
                 password: String) -> Single<ChatUser?>
+    func sighInWithApple(idTokenForAuth: String, nonce: String) -> Single<ChatUser?>
     func signInWithFacebook(presenterVC: UIViewController) -> Single<ChatUser?>
     func signInWithGoogle(presenterVC: UIViewController) -> Single<ChatUser?>
     func signOut() -> Single<Any?>
 }
 
-public protocol AuthManagerProfileProtocol {
+public protocol AuthManagerProfileProtocol {         // для ProfileViewController
     func signOut() -> Single<Any?>
 }
 
@@ -71,6 +72,8 @@ extension AuthManager: AuthManagerRegisterProtocol {
 
                 if let uid = authResult?.user.uid {
                     let chatUser = ChatUser(uid: uid,
+                                            email: authResult?.user.email,
+                                            isEmailVerified: authResult?.user.isEmailVerified,
                                             name: authResult?.user.displayName,
                                             surname: nil,
                                             avatarURL: authResult?.user.photoURL)
@@ -104,6 +107,8 @@ extension AuthManager: AuthManagerRegisterProtocol {
 
                 if let uid = authResult?.user.uid {
                     let chatUser = ChatUser(uid: uid,
+                                            email: authResult?.user.email,
+                                            isEmailVerified: authResult?.user.isEmailVerified,
                                             name: authResult?.user.displayName,
                                             surname: nil,
                                             avatarURL: authResult?.user.photoURL)
@@ -111,6 +116,35 @@ extension AuthManager: AuthManagerRegisterProtocol {
                     observer(.success(chatUser))
                 }
             }
+            return Disposables.create()
+        }
+    }
+
+    public func sighInWithApple(idTokenForAuth: String, nonce: String) -> Single<ChatUser?> {
+        Single<ChatUser?>.create { observer in
+
+            let credential = OAuthProvider.credential(withProviderID: "apple.com",
+                                                      idToken: idTokenForAuth,
+                                                      rawNonce: nonce)
+
+            Auth.auth().signIn(with: credential) { authResult, error in
+                if let error = error {
+                    observer(.failure(error))
+                    return
+                }
+
+                if let uid = authResult?.user.uid {
+                    let chatUser = ChatUser(uid: uid,
+                                            email: authResult?.user.email,
+                                            isEmailVerified: authResult?.user.isEmailVerified,
+                                            name: authResult?.user.displayName,
+                                            surname: nil,
+                                            avatarURL: authResult?.user.photoURL)
+
+                    observer(.success(chatUser))
+                }
+            }
+
             return Disposables.create()
         }
     }
@@ -140,6 +174,8 @@ extension AuthManager: AuthManagerRegisterProtocol {
 
                         if let uid = authResult?.user.uid {
                             let chatUser = ChatUser(uid: uid,
+                                                    email: authResult?.user.email,
+                                                    isEmailVerified: authResult?.user.isEmailVerified,
                                                     name: authResult?.user.displayName,
                                                     surname: nil,
                                                     avatarURL: authResult?.user.photoURL)
@@ -175,6 +211,8 @@ extension AuthManager: AuthManagerRegisterProtocol {
                         }
                         if let uid = authResult?.user.uid {
                             let chatUser = ChatUser(uid: uid,
+                                                    email: authResult?.user.email,
+                                                    isEmailVerified: authResult?.user.isEmailVerified,
                                                     name: authResult?.user.displayName,
                                                     surname: nil,
                                                     avatarURL: authResult?.user.photoURL)

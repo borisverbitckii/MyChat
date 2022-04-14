@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    // Для авторизации через гугл и facebool
+    // Для авторизации через google и facebook
     func application(_ application: UIApplication, open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any])
       -> Bool {
