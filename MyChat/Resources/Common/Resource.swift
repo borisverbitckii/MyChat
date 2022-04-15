@@ -6,11 +6,16 @@
 //
 
 import Models
+import UIKit
+
+enum ResourceType {
+    case text, color, font
+}
 
 protocol ResourceProtocol {
-    var fonts: FontsProtocol { get }
-    var texts: TextProtocol { get }
-    var palette: PaletteProtocol { get }
+    var fontsProvider: FontsProviderProtocol { get }
+    var textsProvider: TextProviderProtocol { get }
+    var paletteProvider: PaletteProtocol { get }
 
 }
 
@@ -19,17 +24,17 @@ protocol ResourceProtocol {
 /// Включает в себя шрифты, тексты, а также все цвета.
 /// Все это устанавливается удаленно с помощью ConfigureManager,
 /// но также имеет дефолтные параметры
-final class Resource: ResourceProtocol {
+final class Resource<T: UIViewController>: ResourceProtocol {
 
     // MARK: Public properties
-    var fonts: FontsProtocol
-    var texts: TextProtocol
-    var palette: PaletteProtocol
+    var fontsProvider: FontsProviderProtocol
+    var textsProvider: TextProviderProtocol
+    var paletteProvider: PaletteProtocol
 
     // MARK: Init
     init(config: AppConfig?) {
-        self.fonts = Fonts(config: config?.fonts)
-        self.texts = Text(config: config?.texts)
-        self.palette = Palette(config: config?.palette)
+        self.fontsProvider = FontsProvider<T>(config: config?.fonts)
+        self.textsProvider = TextProvider<T>(config: config?.texts)
+        self.paletteProvider = Palette(config: config?.palette)
     }
 }

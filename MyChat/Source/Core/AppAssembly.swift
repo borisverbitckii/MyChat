@@ -21,7 +21,7 @@ final class AppAssembly {
     }(UIViewController())
 
     private let configManager: ConfigureManagerProtocol
-    private var singleDispose: Disposable?
+    private let bag = DisposeBag()
 
     // MARK: Init
     @discardableResult  init(window: UIWindow,
@@ -31,41 +31,34 @@ final class AppAssembly {
 
         window.rootViewController = emptyViewController
         window.makeKeyAndVisible()
-        getConfig()
+        configureApp()
     }
 
     // MARK: Private methods
-    private func getConfig() {
-        singleDispose = configManager.getConfigObserver()
-            .subscribe { [configureApp] config in
-                configureApp(.success(config))
-            } onFailure: { [configureApp] error in
-                configureApp(.failure(error)) // TODO: Залогировать
+    private func configureApp() {
+        configManager.getConfigObserver()
+            .observe(on: MainScheduler.instance)
+            .subscribe {  result in
+
+                var config: AppConfig?
+
+                switch result {
+                case .success(let conf):
+                    config = conf
+                case .failure(let error):
+                    print(error) // TODO: Залогировать
+                }
+
+                let coordinator = Coordinator(window: self.window)
+                let managerFactory = ManagerFactory()
+
+                let moduleFactory = ModuleFactory(coordinator: coordinator,
+                                                  managerFactory: managerFactory,
+                                                  config: config)
+
+                coordinator.injectModuleFactory(moduleFactory: moduleFactory)
+                coordinator.presentSplashViewController(presenter: self.emptyViewController)
             }
-    }
-
-    private func configureApp(_ result: Result<AppConfig, Error>) {
-
-        var config: AppConfig?
-
-        switch result {
-        case .success(let globalConfig):
-            config = globalConfig
-        case .failure(let error):
-            print(error)
-        }
-
-        let resource = Resource(config: config)
-        let coordinator = Coordinator(window: window)
-        let managerFactory = ManagerFactory()
-
-        let moduleFactory = ModuleFactory(coordinator: coordinator,
-                                          managerFactory: managerFactory,
-                                          resource: resource)
-
-        coordinator.injectModuleFactory(moduleFactory: moduleFactory)
-        coordinator.presentSplashViewController(presenter: emptyViewController)
-
-        singleDispose?.dispose()
+            .disposed(by: bag)
     }
 }

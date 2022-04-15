@@ -11,41 +11,37 @@ import UI
 final class RegisterUI {
 
     // MARK: Public properties
-    lazy var errorLabel = ASTextNode()
     lazy var orLabel = ASTextNode()
+    lazy var errorLabel = ASTextNode()
     lazy var submitButton = ASButtonNode()
     lazy var changeStateButton = ASButtonNode()
+    lazy var authButtons = AuthButtonsStackNode()
 
     lazy var nameTextField: TextFieldWithBottomBorderNode = {
         $0.textfield.autocorrectionType = .no
-        $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
         $0.automaticallyManagesSubnodes = true
+        $0.textfield.autocapitalizationType = .none
         return $0
     }(TextFieldWithBottomBorderNode())
 
     lazy var passwordTestField: TextFieldWithBottomBorderNode = {
-        $0.textfield.textField.clearButtonMode = .whileEditing
         $0.textfield.autocorrectionType = .no
-        $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
         $0.automaticallyManagesSubnodes = true
+        $0.textfield.autocapitalizationType = .none
+        $0.textfield.textField.clearButtonMode = .whileEditing
         return $0
     }(TextFieldWithBottomBorderNode())
 
     lazy var passwordSecondTimeTextfield: TextFieldWithBottomBorderNode = {
-        $0.textfield.textField.clearButtonMode = .whileEditing
         $0.textfield.autocorrectionType = .no
-        $0.textfield.autocapitalizationType = .none
         $0.textfield.returnKeyType = .continue
         $0.automaticallyManagesSubnodes = true
+        $0.textfield.autocapitalizationType = .none
+        $0.textfield.textField.clearButtonMode = .whileEditing
         return $0
     }(TextFieldWithBottomBorderNode())
-
-    lazy var authButtons: AuthButtonsStackNode = {
-        $0.automaticallyManagesSubnodes = true
-        return $0
-    }(AuthButtonsStackNode())
 
     // MARK: Init
     init(palette: @escaping (RegisterViewControllerPalette) -> (UIColor)) {

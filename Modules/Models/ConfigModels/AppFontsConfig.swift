@@ -10,19 +10,14 @@ import UIKit
 // Структура, чтобы иметь возможность удаленно настраивать шрифты и их размеры
 public struct AppFontsConfig {
     public let baseFontName: String // базовый шрифт, если в других параметрах что-то пойдет не так
-
-    public let registerViewController: [String: (fontName: String, fontSize: CGFloat)]
-    public let chatsListViewController: [String: (fontName: String, fontSize: CGFloat)]
-    public let profileViewController: [String: (fontName: String, fontSize: CGFloat)]
-    // ключи - название ui элемента, значения - шрифт и размер
+    public let fonts: [String: [String: (fontName: String, fontSize: CGFloat)]]
+    // - Общий ключ - имя контроллера
+    // - Ключ значения - название ui элемента
+    // - (fontName: String, fontSize: CGFloat) - название и размер шрифта
 
     public init(baseFontName: String,
-                registerViewController: [String: (fontName: String, fontSize: CGFloat)],
-                chatsListViewController: [String: (fontName: String, fontSize: CGFloat)],
-                profileViewController: [String: (fontName: String, fontSize: CGFloat)]) {
+                fonts: [String: [String: (fontName: String, fontSize: CGFloat)]]) {
         self.baseFontName = baseFontName
-        self.registerViewController = registerViewController
-        self.chatsListViewController = chatsListViewController
-        self.profileViewController = profileViewController
+        self.fonts = fonts
     }
 }

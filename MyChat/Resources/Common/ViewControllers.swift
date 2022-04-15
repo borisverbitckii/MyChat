@@ -12,7 +12,7 @@
  - Цвета для всех ui элементов
  */
 
-enum ViewControllers {
+enum ViewControllers: String {
     case registerViewController
     case chatsListViewController
     case profileViewController
@@ -72,6 +72,7 @@ enum RegisterViewControllerPalette: String {
     case orLabelTextColor
     case authButtonBackground
     case errorLabelTextColor
+    case activityIndicatorBackgroundColor
 }
 
 // MARK: - ChatsListViewController -

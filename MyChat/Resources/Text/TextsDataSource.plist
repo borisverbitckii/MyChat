@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>RegisterViewController</key>
+	<dict>
+		<key>namePlaceholder</key>
+		<string>e-mail</string>
+		<key>passwordPlaceholder</key>
+		<string>password</string>
+		<key>secondPasswordPlaceholder</key>
+		<string>password second time</string>
+		<key>authTextForButton</key>
+		<string>Log in</string>
+		<key>sighUpTextForButton</key>
+		<string>Sign up</string>
+		<key>orLabelText</key>
+		<string>or</string>
+		<key>errorLabelPasswordInvalid</key>
+		<string>Password should be 6+ symbols</string>
+		<key>errorLabelEmailInvalid</key>
+		<string>Not correct e-mail</string>
+		<key>errorLabelPasswordsNotTheSame</key>
+		<string>Passwords don&apos;t match</string>
+		<key>alertControllerTitle</key>
+		<string>Error!</string>
+		<key>alertControllerOKAction</key>
+		<string>Ok</string>
+		<key>alertControllerInvalidPassword</key>
+		<string>Password is not valid. It should be 6+ symbols</string>
+		<key>alertControllerAuthError</key>
+		<string>Login or password is wrong. Try again:)</string>
+		<key>alertControllerGoogleAuthError</key>
+		<string>Something wrong with Google sign in. Please try another way to log in</string>
+		<key>alertControllerAppleAuthError</key>
+		<string>Something wrong with Apple sign in. Please try another way to log in</string>
+		<key>alertControllerFacebookAuthError</key>
+		<string>Something wrong with Facebook sign in. Please try another way to log in</string>
+		<key>alertControllerSignUpError</key>
+		<string>Passwords don&apos;t match. Try again:)</string>
+		<key>alertControllerInvalidEmail</key>
+		<string>Email is invalid, please try again</string>
+		<key>alertControllerIsAlreadySignUp</key>
+		<string>Account with this email is already signed up</string>
+	</dict>
+	<key>ChatsListViewController</key>
+	<dict>
+		<key>title</key>
+		<string>Chat list</string>
+	</dict>
+	<key>ProfileViewController</key>
+	<dict>
+		<key>title</key>
+		<string>Profile</string>
+	</dict>
+</dict>
+</plist>

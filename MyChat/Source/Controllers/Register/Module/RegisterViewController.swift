@@ -184,7 +184,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
     // swiftlint:disable:next function_body_length
     private func bindUIElements() {
-        // Бинд всех данных из вью модели в ui елементы
+        // Бинд всех данных из вью модели в ui элементы
 
         // viewController
         viewModel.output.viewControllerBackgroundColor

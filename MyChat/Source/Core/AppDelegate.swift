@@ -25,20 +25,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIWindow(frame: UIScreen.main.bounds)
 
         // Конфигурация приложения
-        let configureManager = ConfigureManager()
+        let configureManager: ConfigureManagerProtocol = ConfigureManager()
         AppAssembly(window: window, configManager: configureManager)
         return true
     }
 
     // Для авторизации через google и facebook
     func application(_ application: UIApplication, open url: URL,
-                     options: [UIApplication.OpenURLOptionsKey: Any])
-      -> Bool {
+                     options: [UIApplication.OpenURLOptionsKey: Any]) -> Bool {
 
-          Facebook.setupFacebookURLHandler(application: application,
-                                           open: url,
-                                           sourceApplication: options)
+        Facebook.setupFacebookURLHandler(application: application,
+                                         open: url,
+                                         sourceApplication: options)
 
-          return Google.googleURLHandler(url)
+        return Google.googleURLHandler(url)
     }
 }

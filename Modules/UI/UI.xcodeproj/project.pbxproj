@@ -42,7 +42,6 @@
 		D73FD4C22801D67800912D46 /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D73FD4EA2801D87B00912D46 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicacotorNode.swift; sourceTree = "<group>"; };
-		D7627EAA2806C415004DAD16 /* activityAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = activityAnimation.json; sourceTree = "<group>"; };
 		D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthButtonNode.swift; sourceTree = "<group>"; };
 		D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldWithBottomBorderNode.swift; sourceTree = "<group>"; };
 		D7708ECC28032AC900D1E41D /* ChatCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatCellNode.swift; sourceTree = "<group>"; };
@@ -87,6 +86,15 @@
 			path = ../../Pods;
 			sourceTree = "<group>";
 		};
+		D722AA41280864C800569D47 /* Textfield */ = {
+			isa = PBXGroup;
+			children = (
+				D7708ECF28032AC900D1E41D /* ASTextFieldView */,
+				D7708ED228032AC900D1E41D /* ASTextFieldNode */,
+			);
+			path = Textfield;
+			sourceTree = "<group>";
+		};
 		D73FD4B82801D67800912D46 = {
 			isa = PBXGroup;
 			children = (
@@ -110,7 +118,6 @@
 		D7627EA92806C40B004DAD16 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				D7627EAA2806C415004DAD16 /* activityAnimation.json */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -139,8 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				D7708EDD28032DFE00D1E41D /* UI.h */,
-				D7708ECF28032AC900D1E41D /* ASTextFieldView */,
-				D7708ED228032AC900D1E41D /* ASTextFieldNode */,
+				D722AA41280864C800569D47 /* Textfield */,
 			);
 			path = "Objective-C";
 			sourceTree = "<group>";

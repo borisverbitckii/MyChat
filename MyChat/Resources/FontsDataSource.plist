@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>RegisterViewController</key>
+	<dict>
+		<key>registerOrLabel</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>24</integer>
+		</dict>
+		<key>changeStateButton</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+		<key>registerErrorLabel</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+		<key>registerTextfield</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>16</integer>
+		</dict>
+		<key>submitButton</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>20</integer>
+		</dict>
+	</dict>
+	<key>ChatsListViewController</key>
+	<dict>
+		<key>empty</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>16</integer>
+		</dict>
+	</dict>
+	<key>ProfileViewController</key>
+	<dict>
+		<key>empty</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>16</integer>
+		</dict>
+	</dict>
+</dict>
+</plist>

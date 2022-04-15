@@ -12,8 +12,8 @@ final class ChatsListModuleBuilder {
 
     func build(managers: ManagerFactoryProtocol,
                coordinator: CoordinatorProtocol,
-               fonts: @escaping (ChatsListViewControllerFonts) -> UIFont,
                texts: @escaping (ChatsListViewControllerTexts) -> String,
+               fonts: @escaping (ChatsListViewControllerFonts) -> UIFont,
                palette: @escaping (ChatsListViewControllerPalette) -> UIColor) -> UINavigationController {
 
         let viewModel = ChatsListViewModel(coordinator: coordinator,

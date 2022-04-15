@@ -10,6 +10,7 @@ import UIKit
 
 public final class AuthButtonsStackNode: ASDisplayNode {
 
+    // MARK: Public properties
     public lazy var googleButton: AuthButtonNode = {
         let image = ASImageNode()
         image.image = UIImage(named: "google")
@@ -27,6 +28,12 @@ public final class AuthButtonsStackNode: ASDisplayNode {
         image.image = UIImage(named: "facebook")
         return AuthButtonNode(image: image)
     }()
+
+    // MARK: Init
+    public override init() {
+        super.init()
+        automaticallyManagesSubnodes = true
+    }
 
     // MARK: Override methods
     public override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {

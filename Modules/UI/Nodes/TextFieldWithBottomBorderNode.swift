@@ -24,11 +24,6 @@ public final class TextFieldWithBottomBorderNode: ASDisplayNode {
         return $0
     }(ASDisplayNode())
 
-    // MARK: Init
-    public override init() {
-        super.init()
-    }
-
     // MARK: Ovveride methods
     public override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let insets = UIEdgeInsets(top: .infinity, left: 0, bottom: 0, right: 0)

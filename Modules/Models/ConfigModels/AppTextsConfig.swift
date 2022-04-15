@@ -7,16 +7,12 @@
 
 // Структура, чтобы иметь возможность удаленно настраивать шрифты и их размеры
 public struct AppTextsConfig {
-    public let registerViewController: [String: String]
-    public let chatsListViewController: [String: String]
-    public let profileViewController: [String: String]
-    // ключи - название ui элемента, значения - текст
+    public let texts: [String: [String: String]]
+    // - Общий ключ - имя контроллера
+    // - Ключ значения - название ui элемента
+    // - Значение значения - текст
 
-    public init(registerViewController: [String: String],
-                chatsListViewController: [String: String],
-                profileViewController: [String: String]) {
-        self.registerViewController = registerViewController
-        self.chatsListViewController = chatsListViewController
-        self.profileViewController = profileViewController
+    public init(texts: [String: [String: String]]) {
+        self.texts = texts
     }
 }

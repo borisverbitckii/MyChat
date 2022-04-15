@@ -104,7 +104,7 @@ protocol RegisterViewModelOutput {
     // swiftlint:disable:next large_tuple
     var errorLabelTextFontColor: BehaviorRelay<(text: String,
                                                 font: UIFont,
-                                                color: UIColor)> { get }             // шрифт и текст для errorPasswordLabel
+                                                color: UIColor)> { get }        // шрифт и текст для errorPasswordLabel
     // Заголовок для лейбла, который пишет, что пароли не совпадают при регистрации
     var errorLabelIsHidden: BehaviorRelay<Bool> { get }
     // Включение/выключение лейбла, который пишет, что пароли не совпадают при регистрации
@@ -112,10 +112,10 @@ protocol RegisterViewModelOutput {
     // swiftlint:disable:next large_tuple
     var orLabel: BehaviorRelay<(text: String,
                                 font: UIFont,
-                                color: UIColor)> { get }                              // Шрифт,текст и цвет для orLabel
+                                color: UIColor)> { get }                        // Шрифт,текст и цвет для orLabel
 }
 
-final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutput {
+final class RegisterViewModel: RegisterViewModelProtocol {
 
     // MARK: Public properties
     var input: RegisterViewModelInput { return self }
@@ -165,7 +165,7 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
     private let palette: (RegisterViewControllerPalette) -> UIColor // Для установки цветов
 
     private var currentNonce: String?                               // Для авторизации и шифрования Apple
-    private var appleChatUser: ChatUser?                            // Для авторизации appleappleChatUser
+    private var appleChatUser: ChatUser?                            // Для авторизации в apple
 
     // MARK: Init
     // swiftlint:disable:next function_body_length
@@ -233,9 +233,67 @@ final class RegisterViewModel: RegisterViewModelProtocol, RegisterViewModelOutpu
                                                      font: orLabelFont,
                                                      color: orLabelColor))
     }
+
+    // MARK: Private Methods
+    private func showErrorLabelWithText(type: TextFieldType) {
+        let oldFont = errorLabelTextFontColor.value.font
+        let oldColor = errorLabelTextFontColor.value.color
+
+        switch type {
+        case .email:
+            errorLabelTextFontColor.accept((text: texts(.errorLabelEmailInvalid),
+                                            font: oldFont,
+                                            color: oldColor))
+        case .password:
+            errorLabelTextFontColor.accept((text: texts(.errorLabelPasswordInvalid),
+                                            font: oldFont,
+                                            color: oldColor))
+        }
+        errorLabelIsHidden.accept(false)
+    }
+
+    private func generateAlertController(type: AlertControllerType) -> UIAlertController {
+
+        let alertControllerTitle = texts(.alertControllerTitle)
+        let alertController = UIAlertController(title: alertControllerTitle,
+                                                message: "",
+                                                preferredStyle: .alert)
+
+        switch type {
+        case .notCorrectLoginOrPassword:
+            alertController.message = texts(.alertControllerAuthError)
+        case .passwordsNotTheSame:
+            alertController.message = texts(.alertControllerSignUpError)
+        case .googleAuth:
+            alertController.message = texts(.alertControllerGoogleAuthError)
+        case .appleAuth:
+            alertController.message = texts(.alertControllerAppleAuthError)
+        case .facebookAuth:
+            alertController.message = texts(.alertControllerFacebookAuthError)
+        case .invalidEmail:
+            alertController.message = texts(.alertControllerInvalidEmail)
+        case .isAlreadySignUp:
+            alertController.message = texts(.alertControllerIsAlreadySignUp)
+        case .invalidPassword:
+            alertController.message = texts(.alertControllerInvalidPassword)
+        }
+
+        let okActionText = texts(.alertControllerOKAction)
+        let okAction = UIAlertAction(title: okActionText, style: .default) { _ in
+            alertController.dismiss(animated: true)
+        }
+
+        alertController.addAction(okAction)
+        return alertController
+    }
 }
 
-// MARK: - RegisterViewModel + RegisterViewModelInput -
+// MARK: - extension + RegisterViewModelOutput  -
+extension RegisterViewModel: RegisterViewModelOutput {
+
+}
+
+// MARK: - extension + RegisterViewModelInput  -
 extension RegisterViewModel: RegisterViewModelInput {
 
     // MARK: Public Methods
@@ -318,7 +376,7 @@ extension RegisterViewModel: RegisterViewModelInput {
 
             case .appleButton:
                 guard let chatUser = appleChatUser else {
-                    assertionFailure()
+                    assertionFailure(AssertionErrorMessages.appleAuthError.assertionErrorMessage)
                     return
                 }
                 coordinator.presentTabBarViewController(withChatUser: chatUser)
@@ -557,59 +615,6 @@ extension RegisterViewModel: RegisterViewModelInput {
     func cleanPasswordsTextfields() {
         passwordTextfieldText.accept("")
         secondPasswordTextfieldText.accept("")
-    }
-
-    // MARK: Private Methods
-    private func showErrorLabelWithText(type: TextFieldType) {
-        let oldFont = errorLabelTextFontColor.value.font
-        let oldColor = errorLabelTextFontColor.value.color
-
-        switch type {
-        case .email:
-            errorLabelTextFontColor.accept((text: texts(.errorLabelEmailInvalid),
-                                            font: oldFont,
-                                            color: oldColor))
-        case .password:
-            errorLabelTextFontColor.accept((text: texts(.errorLabelPasswordInvalid),
-                                            font: oldFont,
-                                            color: oldColor))
-        }
-        errorLabelIsHidden.accept(false)
-    }
-
-    private func generateAlertController(type: AlertControllerType) -> UIAlertController {
-
-        let alertControllerTitle = texts(.alertControllerTitle)
-        let alertController = UIAlertController(title: alertControllerTitle,
-                                                message: "",
-                                                preferredStyle: .alert)
-
-        switch type {
-        case .notCorrectLoginOrPassword:
-            alertController.message = texts(.alertControllerAuthError)
-        case .passwordsNotTheSame:
-            alertController.message = texts(.alertControllerSignUpError)
-        case .googleAuth:
-            alertController.message = texts(.alertControllerGoogleAuthError)
-        case .appleAuth:
-            alertController.message = texts(.alertControllerAppleAuthError)
-        case .facebookAuth:
-            alertController.message = texts(.alertControllerFacebookAuthError)
-        case .invalidEmail:
-            alertController.message = texts(.alertControllerInvalidEmail)
-        case .isAlreadySignUp:
-            alertController.message = texts(.alertControllerIsAlreadySignUp)
-        case .invalidPassword:
-            alertController.message = texts(.alertControllerInvalidPassword)
-        }
-
-        let okActionText = texts(.alertControllerOKAction)
-        let okAction = UIAlertAction(title: okActionText, style: .default) { _ in
-            alertController.dismiss(animated: true)
-        }
-
-        alertController.addAction(okAction)
-        return alertController
     }
 }
 
