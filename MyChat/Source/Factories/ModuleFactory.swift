@@ -7,6 +7,7 @@
 
 import UIKit
 import Models
+import RxSwift
 
 protocol ModuleFactoryProtocol {
     func getTabBarController() -> UITabBarController
@@ -23,15 +24,15 @@ final class ModuleFactory {
     // MARK: - Private properties
     private weak var coordinator: CoordinatorProtocol?
     private let managerFactory: ManagerFactoryProtocol
-    private let config: AppConfig?
+    private let uiConfigProvider: (() -> (AppConfig))?
 
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
          managerFactory: ManagerFactoryProtocol,
-         config: AppConfig? = nil) {
+         uiConfigProvider: (() -> (AppConfig))?) {
         self.coordinator = coordinator
         self.managerFactory = managerFactory
-        self.config = config
+        self.uiConfigProvider = uiConfigProvider
     }
 }
 
@@ -48,7 +49,7 @@ extension ModuleFactory: ModuleFactoryProtocol {
 
     func getRegisterViewController() -> UIViewController {
         guard let coordinator = coordinator else { return UIViewController() }
-        let resource = Resource<RegisterViewController>(config: config)
+        let resource: ResourceProtocol = Resource<RegisterViewController>(config: uiConfigProvider)
         return RegisterModuleBuilder().build(coordinator: coordinator,
                                              managers: managerFactory,
                                              fonts: resource.fontsProvider.getFont(),
@@ -62,7 +63,7 @@ extension ModuleFactory: ModuleFactoryProtocol {
     }
 
     func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController {
-        let resource = Resource<ProfileViewController>(config: config)
+        let resource: ResourceProtocol = Resource<ProfileViewController>(config: uiConfigProvider)
         return ProfileModuleBuilder().build(managers: managerFactory,
                                             coordinator: coordinator,
                                             texts: resource.textsProvider.getText(),
@@ -71,7 +72,7 @@ extension ModuleFactory: ModuleFactoryProtocol {
     }
 
     func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController {
-        let resource = Resource<ChatsListViewController>(config: config)
+        let resource: ResourceProtocol = Resource<ChatsListViewController>(config: uiConfigProvider)
         return ChatsListModuleBuilder().build(managers: managerFactory,
                                               coordinator: coordinator,
                                               texts: resource.textsProvider.getText(),

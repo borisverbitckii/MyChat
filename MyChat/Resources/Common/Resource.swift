@@ -7,10 +7,7 @@
 
 import Models
 import UIKit
-
-enum ResourceType {
-    case text, color, font
-}
+import RxSwift
 
 protocol ResourceProtocol {
     var fontsProvider: FontsProviderProtocol { get }
@@ -24,7 +21,7 @@ protocol ResourceProtocol {
 /// Включает в себя шрифты, тексты, а также все цвета.
 /// Все это устанавливается удаленно с помощью ConfigureManager,
 /// но также имеет дефолтные параметры
-final class Resource<T: UIViewController>: ResourceProtocol {
+final class Resource<T>: ResourceProtocol {
 
     // MARK: Public properties
     var fontsProvider: FontsProviderProtocol
@@ -32,9 +29,33 @@ final class Resource<T: UIViewController>: ResourceProtocol {
     var paletteProvider: PaletteProtocol
 
     // MARK: Init
-    init(config: AppConfig?) {
-        self.fontsProvider = FontsProvider<T>(config: config?.fonts)
-        self.textsProvider = TextProvider<T>(config: config?.texts)
-        self.paletteProvider = Palette(config: config?.palette)
+    init(config: (() -> (AppConfig))?) {
+
+        let fontsClosure: (() -> (Fonts?))? = {
+
+            let fontsClosure: () -> (Fonts?)  = {
+                config?().fonts
+            }
+            return fontsClosure
+        }()
+
+        let textClosure: (() -> (Texts?))? = {
+
+            let textsClosure: () -> (Texts?)  = {
+                config?().texts
+            }
+            return textsClosure
+        }()
+
+        let paletteClosure: (() -> (Palette?))? = {
+            let paletteClosure: () -> (Palette?)  = {
+                config?().palette
+            }
+            return paletteClosure
+        }()
+
+        self.fontsProvider = FontsProvider<T>(remoteConfig: fontsClosure)
+        self.textsProvider = TextProvider<T>(remoteConfig: textClosure)
+        self.paletteProvider = PaletteProvider<T>(remoteConfig: paletteClosure)
     }
 }

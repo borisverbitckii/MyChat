@@ -9,8 +9,9 @@ target 'MyChat' do
  pod 'Texture'
  pod 'RxSwift'
  pod 'RxRelay'
+ pod 'RxCocoa'
  pod 'SwiftLint'
- pod 'Firebase'
+ pod 'Firebase/RemoteConfig'
  pod 'Firebase/Firestore'
  pod 'Firebase/Auth'
  pod 'FBSDKLoginKit'
@@ -24,8 +25,9 @@ target 'Services' do
   # Comment the next line if you don't want to use dynamic frameworks
 
  pod 'RxSwift'
- pod 'Firebase'
+ pod 'RxRelay'
  pod 'Firebase/Firestore'
+ pod 'Firebase/RemoteConfig'
  pod 'Firebase/Auth'
  pod 'FBSDKLoginKit'
  pod 'GoogleSignIn'

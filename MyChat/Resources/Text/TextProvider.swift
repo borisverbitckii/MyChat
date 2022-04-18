@@ -9,17 +9,15 @@ import UIKit
 import Models
 
 protocol TextProviderProtocol {
-    // Клоужер для локальной настройки текста
+    /// Клоужер для локальной настройки текста
     func getText<E: RawRepresentable>() -> (E) -> (String) where E.RawValue == String
 }
 
-/*
- Класс для возможности удаленной настройки всех текстов в приложении
- Обрабатывает удаленный конфиг AppTextsConfig, если он nil, присваивает
- стандартные значения. Все текста для приложения устанавливаются в TextsDataSource.plist
- */
-
-final class TextProvider <T: UIViewController>: Provider<AppTextsConfig> {}
+/// Класс для возможности удаленной настройки всех текстов в приложении
+///
+/// Обрабатывает удаленный конфиг AppTextsConfig, если он nil, присваивает
+/// стандартные значения. Все дефолтные текста для приложения устанавливаются в TextsDataSource.plist
+final class TextProvider <T>: Provider<Texts> {}
 
 // MARK: - TextProvider + TextProtocol -
 extension TextProvider: TextProviderProtocol {
@@ -31,17 +29,17 @@ extension TextProvider: TextProviderProtocol {
         { [remoteConfig] uiElement in
             let viewControllerName = String(describing: T.self)
 
-            guard let uiElementsDict = remoteConfig?.texts[viewControllerName] else {
+            guard let textsForViewController = remoteConfig?()?.viewControllers[viewControllerName] else {
                 // TODO: Залогировать отсутствие значения из конфига
                 return self.getDefaultText(for: uiElement.rawValue)
             }
 
-            guard let string = uiElementsDict[uiElement.rawValue] else {
+            guard let uiElement = textsForViewController.uiElements[uiElement.rawValue] else {
                 // TODO: Залогировать отсутствие значения из конфига
                 return self.getDefaultText(for: uiElement.rawValue)
             }
 
-            return string
+            return uiElement.text
         }
     }
 

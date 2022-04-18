@@ -482,9 +482,11 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                                                 presenter: self)
     }
 
+    private var appleIDTokenClosure: (() -> String)?
+
     // Реализация логина через Apple
     @objc private func appleSignInButtonTapped() {
-        viewModel.input.startAppleAuthFlow(authorizationControllerDelegate: self,
+        viewModel.input.startAppleAuthFlow(delegate: self,
                                            presentationContextProvider: self)
     }
 
@@ -632,7 +634,8 @@ extension RegisterViewController: ASAuthorizationControllerDelegate {
                 return
             }
 
-            viewModel.input.authWithAppleInFirebase(idTokenForAuth: idTokenString)
+            guard let appleAuthClosure = viewModel.output.appleAuthClosure else { return }
+            viewModel.input.authInApple(single: appleAuthClosure(idTokenString), presenter: self)
         }
     }
 

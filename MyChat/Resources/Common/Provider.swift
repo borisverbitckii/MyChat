@@ -6,6 +6,7 @@
 //
 
 import Models
+import RxSwift
 
 /// Базовый класс для всех провайдеров
 ///
@@ -13,27 +14,27 @@ import Models
 class Provider <T> {
 
     // MARK: Public properties
-    let remoteConfig: T?
+    var remoteConfig: (() -> (T?))?
     lazy var localConfig: [String: Any] = {
 
-        if T.self == AppFontsConfig.self {
-            return getDataSourceDictFromPlist(resourceType: .font)
+        if T.self == Fonts.self {
+            return getDataSourceDictFromPlist(resourceType: .fonts)
         }
 
-        if T.self == AppPaletteConfig.self {
-            return getDataSourceDictFromPlist(resourceType: .color)
+        if T.self == Palette.self {
+            return getDataSourceDictFromPlist(resourceType: .palette)
         }
 
-        if T.self == AppTextsConfig.self {
-            return getDataSourceDictFromPlist(resourceType: .text)
+        if T.self == Texts.self {
+            return getDataSourceDictFromPlist(resourceType: .texts)
         }
 
         return [:]
     }()
 
     // MARK: Init
-    init(config: T?) {
-        self.remoteConfig = config
+    init(remoteConfig: (() -> (T?))?) {
+        self.remoteConfig = remoteConfig
     }
 
     // MARK: Public Methods
@@ -42,11 +43,11 @@ class Provider <T> {
         var plistName: String?
 
         switch resourceType {
-        case .text:
+        case .texts:
             plistName = "TextsDataSource"
-        case .color:
+        case .palette:
             plistName = "PaletteDataSource"
-        case .font:
+        case .fonts:
             plistName = "FontsDataSource"
         }
         if let infoPlistURL = Bundle.main.url(forResource: plistName, withExtension: "plist") {

@@ -6,13 +6,20 @@
 //
 
 import UIKit
+import RxRelay
 import Services
+import Models
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    // MARK: Public properties
     var window: UIWindow?
 
+    // MARK: Private properties
+    private var appAssembly: AppAssembly?
+
+    // MARK: Public Methods
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Firebase
@@ -26,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Конфигурация приложения
         let configureManager: ConfigureManagerProtocol = ConfigureManager()
-        AppAssembly(window: window, configManager: configureManager)
+        appAssembly = AppAssembly(window: window, configManager: configureManager)
         return true
     }
 
@@ -39,5 +46,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                          sourceApplication: options)
 
         return Google.googleURLHandler(url)
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        appAssembly?.uiConfigObserverDisposable?.dispose()
     }
 }

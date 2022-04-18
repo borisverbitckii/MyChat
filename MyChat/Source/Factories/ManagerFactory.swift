@@ -15,9 +15,10 @@ protocol ManagerFactoryProtocol {
 
 final class ManagerFactory {
     // MARK: - Private properties
-    private let networkManager = NetworkManager()
-    private let storageManager = StorageManager()
-    private let authManager = AuthManager()
+    private lazy var networkManager = NetworkManager()
+    private lazy var storageManager = StorageManager()
+    private lazy var authManager = AuthManager()
+    private lazy var configureManager = ConfigureManager()
 
 }
 

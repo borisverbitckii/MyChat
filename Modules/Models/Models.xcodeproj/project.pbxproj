@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D75FD6DD2801D285001B1359 /* AppTextsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D42801D285001B1359 /* AppTextsConfig.swift */; };
-		D75FD6DE2801D285001B1359 /* AppFontsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D52801D285001B1359 /* AppFontsConfig.swift */; };
-		D75FD6DF2801D285001B1359 /* AppPaletteConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D62801D285001B1359 /* AppPaletteConfig.swift */; };
+		D7334452280C0441007B1F37 /* DataSourceForViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7334451280C0441007B1F37 /* DataSourceForViewControllers.swift */; };
 		D75FD6E02801D285001B1359 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D72801D285001B1359 /* AppConfig.swift */; };
 		D75FD6E12801D285001B1359 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D92801D285001B1359 /* Chat.swift */; };
 		D75FD6E22801D285001B1359 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6DA2801D285001B1359 /* Message.swift */; };
@@ -18,10 +16,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D7334451280C0441007B1F37 /* DataSourceForViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceForViewControllers.swift; sourceTree = "<group>"; };
 		D75FD68F2801D20B001B1359 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D75FD6D42801D285001B1359 /* AppTextsConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTextsConfig.swift; sourceTree = "<group>"; };
-		D75FD6D52801D285001B1359 /* AppFontsConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppFontsConfig.swift; sourceTree = "<group>"; };
-		D75FD6D62801D285001B1359 /* AppPaletteConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppPaletteConfig.swift; sourceTree = "<group>"; };
 		D75FD6D72801D285001B1359 /* AppConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		D75FD6D92801D285001B1359 /* Chat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		D75FD6DA2801D285001B1359 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -60,9 +56,7 @@
 		D75FD6D32801D285001B1359 /* ConfigModels */ = {
 			isa = PBXGroup;
 			children = (
-				D75FD6D42801D285001B1359 /* AppTextsConfig.swift */,
-				D75FD6D52801D285001B1359 /* AppFontsConfig.swift */,
-				D75FD6D62801D285001B1359 /* AppPaletteConfig.swift */,
+				D7334451280C0441007B1F37 /* DataSourceForViewControllers.swift */,
 				D75FD6D72801D285001B1359 /* AppConfig.swift */,
 			);
 			path = ConfigModels;
@@ -157,13 +151,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7334452280C0441007B1F37 /* DataSourceForViewControllers.swift in Sources */,
 				D75FD6E32801D285001B1359 /* ChatUser.swift in Sources */,
-				D75FD6DD2801D285001B1359 /* AppTextsConfig.swift in Sources */,
 				D75FD6E12801D285001B1359 /* Chat.swift in Sources */,
 				D75FD6E02801D285001B1359 /* AppConfig.swift in Sources */,
 				D75FD6E42801D285001B1359 /* Contact.swift in Sources */,
-				D75FD6DE2801D285001B1359 /* AppFontsConfig.swift in Sources */,
-				D75FD6DF2801D285001B1359 /* AppPaletteConfig.swift in Sources */,
 				D75FD6E22801D285001B1359 /* Message.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,58 +7,68 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 import Models
 import Services
 
 final class AppAssembly {
 
+    // MARK: Public properties
+    /// Подписка на обновление ui конфига, выгружается из памяти в appDelegate
+    var uiConfigObserverDisposable: Disposable?
+
     // MARK: Private Properties
     private let window: UIWindow
-    /// Заглушка, чтобы не было мерцаний при переходе на splashViewController, пока грузится config
-    private lazy var emptyViewController: UIViewController = {
-        $0.view.backgroundColor = .white
-        return $0
-    }(UIViewController())
 
     private let configManager: ConfigureManagerProtocol
+    /// Для того, чтобы избавиться от дублирования запроса на обновление ui конфига
+    private var isInitialUILoad = true
     private let bag = DisposeBag()
 
     // MARK: Init
-    @discardableResult  init(window: UIWindow,
-                             configManager: ConfigureManagerProtocol) {
+    init(window: UIWindow,
+         configManager: ConfigureManagerProtocol) {
         self.window = window
         self.configManager = configManager
 
-        window.rootViewController = emptyViewController
-        window.makeKeyAndVisible()
         configureApp()
+        observeUserInterfaceStyle()
     }
 
     // MARK: Private methods
     private func configureApp() {
-        configManager.getConfigObserver()
-            .observe(on: MainScheduler.instance)
-            .subscribe {  result in
+        let coordinator: CoordinatorProtocol = Coordinator(window: window)
+        let managerFactory: ManagerFactoryProtocol = ManagerFactory()
 
-                var config: AppConfig?
+        uiConfigObserverDisposable = configManager.uiConfigObserver
+            .subscribe(onNext: { [weak self] appConfig in
 
-                switch result {
-                case .success(let conf):
-                    config = conf
-                case .failure(let error):
-                    print(error) // TODO: Залогировать
-                }
+                let appConfigClosure: () -> AppConfig = {
+                    let appConfigClosure = {
+                        appConfig ?? AppConfig(fonts: nil, texts: nil, palette: nil)
+                    }
+                    return appConfigClosure
+                }()
 
-                let coordinator = Coordinator(window: self.window)
-                let managerFactory = ManagerFactory()
-
-                let moduleFactory = ModuleFactory(coordinator: coordinator,
-                                                  managerFactory: managerFactory,
-                                                  config: config)
+                let moduleFactory: ModuleFactoryProtocol = ModuleFactory(coordinator: coordinator,
+                                                                         managerFactory: managerFactory,
+                                                                         uiConfigProvider: appConfigClosure)
 
                 coordinator.injectModuleFactory(moduleFactory: moduleFactory)
-                coordinator.presentSplashViewController(presenter: self.emptyViewController)
-            }
+                coordinator.presentSplashViewController()
+                self?.isInitialUILoad = false
+            })
+    }
+
+    /// Метод, для того, чтобы подписаться на изменения темы телефона
+    private func observeUserInterfaceStyle() {
+        UIScreen.main.rx
+            .userInterfaceStyle()
+            .subscribe(onNext: { [weak self] _ in
+                if self?.isInitialUILoad == false {
+                    self?.configManager.reloadUIConfig()
+                }
+            })
             .disposed(by: bag)
     }
 }

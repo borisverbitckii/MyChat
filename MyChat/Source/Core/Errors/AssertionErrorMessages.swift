@@ -10,6 +10,7 @@ enum AssertionErrorMessages {
     case appleAuthError
 
     case noColor
+    case noColorByHex
     case noDataForController(String)
     case noElementInPlist(String)
     case noFont(String)
@@ -22,6 +23,8 @@ enum AssertionErrorMessages {
             return "`chatUser == nil` при авторизации через apple"
         case .noColor:
             return "Цвет не найдет в assets"
+        case .noColorByHex:
+            return "Не удалось конвертировать HEX в цвет"
         case .noDataForController(let controllerName) :
             return "Нет данных для '\(controllerName)'"
         case .noElementInPlist(let elementName):

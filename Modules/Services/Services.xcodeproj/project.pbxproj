@@ -10,6 +10,7 @@
 		521CB42B754A6018D5AB3AD6 /* Pods_Services.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BCD58D089B5C6DEF2585FC2 /* Pods_Services.framework */; };
 		D73FD4B52801D3AC00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; };
 		D73FD4B62801D3AC00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D74E3F47280A824B00F4B0B5 /* EncryptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74E3F46280A824B00F4B0B5 /* EncryptHandler.swift */; };
 		D75FD6712801D083001B1359 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6702801D083001B1359 /* AuthManager.swift */; };
 		D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD67E2801D195001B1359 /* ConfigureManager.swift */; };
 		D75FD6822801D195001B1359 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD67F2801D195001B1359 /* NetworkManager.swift */; };
@@ -38,6 +39,7 @@
 		2BCD58D089B5C6DEF2585FC2 /* Pods_Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8093C7E054C9555C61FC9AA /* Pods-Services.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Services.debug.xcconfig"; path = "Target Support Files/Pods-Services/Pods-Services.debug.xcconfig"; sourceTree = "<group>"; };
 		D73FD4B42801D3AC00912D46 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D74E3F46280A824B00F4B0B5 /* EncryptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptHandler.swift; sourceTree = "<group>"; };
 		D75FD65C2801C775001B1359 /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75FD6702801D083001B1359 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		D75FD67E2801D195001B1359 /* ConfigureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigureManager.swift; sourceTree = "<group>"; };
@@ -104,8 +106,9 @@
 		D781F94328042E1800F401D7 /* AuthManager */ = {
 			isa = PBXGroup;
 			children = (
-				D75FD6702801D083001B1359 /* AuthManager.swift */,
 				D781F94828042F0B00F401D7 /* SignInServices */,
+				D75FD6702801D083001B1359 /* AuthManager.swift */,
+				D74E3F46280A824B00F4B0B5 /* EncryptHandler.swift */,
 			);
 			name = AuthManager;
 			sourceTree = "<group>";
@@ -228,6 +231,7 @@
 			files = (
 				D781F94528042E4700F401D7 /* Firebase.swift in Sources */,
 				D75FD6822801D195001B1359 /* NetworkManager.swift in Sources */,
+				D74E3F47280A824B00F4B0B5 /* EncryptHandler.swift in Sources */,
 				D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */,
 				D75FD6712801D083001B1359 /* AuthManager.swift in Sources */,
 				D781F94728042EE400F401D7 /* Facebook.swift in Sources */,

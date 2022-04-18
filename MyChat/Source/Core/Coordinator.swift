@@ -10,10 +10,10 @@ import Services
 import Models
 
 protocol CoordinatorProtocol: AnyObject {
-    func injectModuleFactory(moduleFactory: ModuleFactory)
+    func injectModuleFactory(moduleFactory: ModuleFactoryProtocol)
 
+    func presentSplashViewController()
     func presentTabBarViewController(withChatUser user: ChatUser)
-    func presentSplashViewController(presenter: TransitionHandler)
     func presentRegisterViewController(presenter: TransitionHandler)
 }
 
@@ -21,18 +21,26 @@ final class Coordinator {
 
     // MARK: Private properties
     private var window: UIWindow
-    private var moduleFactory: ModuleFactory?
+    private var moduleFactory: ModuleFactoryProtocol?
+
+    /// Заглушка, чтобы не было мерцаний при переходе на splashViewController, пока грузится config
+    private lazy var emptyViewController: UIViewController = {
+        $0.view.backgroundColor = .white /// Цвет фона должен быть такой же, как у splashViewController
+        return $0
+    }(UIViewController())
 
     // MARK: Init
     init(window: UIWindow) {
         self.window = window
+        window.rootViewController = emptyViewController
+        window.makeKeyAndVisible()
     }
 }
 
 // MARK: - Coordinator + CoordinatorProtocol -
 extension Coordinator: CoordinatorProtocol {
 
-    func injectModuleFactory(moduleFactory: ModuleFactory) {
+    func injectModuleFactory(moduleFactory: ModuleFactoryProtocol) {
         self.moduleFactory = moduleFactory
     }
 
@@ -61,11 +69,11 @@ extension Coordinator: CoordinatorProtocol {
     /// - Parameter presenter: Презентующий контроллер
     ///
     /// Модуль сплеша для проверки авторизации
-    func presentSplashViewController(presenter: TransitionHandler) {
+    func presentSplashViewController() {
         guard let transitionViewController = moduleFactory?.getSplashModule(coordinator: self) else { return }
         transitionViewController.modalPresentationStyle = .fullScreen
-        presenter.presentViewController(viewController: transitionViewController,
-                                        animated: false,
-                                        completion: nil)
+        emptyViewController.presentViewController(viewController: transitionViewController,
+                                                  animated: false,
+                                                  completion: nil)
     }
 }

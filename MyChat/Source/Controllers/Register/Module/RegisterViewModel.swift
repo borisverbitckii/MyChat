@@ -48,9 +48,9 @@ protocol RegisterViewModelProtocol: AnyObject {
 }
 
 protocol RegisterViewModelInput {
-    func startAppleAuthFlow(authorizationControllerDelegate: RegisterViewController,
-                            presentationContextProvider: RegisterViewController)
-    func authWithAppleInFirebase(idTokenForAuth: String)
+    func startAppleAuthFlow(delegate: ASAuthorizationControllerDelegate?,
+                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?)
+    func authInApple(single: Single<ChatUser?>, presenter: UIViewController?)
     func showAppleAuthError(presenter: TransitionHandler)
     func presentTabBarController(withEmail username: String?,
                                  password: String?,
@@ -113,6 +113,7 @@ protocol RegisterViewModelOutput {
     var orLabel: BehaviorRelay<(text: String,
                                 font: UIFont,
                                 color: UIColor)> { get }                        // Шрифт,текст и цвет для orLabel
+    var appleAuthClosure: ((String) -> Single<ChatUser?>)? { get set }
 }
 
 final class RegisterViewModel: RegisterViewModelProtocol {
@@ -155,6 +156,8 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                 font: UIFont,
                                 color: UIColor)>
 
+    var appleAuthClosure: ((String) -> Single<ChatUser?>)?          // Клоужер для отработки авторизации apple
+
     // MARK: Private properties
     private let disposeBag = DisposeBag()
     private let coordinator: CoordinatorProtocol                    // Для флоу между контролллерами
@@ -163,9 +166,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     private let fonts: (RegisterViewControllerFonts) -> UIFont      // Для применения шрифтов
     private let texts: (RegisterViewControllerTexts) -> String      // Для установки всех текстов
     private let palette: (RegisterViewControllerPalette) -> UIColor // Для установки цветов
-
-    private var currentNonce: String?                               // Для авторизации и шифрования Apple
-    private var appleChatUser: ChatUser?                            // Для авторизации в apple
+    private var appleChatUser: ChatUser?                            // Для открытия tabBarController после authInApple
 
     // MARK: Init
     // swiftlint:disable:next function_body_length
@@ -297,40 +298,29 @@ extension RegisterViewModel: RegisterViewModelOutput {
 extension RegisterViewModel: RegisterViewModelInput {
 
     // MARK: Public Methods
-    func startAppleAuthFlow(authorizationControllerDelegate: RegisterViewController,
-                            presentationContextProvider: RegisterViewController) {
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        let request = appleIDProvider.createRequest()
-        request.requestedScopes = [.email, .fullName]
-        currentNonce = randomNonceString(length: 32)
-        guard let nonce = currentNonce else { return }
-        request.nonce = sha256(nonce)
-
-        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-        authorizationController.delegate = authorizationControllerDelegate
-        authorizationController.presentationContextProvider = presentationContextProvider
-        authorizationController.performRequests()
+    func startAppleAuthFlow(delegate: ASAuthorizationControllerDelegate?,
+                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?) {
+        appleAuthClosure = authManager.signInWithApple(delegate: delegate,
+                                       provider: presentationContextProvider)
     }
 
-    func authWithAppleInFirebase(idTokenForAuth: String) {
-        guard let nonce = currentNonce else {
-            assertionFailure() // TODO: Залогировать
-            return
-        }
-
-        authManager.sighInWithApple(idTokenForAuth: idTokenForAuth,
-                                    nonce: nonce)
-        .subscribe { [weak self] chatUser in
-            self?.appleChatUser = chatUser
-            self?.presentTabBarController(withEmail: nil,
-                                          password: nil,
-                                          sourceButtonType: .appleButton,
-                                          presenter: nil)
-        } onFailure: { error in
-            print(error) // TODO: Залогировать
-        }
+    func authInApple(single: Single<ChatUser?>, presenter: UIViewController?) {
+        single.subscribe({ [weak self] event in
+            guard let self = self else { return }
+            switch event {
+            case .success(let chatUser):
+                self.appleChatUser = chatUser
+                self.presentTabBarController(withEmail: nil,
+                                              password: nil,
+                                              sourceButtonType: .appleButton,
+                                              presenter: presenter)
+            case .failure(let error):
+                print(error) // TODO: Залогировать
+                let alertController = self.generateAlertController(type: .appleAuth)
+                presenter?.present(alertController, animated: true)
+            }
+        })
         .disposed(by: disposeBag)
-
     }
 
     func showAppleAuthError(presenter: TransitionHandler) {
@@ -617,52 +607,3 @@ extension RegisterViewModel: RegisterViewModelInput {
         secondPasswordTextfieldText.accept("")
     }
 }
-
-// Для авторизации Apple
-private extension RegisterViewModel {
-
-    // MARK: Private methods
-    private func randomNonceString(length: Int = 32) -> String {
-        precondition(length > 0)
-        let charset: [Character] =
-        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-        var result = ""
-        var remainingLength = length
-
-        while remainingLength > 0 {
-            let randoms: [UInt8] = (0 ..< 16).map { _ in
-                var random: UInt8 = 0
-                let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
-                if errorCode != errSecSuccess {
-                    fatalError(
-                        "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
-                    )
-                }
-                return random
-            }
-
-            randoms.forEach { random in
-                if remainingLength == 0 {
-                    return
-                }
-
-                if random < charset.count {
-                    result.append(charset[Int(random)])
-                    remainingLength -= 1
-                }
-            }
-        }
-
-        return result
-    }
-
-    private func sha256(_ input: String) -> String {
-        let inputData = Data(input.utf8)
-        let hashedData = SHA256.hash(data: inputData)
-        let hashString = hashedData.compactMap {
-            String(format: "%02x", $0)
-        }.joined()
-
-        return hashString
-    }
-} // swiftlint:disable:this file_length

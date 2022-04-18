@@ -6,13 +6,13 @@
 //
 
 public struct AppConfig {
-    public let fonts: AppFontsConfig
-    public let texts: AppTextsConfig
-    public let palette: AppPaletteConfig
+    public let fonts: Fonts?
+    public let texts: Texts?
+    public let palette: Palette?
 
-    public init(fonts: AppFontsConfig,
-                texts: AppTextsConfig,
-                palette: AppPaletteConfig) {
+    public init(fonts: Fonts?,
+                texts: Texts?,
+                palette: Palette?) {
         self.fonts = fonts
         self.texts = texts
         self.palette = palette
