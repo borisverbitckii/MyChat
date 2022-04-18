@@ -42,17 +42,4 @@ final class RegisterUI {
         $0.textfield.textField.clearButtonMode = .whileEditing
         return $0
     }(TextFieldWithBottomBorderNode())
-
-    // MARK: Init
-    init(palette: @escaping (RegisterViewControllerPalette) -> (UIColor)) {
-        changeStateButton.tintColor = palette(.changeStateButtonColor)
-        submitButton.tintColor = palette(.submitButtonTextColor)
-
-        [nameTextField,
-         passwordTestField,
-         passwordSecondTimeTextfield]
-            .forEach { $0.backgroundColor = palette(.textFieldBackgroundColor) }
-
-        authButtons.configureBackground(withColor: palette(.authButtonBackground))
-    }
 }

@@ -13,13 +13,16 @@ import AuthenticationServices
 import CryptoKit
 import Services
 import Models
+import RxCocoa
 
+/// Состояния контроллера, чтобы отображать вид авторизации или регистрации
 enum RegisterViewControllerState {
-    case auth, register  // состояния контроллера, чтобы отображать вид авторизации или регистрации
+    case auth, register
 }
 
+/// Для включения выключения submitButton
 enum SubmitButtonState {
-    case enable, disable // для включения выключения submitButton
+    case enable, disable
 }
 
 enum TextFieldType {
@@ -27,17 +30,25 @@ enum TextFieldType {
 }
 
 enum AlertControllerType {
-    case notCorrectLoginOrPassword  // Для того, чтобы вывести "вы ввели не правильный логин и пароль"
-    case passwordsNotTheSame        // Для того, чтобы вывести "пароли не совпадают"
-    case googleAuth                 // Не сработала авторизация через google
-    case appleAuth                  // Не сработала авторизация через Apple
-    case facebookAuth               // Не сработала авторизация через facebook
-    case invalidEmail               // Не валидный email
-    case invalidPassword            // На валидный пароль
-    case isAlreadySignUp            // Аккаунт уже существует
+    /// Для того, чтобы вывести "вы ввели не правильный логин и пароль"
+    case notCorrectLoginOrPassword
+    /// Для того, чтобы вывести "пароли не совпадают"
+    case passwordsNotTheSame
+    /// Не сработала авторизация через google
+    case googleAuth
+    /// Не сработала авторизация через Apple
+    case appleAuth
+    /// Не сработала авторизация через facebook
+    case facebookAuth
+    /// Не валидный email
+    case invalidEmail
+    /// На валидный пароль
+    case invalidPassword
+    /// Аккаунт уже существует
+    case isAlreadySignUp
 }
 
-// Для определения, по какой кнопке совершена попытка авторизации
+/// Для определения, по какой кнопке совершена попытка авторизации
 enum RegisterAuthButtonType {
     case googleButton, facebookButton, appleButton, submitButtonOrReturnButton
 }
@@ -67,13 +78,20 @@ protocol RegisterViewModelInput {
                                                   password: String,
                                                   secondPassword: String,
                                                   presenter: TransitionHandler)
-    func submitButtonChangeIsEnable()        // Включение/выключение кнопки submitButton
-    func submitButtonChangeAlpha()           // Прозрачность кнопки
-    func disableSubmitButton()               // Выключение кнопки submitButton
-    func changeViewControllerState()         // Поведение при клике на кнопку переключения состояния контроллера
-    func changeButtonsTitle()                // Смена текста кнопок в зависимости от состояния контроллера
-    func secondTimeTextfieldIsHiddenToggle() // Скрытие/отобраение 3 текстфилда
-    func disableErrorLabel()                 // выключение лейбла, который про то, что пароли не совпадают
+    /// Включение/выключение кнопки submitButton
+    func submitButtonChangeIsEnable()
+    /// Прозрачность кнопки
+    func submitButtonChangeAlpha()
+    /// Выключение кнопки submitButton
+    func disableSubmitButton()
+    /// Поведение при клике на кнопку переключения состояния контроллера
+    func changeViewControllerState()
+    /// Смена текста кнопок в зависимости от состояния контроллера
+    func changeButtonsTitle()
+    /// Скрытие/отображение 3 текстфилда
+    func secondTimeTextfieldIsHiddenToggle()
+    /// Выключение лейбла, который про то, что пароли не совпадают
+    func disableErrorLabel()
 }
 
 protocol RegisterViewModelOutput {
@@ -81,15 +99,19 @@ protocol RegisterViewModelOutput {
     var viewControllerState: BehaviorRelay<RegisterViewControllerState> { get }
     var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
     // submitButton
-    var submitButtonState: BehaviorRelay<SubmitButtonState> { get }             // Активна или не активна
+    /// Состояние активности submitButton
+    var submitButtonState: BehaviorRelay<SubmitButtonState> { get }
+    var submitButtonTextColor: BehaviorRelay<UIColor> { get }
+    /// Для смены заголовка "авторизироваться" и "зарегистрироваться"
     var submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)> { get }
-    // Для смены заголовка "авторизироваться" и "зарегистрироваться"
-    var submitButtonIsEnable: BehaviorRelay<Bool> { get }                       // Включение/выключение кнопки
-    var submitButtonColor: PublishRelay<UIColor> { get }                        // Прозрачность кнопки
+    var submitButtonIsEnable: BehaviorRelay<Bool> { get }
+    var submitButtonBackgroundColor: PublishRelay<UIColor> { get }
     // changeStateButton
-    var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)> { get } // Заголовок для кнопки
+    var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)> { get }
+    var changeStateButtonColor: BehaviorRelay<UIColor> { get }
     // Текстфилды
-    var textfieldsFont: BehaviorRelay<UIFont> { get }                           // Один шрифт на все текстфилды
+    var textfieldsFont: BehaviorRelay<UIFont> { get }
+    var textfieldsBackgroundColor: BehaviorRelay<UIColor> { get }
     // nameTextfield
     var nameTextfieldText: PublishRelay<String> { get }
     var nameTextfieldPlaceholder: BehaviorRelay<String> { get }
@@ -99,20 +121,22 @@ protocol RegisterViewModelOutput {
     // secondPasswordTextfield
     var secondPasswordTextfieldText: PublishRelay<String> { get }
     var secondPasswordTextfieldPlaceholder: BehaviorRelay<String> { get }
-    var secondPasswordTextfieldIsHidden: BehaviorRelay<Bool> { get }            // Скрытие/отобраение 3его текстфилда
+    /// Скрытие/отобраение 3его текстфилда
+    var secondPasswordTextfieldIsHidden: BehaviorRelay<Bool> { get }
     // errorPasswordText
-    // swiftlint:disable:next large_tuple
-    var errorLabelTextFontColor: BehaviorRelay<(text: String,
+    /// Шрифт, текст и цвет для errorPasswordLabel
+    var errorLabelTextFontColor: BehaviorRelay<(text: String, // swiftlint:disable:this large_tuple
                                                 font: UIFont,
-                                                color: UIColor)> { get }        // шрифт и текст для errorPasswordLabel
-    // Заголовок для лейбла, который пишет, что пароли не совпадают при регистрации
+                                                color: UIColor)> { get }
+    /// Включение/выключение лейбла, который пишет, что пароли не совпадают при регистрации
     var errorLabelIsHidden: BehaviorRelay<Bool> { get }
-    // Включение/выключение лейбла, который пишет, что пароли не совпадают при регистрации
+    // AuthButtons
+    var authButtonsBackgroundColor: BehaviorRelay<UIColor> { get }
     // orLabel
-    // swiftlint:disable:next large_tuple
-    var orLabel: BehaviorRelay<(text: String,
+    /// Шрифт,текст и цвет для orLabel
+    var orLabel: BehaviorRelay<(text: String,                 // swiftlint:disable:this large_tuple
                                 font: UIFont,
-                                color: UIColor)> { get }                        // Шрифт,текст и цвет для orLabel
+                                color: UIColor)> { get }
     var appleAuthClosure: ((String) -> Single<ChatUser?>)? { get set }
 }
 
@@ -129,11 +153,14 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     var submitButtonState = BehaviorRelay(value: SubmitButtonState.disable)
     var submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
     var submitButtonIsEnable = BehaviorRelay<Bool>(value: false)
-    var submitButtonColor = PublishRelay<UIColor>()
+    var submitButtonBackgroundColor = PublishRelay<UIColor>()
+    var submitButtonTextColor: BehaviorRelay<UIColor>
     // ChangeStateButton
     var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
+    var changeStateButtonColor: BehaviorRelay<UIColor>
     // Textfields
     var textfieldsFont: BehaviorRelay<UIFont>
+    var textfieldsBackgroundColor: BehaviorRelay<UIColor>
     // nameTextfield
     var nameTextfieldText = PublishRelay<String>()
     var nameTextfieldPlaceholder: BehaviorRelay<String>
@@ -150,23 +177,31 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                 font: UIFont,
                                                 color: UIColor)>
     var errorLabelIsHidden = BehaviorRelay<Bool>(value: true)
+    // AuthButtons
+    var authButtonsBackgroundColor: BehaviorRelay<UIColor>
     // orLabel
     // swiftlint:disable:next large_tuple
     var orLabel: BehaviorRelay<(text: String,
                                 font: UIFont,
                                 color: UIColor)>
-
-    var appleAuthClosure: ((String) -> Single<ChatUser?>)?          // Клоужер для отработки авторизации apple
+    /// Клоужер для отработки авторизации apple
+    var appleAuthClosure: ((String) -> Single<ChatUser?>)?
 
     // MARK: Private properties
     private let disposeBag = DisposeBag()
-    private let coordinator: CoordinatorProtocol                    // Для флоу между контролллерами
-    private let authManager: AuthManagerRegisterProtocol            // Менеджер для регистрации/авторизации
+    /// Координатор для флоу между контроллерами
+    private let coordinator: CoordinatorProtocol
+    /// Менеджер для регистрации/авторизации
+    private let authManager: AuthManagerRegisterProtocol
 
-    private let fonts: (RegisterViewControllerFonts) -> UIFont      // Для применения шрифтов
-    private let texts: (RegisterViewControllerTexts) -> String      // Для установки всех текстов
-    private let palette: (RegisterViewControllerPalette) -> UIColor // Для установки цветов
-    private var appleChatUser: ChatUser?                            // Для открытия tabBarController после authInApple
+    /// Для применения шрифтов
+    private let fonts: (RegisterViewControllerFonts) -> UIFont
+    /// Для установки всех текстов
+    private let texts: (RegisterViewControllerTexts) -> String
+    /// Для установки цветов
+    private let palette: (RegisterViewControllerPalette) -> UIColor
+    /// Модель юзера для открытия tabBarController после authInApple
+    private var appleChatUser: ChatUser?
 
     // MARK: Init
     // swiftlint:disable:next function_body_length
@@ -192,6 +227,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                 font: UIFont)>(value: (
                                                     title: submitButtonTitleText,
                                                     font: submitButtonTitleFont))
+        self.submitButtonTextColor = BehaviorRelay<UIColor>(value: palette(.submitButtonTextColor))
         // changeStateButton
         let changeStateButtonText = texts(.sighUpTextForButton)
         let changeStateButtonFont = fonts(.changeStateButton)
@@ -199,6 +235,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                      font: UIFont)>(value: (
                                                         title: changeStateButtonText,
                                                         font: changeStateButtonFont))
+        self.changeStateButtonColor = BehaviorRelay<UIColor>(value: palette(.changeStateButtonColor))
         // nameTextfield
         let nameTextFieldPlaceholderText = texts(.namePlaceholder)
         self.nameTextfieldPlaceholder = BehaviorRelay<String>(value: nameTextFieldPlaceholderText)
@@ -213,16 +250,18 @@ final class RegisterViewModel: RegisterViewModelProtocol {
 
         // Для всех текстфилдов
         self.textfieldsFont = BehaviorRelay<UIFont>(value: fonts(.registerTextfield))
+        self.textfieldsBackgroundColor = BehaviorRelay<UIColor>(value: palette(.textFieldBackgroundColor))
 
         // errorPasswordLabel
         let errorPasswordText = texts(.errorLabelPasswordsNotTheSame)
-        errorLabelTextFontColor = BehaviorRelay<(text: String,
+        self.errorLabelTextFontColor = BehaviorRelay<(text: String,
                                                  font: UIFont,
                                                  color: UIColor)>(value: (
                                                     text: errorPasswordText,
                                                     font: fonts(.registerErrorLabel),
                                                     color: palette(.errorLabelTextColor)))
-
+        // AuthButtons
+        self.authButtonsBackgroundColor = BehaviorRelay<UIColor>(value: palette(.authButtonBackground))
         // orLabel
         let orLabelText = texts(.orLabelText)
         let orLabelFont = fonts(.registerOrLabel)
@@ -233,6 +272,13 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                     (text: orLabelText,
                                                      font: orLabelFont,
                                                      color: orLabelColor))
+
+        // Подписка на изменения темы пользователя для автоматического обновления цвета
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(userInterfaceStyleNotification),
+                                               name: NSNotification.userInterfaceStyleNotification,
+                                               object: nil)
+
     }
 
     // MARK: Private Methods
@@ -286,6 +332,22 @@ final class RegisterViewModel: RegisterViewModelProtocol {
 
         alertController.addAction(okAction)
         return alertController
+    }
+
+    // MARK: OBJC private methods
+    /// Обновление ui после изменения темы телефона
+    @objc private func userInterfaceStyleNotification() {
+        viewControllerBackgroundColor.accept(palette(.viewControllerBackgroundColor))
+        submitButtonTextColor.accept(palette(.submitButtonTextColor))
+        switch submitButtonIsEnable.value {
+        case true:
+            submitButtonBackgroundColor.accept(palette(.submitButtonActiveTintColor))
+        case false:
+            submitButtonBackgroundColor.accept(palette(.submitButtonDisableTintColor))
+        }
+        changeStateButtonColor.accept(palette(.changeStateButtonColor))
+        textfieldsBackgroundColor.accept(palette(.textFieldBackgroundColor))
+        authButtonsBackgroundColor.accept(palette(.authButtonBackground))
     }
 }
 
@@ -556,9 +618,9 @@ extension RegisterViewModel: RegisterViewModelInput {
         // Смена прозрачности для submitButton
         switch submitButtonState.value {
         case .enable:
-            submitButtonColor.accept(palette(.submitButtonActiveTintColor))
+            submitButtonBackgroundColor.accept(palette(.submitButtonActiveTintColor))
         case .disable:
-            submitButtonColor.accept(palette(.submitButtonDisableTintColor))
+            submitButtonBackgroundColor.accept(palette(.submitButtonDisableTintColor))
         }
     }
 

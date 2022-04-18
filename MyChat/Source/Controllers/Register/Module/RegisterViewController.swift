@@ -14,19 +14,21 @@ import AuthenticationServices
 final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
     // MARK: Private properties
-    private let uiElements: RegisterUI                 // Вынесенные UI элементы
-    private let constants: RegisterConstants           // Все константы размеров
+    /// Вынесенные UI элементы
+    private let uiElements: RegisterUI
+    /// Все локальные константы
+    private let constants: RegisterConstants
     private let viewModel: RegisterViewModelProtocol
     private let bag = DisposeBag()
 
-    private var isKeyboardShown = false                // Чтобы убрать глюки появления/исчезновения клавиатуры
+    /// Флаг, чтобы убрать глюки появления/исчезновения клавиатуры
+    private var isKeyboardShown = false
     private var keyboardHeight: CGFloat = 0
     private var isPhoneWithHomeButton: Bool {
         UIApplication.shared.windows[0].safeAreaInsets.bottom  == 0
     }
 
-    /* Переменные, чтобы исправить баг с прыгающим текстом в текстфилде,
-     когда включен isSecureTextEntry */
+    /// Переменные, чтобы исправить баг с прыгающим текстом в текстфилде, когда включен isSecureTextEntry
     private var passwordText = "" {
         didSet {
             textfieldTextDidChange()
@@ -58,13 +60,12 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     override func viewDidLoad() {
         super.viewDidLoad()
         node.backgroundColor = .white
-        bindUIElements()          // Бинд значений из вью модели напрямую в ui элементы
-        subscribeToObservables()  // Основное взаимодействие с вьюмоделью
-        addTargetsForButtons()    // Реализация тапов по кнопкам
-        addTargetsForTextfields() // Проверка текстфилдов, чтобы активировать кнопку submit
-        setupDelegates()          // Делегаты для текстфилдов, чтобы по клику на
-        // return осуществлялся переход в след текстфилд
-        addKeyboardObservers()    // Наблюдение за клавиатурой
+        bindUIElements()
+        subscribeToObservables()
+        addTargetsForButtons()
+        addTargetsForTextfields()
+        setupDelegates()
+        addKeyboardObservers()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -182,14 +183,15 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         }
     }
 
-    // swiftlint:disable:next function_body_length
-    private func bindUIElements() {
-        // Бинд всех данных из вью модели в ui элементы
+    /// Бинд всех данных из вью модели в ui элементы
+    private func bindUIElements() { // swiftlint:disable:this function_body_length
 
         // viewController
         viewModel.output.viewControllerBackgroundColor
-            .subscribe { [weak node] event in
-                node?.backgroundColor = event.element
+            .subscribe { [weak node, constants] event in
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    node?.backgroundColor = event.element
+                }
             }
             .disposed(by: bag)
 
@@ -215,10 +217,18 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             }
             .disposed(by: bag)
 
-        viewModel.output.submitButtonColor
+        viewModel.output.submitButtonBackgroundColor
             .subscribe { [uiElements, constants] event in
-                UIView.animate(withDuration: constants.animationDurationForSubmitButtonColor) {
+                UIView.animate(withDuration: constants.animationDurationForColors) {
                     uiElements.submitButton.backgroundColor = event.element
+                }
+            }
+            .disposed(by: bag)
+
+        viewModel.output.submitButtonTextColor
+            .subscribe { [uiElements, constants] event in
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    uiElements.submitButton.tintColor = event.element
                 }
             }
             .disposed(by: bag)
@@ -239,6 +249,14 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             }
             .disposed(by: bag)
 
+        viewModel.output.changeStateButtonColor
+            .subscribe { [uiElements, constants] event in
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    uiElements.changeStateButton.tintColor = event.element
+                }
+            }
+            .disposed(by: bag)
+
         // Все текстфилды
         viewModel.output.textfieldsFont
             .subscribe { [weak uiElements] event in
@@ -246,6 +264,17 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                   uiElements?.passwordTestField,
                   uiElements?.passwordSecondTimeTextfield
                 ].forEach { $0?.textfield.font = event.element }
+            }
+            .disposed(by: bag)
+
+        viewModel.output.textfieldsBackgroundColor
+            .subscribe { [weak uiElements, constants] event in
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    [ uiElements?.nameTextField,
+                      uiElements?.passwordTestField,
+                      uiElements?.passwordSecondTimeTextfield
+                    ].forEach { $0?.textfield.backgroundColor = event.element }
+                }
             }
             .disposed(by: bag)
 
@@ -292,14 +321,14 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         viewModel.output.secondPasswordTextfieldIsHidden
             .subscribe { [weak uiElements, constants] event in
                 if event.element == true {
-                    UIView.animate(withDuration: constants.animationDurationForSubmitButtonColor) {
+                    UIView.animate(withDuration: constants.animationDurationForColors) {
                         // swiftlint:disable:next line_length
                         uiElements?.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
                     } completion: { _ in
                         uiElements?.passwordSecondTimeTextfield.isHidden = event.element ?? false
                     }
                 } else {
-                    UIView.animate(withDuration: constants.animationDurationForSubmitButtonColor) {
+                    UIView.animate(withDuration: constants.animationDurationForColors) {
                         uiElements?.passwordSecondTimeTextfield.isHidden = event.element ?? false
                         uiElements?.passwordSecondTimeTextfield.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
                     }
@@ -323,16 +352,25 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         viewModel.output.errorLabelIsHidden
             .subscribe { [uiElements, constants] event in
                 if event.element == true {
-                    UIView.animate(withDuration: constants.animationDurationForSubmitButtonColor) {
+                    UIView.animate(withDuration: constants.animationDurationForColors) {
                         uiElements.errorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
                     } completion: { _ in
                         uiElements.errorLabel.isHidden = event.element ?? true
                     }
                 } else {
-                    UIView.animate(withDuration: constants.animationDurationForSubmitButtonColor) {
+                    UIView.animate(withDuration: constants.animationDurationForColors) {
                         uiElements.errorLabel.isHidden = event.element ?? false
                         uiElements.errorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
                     }
+                }
+            }
+            .disposed(by: bag)
+        // authButtons
+        viewModel.output.authButtonsBackgroundColor
+            .subscribe { [uiElements, constants] event in
+                guard let color = event.element else { return }
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    uiElements.authButtons.configureBackground(withColor: color)
                 }
             }
             .disposed(by: bag)
@@ -352,6 +390,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     }
 
     private func subscribeToObservables() {
+
         // Подписка на все обсервабл
 
         /* Изменение состояния registerViewController

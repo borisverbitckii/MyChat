@@ -22,7 +22,7 @@ final class AppAssembly {
 
     private let configManager: ConfigureManagerProtocol
     /// Для того, чтобы избавиться от дублирования запроса на обновление ui конфига
-    private var isInitialUILoad = true
+    private var isInitialLoad = true
     private let bag = DisposeBag()
 
     // MARK: Init
@@ -55,8 +55,10 @@ final class AppAssembly {
                                                                          uiConfigProvider: appConfigClosure)
 
                 coordinator.injectModuleFactory(moduleFactory: moduleFactory)
-                coordinator.presentSplashViewController()
-                self?.isInitialUILoad = false
+                if self?.isInitialLoad == true {
+                    coordinator.presentSplashViewController()
+                    self?.isInitialLoad = false
+                }
             })
     }
 
@@ -65,8 +67,12 @@ final class AppAssembly {
         UIScreen.main.rx
             .userInterfaceStyle()
             .subscribe(onNext: { [weak self] _ in
-                if self?.isInitialUILoad == false {
-                    self?.configManager.reloadUIConfig()
+                if self?.isInitialLoad == false {
+                    // Для обновления UI во всех контроллерах
+                    self?.configManager.reloadUIConfig {
+                        NotificationCenter.default.post(name: NSNotification.userInterfaceStyleNotification,
+                                                        object: nil)
+                    }
                 }
             })
             .disposed(by: bag)

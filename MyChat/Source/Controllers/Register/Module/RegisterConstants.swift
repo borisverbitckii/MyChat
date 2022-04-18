@@ -26,6 +26,6 @@ struct RegisterConstants {
     let bottomInsetForPhonesWithoutHomeButton: CGFloat = 32
     let bottomInsetForPhonesWithHomeButton: CGFloat = 16
     // Время анимации
-    let animationDurationForSubmitButtonColor: TimeInterval = 0.25
+    let animationDurationForColors: TimeInterval = 0.25
     let animationDurationForErrorLabel: TimeInterval = 0.15
 }
