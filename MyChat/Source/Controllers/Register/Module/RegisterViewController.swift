@@ -8,6 +8,7 @@
 import RxSwift
 import AsyncDisplayKit
 import UIKit
+import UI
 import AuthenticationServices
 
 // swiftlint:disable:next type_body_length
@@ -289,21 +290,23 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         viewModel.output.nameTextfieldText
             .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
-                uiElements?.nameTextField.textfield.text = event.element as NSString?
+                guard let string = event.element else { return }
+                uiElements?.nameTextField.textfield.text = string
             }
             .disposed(by: bag)
 
         viewModel.output.nameTextfieldPlaceholder
             .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
-                uiElements?.nameTextField.textfield.placeholder = event.element as NSString?
+                uiElements?.nameTextField.textfield.placeholder = event.element
             }.disposed(by: bag)
 
         // passwordTextfield
         viewModel.output.passwordTextfieldText
             .distinctUntilChanged()
             .subscribe { [weak self] event in
-                self?.uiElements.passwordTestField.textfield.text = event.element as NSString?
+                guard let string = event.element else { return }
+                self?.uiElements.passwordTestField.textfield.text = string
                 self?.passwordText = ""
             }
             .disposed(by: bag)
@@ -311,7 +314,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         viewModel.output.passwordTextfieldPlaceholder
             .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
-                uiElements?.passwordTestField.textfield.placeholder = event.element as NSString?
+                uiElements?.passwordTestField.textfield.placeholder = event.element
             }
             .disposed(by: bag)
 
@@ -319,7 +322,8 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         viewModel.output.secondPasswordTextfieldText
             .distinctUntilChanged()
             .subscribe { [weak self] event in
-                self?.uiElements.passwordSecondTimeTextfield.textfield.text = event.element as? NSString
+                guard let string = event.element else { return }
+                self?.uiElements.passwordSecondTimeTextfield.textfield.text = string
                 self?.secondPasswordText = ""
             }
             .disposed(by: bag)
@@ -327,7 +331,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         viewModel.output.secondPasswordTextfieldPlaceholder
             .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
-                uiElements?.passwordSecondTimeTextfield.textfield.placeholder = event.element as NSString?
+                uiElements?.passwordSecondTimeTextfield.textfield.placeholder = event.element
             }
             .disposed(by: bag)
 

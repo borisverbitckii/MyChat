@@ -147,7 +147,6 @@
 		D7DE73B7280063BB00DF2037 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		D7F5BE08280D9358000ACDD4 /* NotificationCenter + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter + extension.swift"; sourceTree = "<group>"; };
 		D7F5BE1F280E65BC000ACDD4 /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
-		D7FCA07D28031E9A00AC1459 /* MyChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MyChat-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,7 +199,6 @@
 			children = (
 				A101D58F27B7750C00A38901 /* Info.plist */,
 				A101D5EC27BAA0CC00A38901 /* GoogleService-Info.plist */,
-				D7FCA07D28031E9A00AC1459 /* MyChat-Bridging-Header.h */,
 				A101D59F27B7764900A38901 /* Source */,
 				A101D59E27B7763A00A38901 /* Resources */,
 			);
@@ -776,7 +774,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Highlights.MyChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MyChat/MyChat-Bridging-Header.h";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -815,7 +814,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Highlights.MyChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MyChat/MyChat-Bridging-Header.h";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

@@ -5,6 +5,8 @@
 //  Created by Boris Verbitsky on 17.04.2022.
 //
 
+import UIKit
+
 extension UIColor {
 
     static func colorWithHexString(hexString: String) -> UIColor {

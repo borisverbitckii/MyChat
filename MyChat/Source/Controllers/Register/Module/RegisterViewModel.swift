@@ -14,6 +14,7 @@ import CryptoKit
 import Services
 import Models
 import RxCocoa
+import UI
 
 /// Состояния контроллера, чтобы отображать вид авторизации или регистрации
 enum RegisterViewControllerState {

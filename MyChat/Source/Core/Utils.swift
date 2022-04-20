@@ -5,6 +5,8 @@
 //  Created by Boris Verbitsky on 14.04.2022.
 //
 
+import Foundation
+
 /// Утилиты, которые можно вызывать статически из любой части приложения
 enum Utils {
 

@@ -31,11 +31,8 @@ final class SplashViewController: ASDKViewController<ASDisplayNode> {
     private func subscribe() {
         viewModel.output.authState
             .subscribe { [viewModel] chatUserEvent in
-                if let chatUser = chatUserEvent.element {
-                    viewModel.input.presentNextViewController(withChatUser: chatUser, presenter: self)
-                } else {
-                    viewModel.input.presentNextViewController(withChatUser: nil, presenter: self)
-                }
+                guard let chatUser = chatUserEvent.element else { return }
+                viewModel.input.presentNextViewController(withChatUser: chatUser, presenter: self)
             }
             .disposed(by: disposeBag)
 
