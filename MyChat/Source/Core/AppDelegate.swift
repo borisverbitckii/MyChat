@@ -9,6 +9,7 @@ import UIKit
 import RxRelay
 import Services
 import Models
+import FirebaseMessaging
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: Private properties
     private var appAssembly: AppAssembly?
+
+    private lazy var globalManagerFactory: ManagerFactoryGlobalProtocol = ManagerFactory()
+    private lazy var configManager: ConfigureManagerProtocol = {
+        globalManagerFactory.getConfigManager()
+    }()
+    private lazy var pushNotificationsManager: PushNotificationManagerProtocol = {
+        globalManagerFactory.getPushNotificationManager()
+    }()
 
     // MARK: Public Methods
     func application(_ application: UIApplication,
@@ -29,11 +38,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Facebook.setupFacebook(application: application,
                                didFinishLaunchingWithOptions: launchOptions)
 
-        let window = UIWindow(frame: UIScreen.main.bounds)
-
         // Конфигурация приложения
-        let configureManager: ConfigureManagerProtocol = ConfigureManager()
-        appAssembly = AppAssembly(window: window, configManager: configureManager)
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        appAssembly = AppAssembly(window: window, configManager: configManager)
+        pushNotificationsManager.pushNotificationHandler = appAssembly?.pushNotificationHandler
+
+        // Настройки для получения push уведомлений
+        pushNotificationsManager.configureApp(application: application,
+                                              pushNotificationCenterDelegate: self,
+                                              messagingDelegate: self)
         return true
     }
 
@@ -51,4 +64,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         appAssembly?.uiConfigObserverDisposable?.dispose()
     }
+
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // swiftlint:disable:next control_statement
+        if (userInfo.index(forKey: "CONFIG_STATE") != nil) {
+            UserDefaults.standard.set(true, forKey: "CONFIG_STALE")
+            let pushNotificationHandler = pushNotificationsManager.pushNotificationHandler
+            guard let pushNotificationHandler = pushNotificationHandler else {
+                assertionFailure(AssertionErrorMessages.noPushNotificationHandler.assertionErrorMessage)
+                return
+            }
+            pushNotificationHandler()
+        }
+        completionHandler(UIBackgroundFetchResult.newData)
+    }
+}
+
+/// Для получения новых appConfig в реальном времени
+extension AppDelegate: MessagingDelegate {
+
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        messaging.subscribe(toTopic: "PUSH_RC") { error in
+            if let error = error {
+                print(error) // TODO: Залогировать
+            }
+        }
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
 }

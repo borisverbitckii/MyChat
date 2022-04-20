@@ -72,7 +72,6 @@ enum RegisterViewControllerPalette: String {
     case orLabelTextColor
     case authButtonBackground
     case errorLabelTextColor
-    case activityIndicatorBackgroundColor
 }
 
 // MARK: - ChatsListViewController -

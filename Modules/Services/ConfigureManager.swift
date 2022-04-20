@@ -16,7 +16,7 @@ private enum UIConfigType: String {
 
 public protocol ConfigureManagerProtocol {
     var uiConfigObserver: PublishRelay<AppConfig?> { get }
-    func reloadUIConfig(completion: (() -> ())?)
+    func reloadUIConfig()
 }
 
 public final class ConfigureManager {
@@ -30,18 +30,18 @@ public final class ConfigureManager {
     // MARK: Init
     public init() {
         let settings = RemoteConfigSettings()
-        settings.minimumFetchInterval = 0    // TODO: Стереть при релизе, чтобы не было куча запросов (будет означать сколько в кэше держит инфу)
+        settings.minimumFetchInterval = 0
+        // TODO: Стереть при релизе, чтобы не было куча запросов (будет означать сколько в кэше держит инфу)
         remoteConfig.configSettings = settings
         reloadUIConfig()
     }
-
 }
 
 // MARK: - ConfigureManager + ConfigureManagerProtocol -
 extension ConfigureManager: ConfigureManagerProtocol {
 
     // MARK: Public methods
-    public func reloadUIConfig(completion: (() -> ())? = nil) {
+    public func reloadUIConfig() {
         remoteConfig.fetchAndActivate { [weak self] status, error in
             guard let self = self else { return }
             if let _ = error { // TODO: Залогировать
@@ -63,11 +63,6 @@ extension ConfigureManager: ConfigureManagerProtocol {
                                    texts: textConfig,
                                    palette: paletteConfig)
             self.uiConfigObserver.accept(config)
-
-            guard let completion = completion else {
-                return
-            }
-            completion()
         }
     }
 

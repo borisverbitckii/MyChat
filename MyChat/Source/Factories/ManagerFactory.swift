@@ -7,10 +7,15 @@
 
 import Services
 
-protocol ManagerFactoryProtocol {
+protocol ManagerFactoryForModulesProtocol {
     func getAuthManager() -> AuthManager
     func getNetworkManager() -> NetworkManagerProtocol
     func getStorageManager() -> StorageManagerProtocol
+}
+
+protocol ManagerFactoryGlobalProtocol {
+    func getConfigManager() -> ConfigureManagerProtocol
+    func getPushNotificationManager() -> PushNotificationManagerProtocol
 }
 
 final class ManagerFactory {
@@ -19,11 +24,14 @@ final class ManagerFactory {
     private lazy var storageManager = StorageManager()
     private lazy var authManager = AuthManager()
     private lazy var configureManager = ConfigureManager()
+    private lazy var pushNotificationsManager = PushNotificationManager()
+    private lazy var configManager = ConfigureManager()
 
 }
 
-// MARK: - extension + ManagerFactoryProtocol
-extension ManagerFactory: ManagerFactoryProtocol {
+// MARK: - extension + ManagerFactoryForModulesProtocol
+extension ManagerFactory: ManagerFactoryForModulesProtocol {
+
     func getNetworkManager() -> NetworkManagerProtocol {
         networkManager
     }
@@ -34,5 +42,17 @@ extension ManagerFactory: ManagerFactoryProtocol {
 
     func getAuthManager() -> AuthManager {
         authManager
+    }
+}
+
+// MARK: - extension + ManagerFactoryGlobalProtocol -
+extension ManagerFactory: ManagerFactoryGlobalProtocol {
+
+    func getConfigManager() -> ConfigureManagerProtocol {
+        configManager
+    }
+
+    func getPushNotificationManager() -> PushNotificationManagerProtocol {
+        pushNotificationsManager
     }
 }

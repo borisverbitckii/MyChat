@@ -10,7 +10,7 @@ import Services
 
 final class RegisterModuleBuilder {
     func build(coordinator: CoordinatorProtocol,
-               managers: ManagerFactoryProtocol,
+               managers: ManagerFactoryForModulesProtocol,
                fonts: @escaping (RegisterViewControllerFonts) -> UIFont,
                texts: @escaping  (RegisterViewControllerTexts) -> String,
                palette: @escaping (RegisterViewControllerPalette) -> UIColor) -> RegisterViewController {

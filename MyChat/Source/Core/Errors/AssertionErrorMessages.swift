@@ -16,6 +16,7 @@ enum AssertionErrorMessages {
     case noFont(String)
     case noText(String)
     case noFontNameOrFontSize(String)
+    case noPushNotificationHandler
 
     var assertionErrorMessage: String {
         switch self {
@@ -35,6 +36,8 @@ enum AssertionErrorMessages {
             return "Нет текста для '\(elementName)' в plist "
         case .noFontNameOrFontSize(let elementName):
             return "Нет данных о названии или размере шрифта для '\(elementName)'"
+        case .noPushNotificationHandler:
+            return "Клоужер для обработки push равен nil, обновление конфига не будет происходить"
         }
     }
 }

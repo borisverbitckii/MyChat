@@ -17,6 +17,7 @@ target 'MyChat' do
  pod 'FBSDKLoginKit'
  pod 'GoogleSignIn'
  pod 'lottie-ios'
+ pod 'Firebase/Messaging'
 
 end
 
@@ -31,6 +32,7 @@ target 'Services' do
  pod 'Firebase/Auth'
  pod 'FBSDKLoginKit'
  pod 'GoogleSignIn'
+ pod 'Firebase/Messaging'
 
 end
 

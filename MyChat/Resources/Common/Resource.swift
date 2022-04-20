@@ -29,12 +29,12 @@ final class Resource<T>: ResourceProtocol {
     var paletteProvider: PaletteProtocol
 
     // MARK: Init
-    init(config: (() -> (AppConfig))?) {
+    init(configProvider: (() -> (AppConfig))?) {
 
         let fontsClosure: (() -> (Fonts?))? = {
 
             let fontsClosure: () -> (Fonts?)  = {
-                config?().fonts
+                configProvider?().fonts
             }
             return fontsClosure
         }()
@@ -42,14 +42,14 @@ final class Resource<T>: ResourceProtocol {
         let textClosure: (() -> (Texts?))? = {
 
             let textsClosure: () -> (Texts?)  = {
-                config?().texts
+                configProvider?().texts
             }
             return textsClosure
         }()
 
         let paletteClosure: (() -> (Palette?))? = {
             let paletteClosure: () -> (Palette?)  = {
-                config?().palette
+                configProvider?().palette
             }
             return paletteClosure
         }()

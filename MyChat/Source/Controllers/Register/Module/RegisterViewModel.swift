@@ -125,7 +125,7 @@ protocol RegisterViewModelOutput {
     var secondPasswordTextfieldIsHidden: BehaviorRelay<Bool> { get }
     // errorPasswordText
     /// Шрифт, текст и цвет для errorPasswordLabel
-    var errorLabelTextFontColor: BehaviorRelay<(text: String, // swiftlint:disable:this large_tuple
+    var errorLabelAttributedStringDataSource: BehaviorRelay<(text: String, // swiftlint:disable:this large_tuple
                                                 font: UIFont,
                                                 color: UIColor)> { get }
     /// Включение/выключение лейбла, который пишет, что пароли не совпадают при регистрации
@@ -134,7 +134,7 @@ protocol RegisterViewModelOutput {
     var authButtonsBackgroundColor: BehaviorRelay<UIColor> { get }
     // orLabel
     /// Шрифт,текст и цвет для orLabel
-    var orLabel: BehaviorRelay<(text: String,                 // swiftlint:disable:this large_tuple
+    var orLabelAttributedStringDataSource: BehaviorRelay<(text: String,    // swiftlint:disable:this large_tuple
                                 font: UIFont,
                                 color: UIColor)> { get }
     var appleAuthClosure: ((String) -> Single<ChatUser?>)? { get set }
@@ -173,7 +173,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     var secondPasswordTextfieldIsHidden = BehaviorRelay<Bool>(value: false)
     // errorPasswordsLabel
     // swiftlint:disable:next large_tuple
-    var errorLabelTextFontColor: BehaviorRelay<(text: String,
+    var errorLabelAttributedStringDataSource: BehaviorRelay<(text: String,
                                                 font: UIFont,
                                                 color: UIColor)>
     var errorLabelIsHidden = BehaviorRelay<Bool>(value: true)
@@ -181,7 +181,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     var authButtonsBackgroundColor: BehaviorRelay<UIColor>
     // orLabel
     // swiftlint:disable:next large_tuple
-    var orLabel: BehaviorRelay<(text: String,
+    var orLabelAttributedStringDataSource: BehaviorRelay<(text: String,
                                 font: UIFont,
                                 color: UIColor)>
     /// Клоужер для отработки авторизации apple
@@ -254,7 +254,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
 
         // errorPasswordLabel
         let errorPasswordText = texts(.errorLabelPasswordsNotTheSame)
-        self.errorLabelTextFontColor = BehaviorRelay<(text: String,
+        self.errorLabelAttributedStringDataSource = BehaviorRelay<(text: String,
                                                  font: UIFont,
                                                  color: UIColor)>(value: (
                                                     text: errorPasswordText,
@@ -266,7 +266,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         let orLabelText = texts(.orLabelText)
         let orLabelFont = fonts(.registerOrLabel)
         let orLabelColor = palette(.orLabelTextColor)
-        orLabel = BehaviorRelay<(text: String,
+        orLabelAttributedStringDataSource = BehaviorRelay<(text: String,
                                  font: UIFont,
                                  color: UIColor)>(value:
                                                     (text: orLabelText,
@@ -283,16 +283,16 @@ final class RegisterViewModel: RegisterViewModelProtocol {
 
     // MARK: Private Methods
     private func showErrorLabelWithText(type: TextFieldType) {
-        let oldFont = errorLabelTextFontColor.value.font
-        let oldColor = errorLabelTextFontColor.value.color
+        let oldFont = errorLabelAttributedStringDataSource.value.font
+        let oldColor = errorLabelAttributedStringDataSource.value.color
 
         switch type {
         case .email:
-            errorLabelTextFontColor.accept((text: texts(.errorLabelEmailInvalid),
+            errorLabelAttributedStringDataSource.accept((text: texts(.errorLabelEmailInvalid),
                                             font: oldFont,
                                             color: oldColor))
         case .password:
-            errorLabelTextFontColor.accept((text: texts(.errorLabelPasswordInvalid),
+            errorLabelAttributedStringDataSource.accept((text: texts(.errorLabelPasswordInvalid),
                                             font: oldFont,
                                             color: oldColor))
         }
@@ -493,11 +493,11 @@ extension RegisterViewModel: RegisterViewModelInput {
             // Логика по выводу errorLabel для отображения ошибки
             if password != secondPassword && (password != "" && secondPassword != "") {
 
-                let oldFont = errorLabelTextFontColor.value.font
-                let oldColor = errorLabelTextFontColor.value.color
+                let oldFont = errorLabelAttributedStringDataSource.value.font
+                let oldColor = errorLabelAttributedStringDataSource.value.color
 
                 // swiftlint:disable:next line_length
-                errorLabelTextFontColor.accept((text: texts(.errorLabelPasswordsNotTheSame), // TODO: Внести в source Text
+                errorLabelAttributedStringDataSource.accept((text: texts(.errorLabelPasswordsNotTheSame), // TODO: Внести в source Text
                                                 font: oldFont,
                                                 color: oldColor))
                 errorLabelIsHidden.accept(false)

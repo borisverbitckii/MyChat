@@ -5,10 +5,10 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import UIKit
+import AsyncDisplayKit
 import RxSwift
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: ASDKViewController<ASDisplayNode> {
 
     // MARK: Private properties
     private let viewModel: ProfileViewModelProtocol
@@ -26,7 +26,7 @@ final class ProfileViewController: UIViewController {
     // MARK: Init
     init(profileViewModel: ProfileViewModelProtocol) {
         self.viewModel = profileViewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init(node: ASDisplayNode())
     }
 
     required init?(coder: NSCoder) {

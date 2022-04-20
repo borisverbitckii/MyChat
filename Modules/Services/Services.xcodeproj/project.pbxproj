@@ -18,6 +18,7 @@
 		D781F94528042E4700F401D7 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781F94428042E4700F401D7 /* Firebase.swift */; };
 		D781F94728042EE400F401D7 /* Facebook.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781F94628042EE400F401D7 /* Facebook.swift */; };
 		D781F94B2804305500F401D7 /* Google.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781F94A2804305500F401D7 /* Google.swift */; };
+		D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,6 +49,7 @@
 		D781F94428042E4700F401D7 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
 		D781F94628042EE400F401D7 /* Facebook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Facebook.swift; sourceTree = "<group>"; };
 		D781F94A2804305500F401D7 /* Google.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Google.swift; sourceTree = "<group>"; };
+		D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +89,7 @@
 			children = (
 				D781F94328042E1800F401D7 /* AuthManager */,
 				D75FD67E2801D195001B1359 /* ConfigureManager.swift */,
+				D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */,
 				D75FD67F2801D195001B1359 /* NetworkManager.swift */,
 				D75FD6802801D195001B1359 /* StorageManager.swift */,
 				D75FD65D2801C775001B1359 /* Products */,
@@ -235,6 +238,7 @@
 				D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */,
 				D75FD6712801D083001B1359 /* AuthManager.swift in Sources */,
 				D781F94728042EE400F401D7 /* Facebook.swift in Sources */,
+				D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */,
 				D781F94B2804305500F401D7 /* Google.swift in Sources */,
 				D75FD6832801D195001B1359 /* StorageManager.swift in Sources */,
 			);

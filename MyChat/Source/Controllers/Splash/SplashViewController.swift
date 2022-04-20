@@ -7,8 +7,9 @@
 
 import UIKit
 import RxSwift
+import AsyncDisplayKit
 
-final class SplashViewController: UIViewController {
+final class SplashViewController: ASDKViewController<ASDisplayNode> {
 
     // MARK: - Private properties
     private let viewModel: SplashViewModelProtocol
@@ -17,7 +18,7 @@ final class SplashViewController: UIViewController {
     // MARK: - Init
     init(viewModel: SplashViewModelProtocol) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init(node: ASDisplayNode())
         view.backgroundColor = .white
         subscribe()
     }

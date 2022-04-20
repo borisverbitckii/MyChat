@@ -24,10 +24,10 @@ final class Coordinator {
     private var moduleFactory: ModuleFactoryProtocol?
 
     /// Заглушка, чтобы не было мерцаний при переходе на splashViewController, пока грузится config
-    private lazy var emptyViewController: UIViewController = {
-        $0.view.backgroundColor = .white /// Цвет фона должен быть такой же, как у splashViewController
+    private lazy var emptyViewController: EmptyViewController = {
+        $0.node.backgroundColor = .white /// Цвет фона должен быть такой же, как у splashViewController
         return $0
-    }(UIViewController())
+    }(EmptyViewController())
 
     // MARK: Init
     init(window: UIWindow) {
@@ -70,9 +70,9 @@ extension Coordinator: CoordinatorProtocol {
     ///
     /// Модуль сплеша для проверки авторизации
     func presentSplashViewController() {
-        guard let transitionViewController = moduleFactory?.getSplashModule(coordinator: self) else { return }
-        transitionViewController.modalPresentationStyle = .fullScreen
-        emptyViewController.presentViewController(viewController: transitionViewController,
+        guard let splashViewController = moduleFactory?.getSplashModule(coordinator: self) else { return }
+        splashViewController.modalPresentationStyle = .fullScreen
+        emptyViewController.presentViewController(viewController: splashViewController,
                                                   animated: false,
                                                   completion: nil)
     }

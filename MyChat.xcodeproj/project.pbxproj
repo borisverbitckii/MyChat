@@ -64,6 +64,7 @@
 		D7D15EF527FFF68C00072821 /* RegisterConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D15EF427FFF68C00072821 /* RegisterConstants.swift */; };
 		D7DE73B8280063BB00DF2037 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DE73B7280063BB00DF2037 /* Errors.swift */; };
 		D7F5BE09280D9359000ACDD4 /* NotificationCenter + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE08280D9358000ACDD4 /* NotificationCenter + extension.swift */; };
+		D7F5BE20280E65BC000ACDD4 /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE1F280E65BC000ACDD4 /* EmptyViewController.swift */; };
 		E95ACCA23B31924B074EC47C /* Pods_MyChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1778B36A7969C8FDE33FD7FF /* Pods_MyChat.framework */; };
 /* End PBXBuildFile section */
 
@@ -145,6 +146,7 @@
 		D7D15EF427FFF68C00072821 /* RegisterConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterConstants.swift; sourceTree = "<group>"; };
 		D7DE73B7280063BB00DF2037 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		D7F5BE08280D9358000ACDD4 /* NotificationCenter + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter + extension.swift"; sourceTree = "<group>"; };
+		D7F5BE1F280E65BC000ACDD4 /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		D7FCA07D28031E9A00AC1459 /* MyChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MyChat-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -208,6 +210,7 @@
 		A101D59D27B7762600A38901 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D7F5BE1F280E65BC000ACDD4 /* EmptyViewController.swift */,
 				A101D5D927B7A7A200A38901 /* TabBarController */,
 				A101D5AB27B7789E00A38901 /* Splash */,
 				A101D5DE27BA845C00A38901 /* Register */,
@@ -604,6 +607,7 @@
 				A101D5AD27B778A900A38901 /* SplashViewController.swift in Sources */,
 				D72FFE0727FC889A003F6E9A /* ChatsListUI.swift in Sources */,
 				A101D5D427B7A4BA00A38901 /* UIViewController + transitionHandler.swift in Sources */,
+				D7F5BE20280E65BC000ACDD4 /* EmptyViewController.swift in Sources */,
 				A101D5DD27BA845900A38901 /* RegisterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

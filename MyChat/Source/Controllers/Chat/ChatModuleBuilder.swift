@@ -9,7 +9,7 @@ import Foundation
 
 final class ChatModuleBuilder {
 
-    func build(managerFactory: ManagerFactoryProtocol,
+    func build(managerFactory: ManagerFactoryForModulesProtocol,
                coordinator: CoordinatorProtocol) -> ChatViewController {
         let viewModel = ChatViewModel(coordinator: coordinator)
         let viewController = ChatViewController(chatViewModel: viewModel)

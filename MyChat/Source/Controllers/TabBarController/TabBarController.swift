@@ -5,9 +5,9 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import UIKit
+import AsyncDisplayKit
 
-final class TabBarController: UITabBarController {
+final class TabBarController: ASTabBarController {
 
     // MARK: - Private properties
     private let tabBarViewModel: TabBarControllerViewModelProtocol

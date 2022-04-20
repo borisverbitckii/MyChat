@@ -5,30 +5,31 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import UIKit
+import AsyncDisplayKit
 import Models
 import RxSwift
 
 protocol ModuleFactoryProtocol {
-    func getTabBarController() -> UITabBarController
-    func getRegisterViewController() -> UIViewController
-    func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController
-    func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController
-    func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController
-    func getNewChatModule(coordinator: CoordinatorProtocol) -> NewChatViewController
-    func getChatModule(coordinator: CoordinatorProtocol) -> ChatViewController
+    func getEmptyViewController() -> ASDKViewController<ASDisplayNode>
+    func getTabBarController() -> ASTabBarController
+    func getRegisterViewController() -> ASDKViewController<ASDisplayNode>
+    func getSplashModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
+    func getProfileModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController
+    func getChatsListModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController
+    func getNewChatModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
+    func getChatModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
 }
 
 final class ModuleFactory {
 
     // MARK: - Private properties
     private weak var coordinator: CoordinatorProtocol?
-    private let managerFactory: ManagerFactoryProtocol
+    private let managerFactory: ManagerFactoryForModulesProtocol
     private let uiConfigProvider: (() -> (AppConfig))?
 
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
-         managerFactory: ManagerFactoryProtocol,
+         managerFactory: ManagerFactoryForModulesProtocol,
          uiConfigProvider: (() -> (AppConfig))?) {
         self.coordinator = coordinator
         self.managerFactory = managerFactory
@@ -38,8 +39,13 @@ final class ModuleFactory {
 
 // MARK: - extension + ModuleFactoryProtocol
 extension ModuleFactory: ModuleFactoryProtocol {
-    func getTabBarController() -> UITabBarController {
-        guard let coordinator = coordinator else { return UITabBarController() }
+
+    func getEmptyViewController() -> ASDKViewController<ASDisplayNode> {
+        EmptyViewController()
+    }
+
+    func getTabBarController() -> ASTabBarController {
+        guard let coordinator = coordinator else { return ASTabBarController()  }
         let chatsListVC = getChatsListModule(coordinator: coordinator)
         let profileVC = getProfileModule(coordinator: coordinator)
         let viewControllers = [chatsListVC, profileVC]
@@ -47,9 +53,9 @@ extension ModuleFactory: ModuleFactoryProtocol {
                                                      viewControllers: viewControllers)
     }
 
-    func getRegisterViewController() -> UIViewController {
-        guard let coordinator = coordinator else { return UIViewController() }
-        let resource: ResourceProtocol = Resource<RegisterViewController>(config: uiConfigProvider)
+    func getRegisterViewController() -> ASDKViewController<ASDisplayNode> {
+        guard let coordinator = coordinator else { return ASDKViewController() }
+        let resource: ResourceProtocol = Resource<RegisterViewController>(configProvider: uiConfigProvider)
         return RegisterModuleBuilder().build(coordinator: coordinator,
                                              managers: managerFactory,
                                              fonts: resource.fontsProvider.getFont(),
@@ -57,13 +63,13 @@ extension ModuleFactory: ModuleFactoryProtocol {
                                              palette: resource.paletteProvider.getColor())
     }
 
-    func getSplashModule(coordinator: CoordinatorProtocol) -> SplashViewController {
+    func getSplashModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode> {
         SplashModuleBuilder().build(managers: managerFactory,
                                     coordinator: coordinator)
     }
 
-    func getProfileModule(coordinator: CoordinatorProtocol) -> UINavigationController {
-        let resource: ResourceProtocol = Resource<ProfileViewController>(config: uiConfigProvider)
+    func getProfileModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController {
+        let resource: ResourceProtocol = Resource<ProfileViewController>(configProvider: uiConfigProvider)
         return ProfileModuleBuilder().build(managers: managerFactory,
                                             coordinator: coordinator,
                                             texts: resource.textsProvider.getText(),
@@ -71,8 +77,8 @@ extension ModuleFactory: ModuleFactoryProtocol {
                                             palette: resource.paletteProvider.getColor())
     }
 
-    func getChatsListModule(coordinator: CoordinatorProtocol) -> UINavigationController {
-        let resource: ResourceProtocol = Resource<ChatsListViewController>(config: uiConfigProvider)
+    func getChatsListModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController {
+        let resource: ResourceProtocol = Resource<ChatsListViewController>(configProvider: uiConfigProvider)
         return ChatsListModuleBuilder().build(managers: managerFactory,
                                               coordinator: coordinator,
                                               texts: resource.textsProvider.getText(),
@@ -80,11 +86,11 @@ extension ModuleFactory: ModuleFactoryProtocol {
                                               palette: resource.paletteProvider.getColor())
     }
 
-    func getNewChatModule(coordinator: CoordinatorProtocol) -> NewChatViewController {
+    func getNewChatModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode> {
         NewChatModuleBuilder().build(coordinator: coordinator)
     }
 
-    func getChatModule(coordinator: CoordinatorProtocol) -> ChatViewController {
+    func getChatModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode> {
         ChatModuleBuilder().build(managerFactory: managerFactory,
                                   coordinator: coordinator)
     }

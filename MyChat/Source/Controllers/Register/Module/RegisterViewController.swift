@@ -188,6 +188,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // viewController
         viewModel.output.viewControllerBackgroundColor
+            .distinctUntilChanged()
             .subscribe { [weak node, constants] event in
                 UIView.animate(withDuration: constants.animationDurationForColors) {
                     node?.backgroundColor = event.element
@@ -212,23 +213,26 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.submitButtonIsEnable // делает кнопку активной/не активной в таргете текстфилдов
+            .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
                 uiElements?.submitButton.isEnabled = event.element ?? false
             }
             .disposed(by: bag)
 
         viewModel.output.submitButtonBackgroundColor
-            .subscribe { [uiElements, constants] event in
+            .distinctUntilChanged()
+            .subscribe { [weak uiElements, constants] event in
                 UIView.animate(withDuration: constants.animationDurationForColors) {
-                    uiElements.submitButton.backgroundColor = event.element
+                    uiElements?.submitButton.backgroundColor = event.element
                 }
             }
             .disposed(by: bag)
 
         viewModel.output.submitButtonTextColor
-            .subscribe { [uiElements, constants] event in
+            .distinctUntilChanged()
+            .subscribe { [weak uiElements, constants] event in
                 UIView.animate(withDuration: constants.animationDurationForColors) {
-                    uiElements.submitButton.tintColor = event.element
+                    uiElements?.submitButton.tintColor = event.element
                 }
             }
             .disposed(by: bag)
@@ -250,15 +254,17 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.changeStateButtonColor
-            .subscribe { [uiElements, constants] event in
+            .distinctUntilChanged()
+            .subscribe { [weak uiElements, constants] event in
                 UIView.animate(withDuration: constants.animationDurationForColors) {
-                    uiElements.changeStateButton.tintColor = event.element
+                    uiElements?.changeStateButton.tintColor = event.element
                 }
             }
             .disposed(by: bag)
 
         // Все текстфилды
         viewModel.output.textfieldsFont
+            .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
                 [ uiElements?.nameTextField,
                   uiElements?.passwordTestField,
@@ -268,6 +274,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.textfieldsBackgroundColor
+            .distinctUntilChanged()
             .subscribe { [weak uiElements, constants] event in
                 UIView.animate(withDuration: constants.animationDurationForColors) {
                     [ uiElements?.nameTextField,
@@ -280,18 +287,21 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // nameTextfield
         viewModel.output.nameTextfieldText
+            .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
                 uiElements?.nameTextField.textfield.text = event.element as NSString?
             }
             .disposed(by: bag)
 
         viewModel.output.nameTextfieldPlaceholder
+            .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
                 uiElements?.nameTextField.textfield.placeholder = event.element as NSString?
             }.disposed(by: bag)
 
         // passwordTextfield
         viewModel.output.passwordTextfieldText
+            .distinctUntilChanged()
             .subscribe { [weak self] event in
                 self?.uiElements.passwordTestField.textfield.text = event.element as NSString?
                 self?.passwordText = ""
@@ -299,6 +309,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.passwordTextfieldPlaceholder
+            .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
                 uiElements?.passwordTestField.textfield.placeholder = event.element as NSString?
             }
@@ -306,6 +317,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // secondPasswordTextfieldTex
         viewModel.output.secondPasswordTextfieldText
+            .distinctUntilChanged()
             .subscribe { [weak self] event in
                 self?.uiElements.passwordSecondTimeTextfield.textfield.text = event.element as? NSString
                 self?.secondPasswordText = ""
@@ -313,12 +325,14 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.secondPasswordTextfieldPlaceholder
+            .distinctUntilChanged()
             .subscribe { [weak uiElements] event in
                 uiElements?.passwordSecondTimeTextfield.textfield.placeholder = event.element as NSString?
             }
             .disposed(by: bag)
 
         viewModel.output.secondPasswordTextfieldIsHidden
+            .distinctUntilChanged()
             .subscribe { [weak uiElements, constants] event in
                 if event.element == true {
                     UIView.animate(withDuration: constants.animationDurationForColors) {
@@ -337,7 +351,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         // errorLabelText
-        viewModel.output.errorLabelTextFontColor
+        viewModel.output.errorLabelAttributedStringDataSource
             .subscribe { [weak uiElements] event in
                 guard let text = event.element?.text,
                       let font = event.element?.font,
@@ -350,33 +364,35 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.errorLabelIsHidden
-            .subscribe { [uiElements, constants] event in
+            .distinctUntilChanged()
+            .subscribe { [weak uiElements, constants] event in
                 if event.element == true {
                     UIView.animate(withDuration: constants.animationDurationForColors) {
-                        uiElements.errorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
+                        uiElements?.errorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaDisable
                     } completion: { _ in
-                        uiElements.errorLabel.isHidden = event.element ?? true
+                        uiElements?.errorLabel.isHidden = event.element ?? true
                     }
                 } else {
                     UIView.animate(withDuration: constants.animationDurationForColors) {
-                        uiElements.errorLabel.isHidden = event.element ?? false
-                        uiElements.errorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
+                        uiElements?.errorLabel.isHidden = event.element ?? false
+                        uiElements?.errorLabel.alpha = constants.passwordSecondTimeTextfieldAlphaEnable
                     }
                 }
             }
             .disposed(by: bag)
         // authButtons
         viewModel.output.authButtonsBackgroundColor
-            .subscribe { [uiElements, constants] event in
+            .distinctUntilChanged()
+            .subscribe { [weak uiElements, constants] event in
                 guard let color = event.element else { return }
                 UIView.animate(withDuration: constants.animationDurationForColors) {
-                    uiElements.authButtons.configureBackground(withColor: color)
+                    uiElements?.authButtons.configureBackground(withColor: color)
                 }
             }
             .disposed(by: bag)
 
         // orLabel
-        viewModel.output.orLabel
+        viewModel.output.orLabelAttributedStringDataSource
             .subscribe { [weak uiElements] event in
                 guard let text = event.element?.text,
                       let font = event.element?.font,

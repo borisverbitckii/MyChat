@@ -5,9 +5,9 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import UIKit
+import AsyncDisplayKit
 
-final class ChatViewController: UIViewController {
+final class ChatViewController: ASDKViewController<ASDisplayNode> {
 
     // MARK: - Private properties
     private let chatViewModel: ChatViewModelProtocol
@@ -20,7 +20,7 @@ final class ChatViewController: UIViewController {
     // MARK: - Init
     init(chatViewModel: ChatViewModelProtocol) {
         self.chatViewModel = chatViewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init(node: ASDisplayNode())
     }
 
     required init?(coder: NSCoder) {
