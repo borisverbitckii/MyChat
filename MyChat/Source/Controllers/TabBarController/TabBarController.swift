@@ -5,6 +5,7 @@
 //  Created by Борис on 12.02.2022.
 //
 
+import Logger
 import AsyncDisplayKit
 
 final class TabBarController: ASTabBarController {
@@ -16,6 +17,7 @@ final class TabBarController: ASTabBarController {
     init(tabBarViewModel: TabBarControllerViewModelProtocol) {
         self.tabBarViewModel = tabBarViewModel
         super.init(nibName: nil, bundle: nil)
+        delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -26,5 +28,12 @@ final class TabBarController: ASTabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tabBar.isTranslucent = true
+    }
+}
+
+// MARK: - extension + UITabBarControllerDelegate -
+extension TabBarController: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        Logger.log(to: .info, message: "В таббар контроллере выбран \(className)")
     }
 }

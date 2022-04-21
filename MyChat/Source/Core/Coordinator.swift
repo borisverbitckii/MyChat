@@ -6,8 +6,9 @@
 //
 
 import UIKit
-import Services
 import Models
+import Logger
+import Services
 
 protocol CoordinatorProtocol: AnyObject {
     func injectModuleFactory(moduleFactory: ModuleFactoryProtocol)
@@ -45,7 +46,8 @@ extension Coordinator: CoordinatorProtocol {
     }
 
     func presentTabBarViewController(withChatUser user: ChatUser) {
-        window.rootViewController = moduleFactory?.getTabBarController()
+        guard let tabBarController = moduleFactory?.getTabBarController() else { return }
+        window.rootViewController = tabBarController
         window.makeKeyAndVisible()
 
         UIView.transition(with: window,

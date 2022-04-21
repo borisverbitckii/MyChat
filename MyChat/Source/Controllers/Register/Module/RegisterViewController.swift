@@ -5,10 +5,11 @@
 //  Created by Борис on 14.02.2022.
 //
 
+import UI
+import UIKit
+import Logger
 import RxSwift
 import AsyncDisplayKit
-import UIKit
-import UI
 import AuthenticationServices
 
 // swiftlint:disable:next type_body_length
@@ -640,9 +641,8 @@ extension RegisterViewController: UITextFieldDelegate {
         return true
     }
 
-    /* Метод для того, чтобы сохранить пароль из текстфилдов и заменить символы
-     на точки (исправления бага с isSecureTextEntry, когда текст прыгает при стирании с кастомным шрифтом)*/
-
+    /// Метод для того, чтобы сохранить пароль из текстфилдов и заменить символы
+    /// на точки (исправления бага с isSecureTextEntry, когда текст прыгает при стирании с кастомным шрифтом)
     private func savePasswordFromTextfieldBeforeReplacementWithDot(string: String,
                                                                    range: NSRange,
                                                                    textfield: UITextField) -> Bool {
@@ -685,11 +685,11 @@ extension RegisterViewController: ASAuthorizationControllerDelegate {
                                  didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredentials = authorization.credential as? ASAuthorizationAppleIDCredential {
             guard let appleIDToken = appleIDCredentials.identityToken else {
-                assertionFailure() // TODO: Залогировать
+                Logger.log(to: .error, message: "Не удалось получить appleIDToken")
                 return
             }
             guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-                assertionFailure() // TODO: Залогировать
+                Logger.log(to: .error, message: "Не удалось перевести appleIDToken в string")
                 return
             }
 
@@ -699,7 +699,9 @@ extension RegisterViewController: ASAuthorizationControllerDelegate {
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        // TODO: Залогировать
+        Logger.log(to: .error,
+                   message: "Не удалось авторизироваться в apple",
+                   error: error)
         viewModel.input.showAppleAuthError(presenter: self)
     }
 }

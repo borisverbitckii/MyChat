@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import Models
+import Logger
 import RxRelay
 import RxSwift
 import Services
-import Models
 
 protocol SplashViewModelProtocol {
     var input: SplashViewModelInputProtocol { get }
@@ -17,11 +18,10 @@ protocol SplashViewModelProtocol {
 }
 
 protocol SplashViewModelInputProtocol {
-    func presentNextViewController(withChatUser user: ChatUser?, presenter: TransitionHandler)
+    func viewDidLoad(presenter: TransitionHandler)
 }
 
 protocol SplashViewModelOutputProtocol {
-    var authState: PublishRelay<ChatUser?> { get }
 }
 
 final class SplashViewModel {
@@ -29,8 +29,6 @@ final class SplashViewModel {
     // MARK: Public properties
     var input: SplashViewModelInputProtocol { return self }
     var output: SplashViewModelOutputProtocol { return self }
-
-    var authState = PublishRelay<ChatUser?>()
 
     // MARK: Private properties
     private let coordinator: CoordinatorProtocol
@@ -42,19 +40,6 @@ final class SplashViewModel {
          authManager: AuthManagerSplashProtocol) {
         self.authManager = authManager
         self.coordinator = coordinator
-
-        authManager.checkIsUserAlreadyLoggedInIn()
-            .subscribe { [authState] result in
-
-                switch result {
-                case .success(let chatUser):
-                    authState.accept(chatUser)
-                case .failure: // TODO: Залогировать
-                    print(Errors.cantCheckIsLoggedInOrNot)
-                }
-            }
-            .disposed(by: disposeBag)
-
     }
 }
 
@@ -64,12 +49,23 @@ extension SplashViewModel: SplashViewModelProtocol {
 
 // MARK: - extension + SplashViewModelInputProtocol -
 extension SplashViewModel: SplashViewModelInputProtocol {
-    func presentNextViewController(withChatUser user: ChatUser?, presenter: TransitionHandler) {
-        if let user = user {
-            coordinator.presentTabBarViewController(withChatUser: user)
-        } else {
-            coordinator.presentRegisterViewController(presenter: presenter)
-        }
+
+    func viewDidLoad(presenter: TransitionHandler) {
+        authManager.checkIsUserAlreadyLoggedIn()
+            .subscribe { [weak self] result in
+                switch result {
+                case .success(let user):
+                    if let user = user {
+                        self?.coordinator.presentTabBarViewController(withChatUser: user)
+                        Logger.log(to: .info, message: "Пользователь уже авторизован", userInfo: ["uid": user.uid])
+                    } else {
+                        self?.coordinator.presentRegisterViewController(presenter: presenter)
+                        Logger.log(to: .notice, message: "Пользователь не авторизован")
+                    }
+                default: break
+                }
+            }
+            .disposed(by: disposeBag)
     }
 }
 

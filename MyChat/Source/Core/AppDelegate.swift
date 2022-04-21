@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import Models
+import Logger
 import RxRelay
 import Services
-import Models
-import FirebaseMessaging
+import Firebase
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,8 +30,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     // MARK: Public Methods
+
+    // swiftlint:disable:next colon
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+
+        // Свизлинг
+        UIViewController.swizzleViewDidAppear()
+
+        // Настройка логгера
+        Logger.printingMode = .onlyMessages
+        return true
+    }
+
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        Logger.log(to: .info, message: "Приложение запустилось")
+
         // Firebase
         Firebase.setupFirebase()
 
@@ -51,9 +66,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     // Для авторизации через google и facebook
-    func application(_ application: UIApplication, open url: URL,
+    func application(_ application: UIApplication,
+                     open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any]) -> Bool {
-
         Facebook.setupFacebookURLHandler(application: application,
                                          open: url,
                                          sourceApplication: options)
@@ -63,17 +78,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         appAssembly?.uiConfigObserverDisposable?.dispose()
+        Logger.log(to: .info, message: "Приложение выключается")
     }
 
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        Logger.log(to: .info, message: "Пришло push уведомление")
         // swiftlint:disable:next control_statement
         if (userInfo.index(forKey: "CONFIG_STATE") != nil) {
             UserDefaults.standard.set(true, forKey: "CONFIG_STALE")
             let pushNotificationHandler = pushNotificationsManager.pushNotificationHandler
             guard let pushNotificationHandler = pushNotificationHandler else {
-                assertionFailure(AssertionErrorMessages.noPushNotificationHandler.assertionErrorMessage)
+                Logger.log(to: .warning, message: "Не инициализирован pushNotificationHandler для обработки пуша от remoteConfig")
                 return
             }
             pushNotificationHandler()
@@ -88,7 +105,9 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         messaging.subscribe(toTopic: "PUSH_RC") { error in
             if let error = error {
-                print(error) // TODO: Залогировать
+                Logger.log(to: .error,
+                           message: error.localizedDescription,
+                           error: error)
             }
         }
     }

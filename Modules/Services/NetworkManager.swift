@@ -25,7 +25,7 @@ extension NetworkManager: NetworkManagerProtocol {
 
 }
 
-// MARK: - extension + NetworkManagerСontactListProtocol
+// MARK: - extension + NetworkManagerChatListProtocol
 extension NetworkManager: NetworkManagerChatListProtocol {
 
 }

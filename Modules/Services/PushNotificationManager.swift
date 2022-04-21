@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Logger
 import FirebaseMessaging
 
 public protocol PushNotificationManagerProtocol {
@@ -28,8 +29,8 @@ extension PushNotificationManager: PushNotificationManagerProtocol {
 
     // MARK: Public Methods
     public func configureApp(application: UIApplication,
-                      pushNotificationCenterDelegate: UNUserNotificationCenterDelegate?,
-                      messagingDelegate: MessagingDelegate?) {
+                             pushNotificationCenterDelegate: UNUserNotificationCenterDelegate?,
+                             messagingDelegate: MessagingDelegate?) {
 
         UNUserNotificationCenter.current().delegate = pushNotificationCenterDelegate
         Messaging.messaging().delegate = messagingDelegate
@@ -39,7 +40,10 @@ extension PushNotificationManager: PushNotificationManagerProtocol {
             options: authOptions,
             completionHandler: { _, error in
                 if let error = error {
-                    print(error) // TODO: Залогировать ошибку
+                    Logger.log(to: .error,
+                               message: "Не удалось получить разрешение на пуши",
+                               messageDescription: error.localizedDescription,
+                               error: error)
                 }
             })
 

@@ -6,14 +6,16 @@
 //
 
 import Models
+import Logger
 import RxSwift
 import Firebase
+import Analytics
 import GoogleSignIn
 import FBSDKLoginKit
 import AuthenticationServices
 
 public protocol AuthManagerSplashProtocol {         // для SplashViewController
-    func checkIsUserAlreadyLoggedInIn() -> Single<ChatUser?>
+    func checkIsUserAlreadyLoggedIn() -> Single<ChatUser?>
 }
 
 public protocol AuthManagerRegisterProtocol {       // для RegisterViewController
@@ -47,7 +49,7 @@ public final class AuthManager {
 // MARK: - extension + AuthManagerSplashProtocol -
 extension AuthManager: AuthManagerSplashProtocol {
 
-    public func checkIsUserAlreadyLoggedInIn() -> Single<ChatUser?> {
+    public func checkIsUserAlreadyLoggedIn() -> Single<ChatUser?> {
         Single<ChatUser?>.create { [auth] observer in
             auth.addStateDidChangeListener { _, user in
                 if let user = user {
@@ -56,6 +58,7 @@ extension AuthManager: AuthManagerSplashProtocol {
                                             name: user.displayName,
                                             surname: nil,
                                             avatarURL: user.photoURL)
+                    AnalyticReporter.logEvent(.login(loginMethod: "firebase"))
                     observer(.success(chatUser))
                 } else {
                     observer(.success(nil))
@@ -73,6 +76,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
         Single<ChatUser?>.create { [auth] observer in
             auth.createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error {
+                    Logger.log(to: .error,
+                               message: "Не удалось зарегистрировать пользователя в firebase с e-mail и паролем",
+                               error: error)
                     observer(.failure(error))
                 }
 
@@ -83,14 +89,18 @@ extension AuthManager: AuthManagerRegisterProtocol {
                                             name: authResult?.user.displayName,
                                             surname: nil,
                                             avatarURL: authResult?.user.photoURL)
-                    
+                    AnalyticReporter.logEvent(.signup(signupMethod: "email"))
+                    Logger.log(to: .info,
+                               message: "Зарегистрировался новый пользователь, uid: \(uid)")
                     observer(.success(chatUser))
                 }
 
 
                 auth.currentUser?.sendEmailVerification(completion: { error in
                     if let error = error {
-                        observer(.failure(error))
+                        Logger.log(to: .error,
+                                   message: "Не удалось отправить e-mail для подтверждения регистрации в firebase",
+                                   error: error)
                     }
                 })
 
@@ -107,6 +117,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
             auth.signIn(withEmail: email,
                         password: password) { authResult, error in
                 if let error = error {
+                    Logger.log(to: .error,
+                               message: "Не удалось авторизироваться в firebase через e-mail и пароль",
+                               error: error)
                     observer(.failure(error))
                     return
                 }
@@ -118,7 +131,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
                                             name: authResult?.user.displayName,
                                             surname: nil,
                                             avatarURL: authResult?.user.photoURL)
-
+                    AnalyticReporter.logEvent(.login(loginMethod: "email"))
+                    Logger.log(to: .info,
+                               message: "Пользователь авторизировался с логином и паролем, uid: \(uid)")
                     observer(.success(chatUser))
                 }
             }
@@ -131,14 +146,23 @@ extension AuthManager: AuthManagerRegisterProtocol {
             let fbLoginManager = LoginManager()
             fbLoginManager.logIn(permissions: [], from: presenterVC) { result, error in
                 if let error = error {
+                    Logger.log(to: .error,
+                               message: "Не удалось авторизироваться в facebook",
+                               error: error)
                     observer(.failure(error))
                     return
                 }
 
                 if let result = result {
                     if result.isCancelled {
+                        Logger.log(to: .notice,
+                                   message: "Пользователь прервал авторизацию через facebook")
+                        observer(.failure(NSError()))
                         return
                     }
+                    AnalyticReporter.logEvent(.login(loginMethod: "facebook"))
+                    Logger.log(to: .notice,
+                               message: "Пользователь авторизировался через facebook")
 
                     let credential = FacebookAuthProvider
                         .credential(withAccessToken: AccessToken.current!.tokenString)
@@ -157,6 +181,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
                 GIDSignIn.sharedInstance.signIn(with: config,
                                                 presenting: presenterVC) { user, error in
                     if let error = error {
+                        Logger.log(to: .error,
+                                   message: "Не удалось авторизироваться в google",
+                                   error: error)
                         observer(.failure(error))
                         return
                     }
@@ -165,6 +192,10 @@ extension AuthManager: AuthManagerRegisterProtocol {
 
                     let credential = GoogleAuthProvider.credential(withIDToken: idToken,
                                                                    accessToken: authentication.accessToken)
+                    AnalyticReporter.logEvent(.login(loginMethod: "google"))
+                    Logger.log(to: .notice,
+                               message: "Пользователь авторизировался через google")
+
                     self?.signInToFirebase(credentials: credential, observer: observer)
                 }
             }
@@ -193,10 +224,13 @@ extension AuthManager: AuthManagerRegisterProtocol {
     // MARK: Private methods
     private func sighInWithAppleInFirebase(idTokenForAuth: String, nonce: String) -> Single<ChatUser?> {
         Single<ChatUser?>.create { [weak self] observer in
-
             let credential: AuthCredential = OAuthProvider.credential(withProviderID: "apple.com",
                                                                       idToken: idTokenForAuth,
                                                                       rawNonce: nonce)
+            AnalyticReporter.logEvent(.login(loginMethod: "apple"))
+            Logger.log(to: .notice,
+                       message: "Пользователь авторизировался через apple")
+            
             self?.signInToFirebase(credentials: credential, observer: observer)
             return Disposables.create()
         }
@@ -206,6 +240,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
                                   observer: @escaping (Result<ChatUser?, Error>) -> Void ) {
         Auth.auth().signIn(with: credentials) { authResult, error in
             if let error = error {
+                Logger.log(to: .error,
+                           message: "Не удалось авторизироваться в firebase",
+                           error: error)
                 observer(.failure(error))
                 return
             }
@@ -216,7 +253,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
                                         name: authResult?.user.displayName,
                                         surname: nil,
                                         avatarURL: authResult?.user.photoURL)
-
+                Logger.log(to: .notice,
+                           message: "Пользователь авторизировался через firebase",
+                           userInfo: ["uid" : uid])
                 observer(.success(chatUser))
             }
         }
@@ -229,6 +268,7 @@ extension AuthManager: AuthManagerProfileProtocol {
         Single<Any?>.create { [auth] observer in
             do {
                 try auth.signOut()
+                AnalyticReporter.logEvent(.signOut)
                 observer(.success(nil))
             } catch let signOutError as NSError {
                 observer(.failure(signOutError))

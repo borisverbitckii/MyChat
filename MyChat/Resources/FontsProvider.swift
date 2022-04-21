@@ -7,6 +7,7 @@
 
 import UIKit
 import Models
+import Logger
 
 protocol FontsProviderProtocol {
     /// Клоужер для локальной настройки шрифта
@@ -32,21 +33,22 @@ extension FontsProvider: FontsProviderProtocol {
             let viewControllerName = String(describing: T.self)
 
             guard let fontsForViewController = remoteConfig?()?.viewControllers[viewControllerName] else {
-                // TODO: Залогировать отсутствие значения из конфига
+                Logger.log(to: .warning,
+                           message: "В remoteConfig для шрифтов не найден контроллер \(viewControllerName)")
                 return self.getDefaultFont(for: uiElement.rawValue)
             }
 
             guard let uiElementDict = fontsForViewController.uiElements[uiElement.rawValue] else {
-                // TODO: Залогировать отсутствие значения из конфига
+                Logger.log(to: .warning,
+                           message: "В remoteConfig для шрифтов не найден ui элемент \(uiElement.rawValue)")
                 return self.getDefaultFont(for: uiElement.rawValue)
             }
 
             guard let fontSizeNumber = NumberFormatter().number(from: uiElementDict.fontSize),
                   let font = UIFont(name: uiElementDict.fontName,
                                     size: CGFloat(truncating: fontSizeNumber)) else {
-                assertionFailure(AssertionErrorMessages
-                    .noFont(uiElement.rawValue)
-                    .assertionErrorMessage)
+                Logger.log(to: .error,
+                           message: "Не удалось собрать UIFont для ui элемента' \(uiElement.rawValue) из remoteConfig")
                 return self.getDefaultFont(for: uiElement.rawValue)
             }
             return font
@@ -59,29 +61,28 @@ extension FontsProvider: FontsProviderProtocol {
         let vcName = String(describing: T.self)
 
         guard let viewControllerDict = localConfig[vcName] as? [String: Any] else {
-            assertionFailure(AssertionErrorMessages
-                .noDataForController(vcName)
-                .assertionErrorMessage)
+            Logger.log(to: .error,
+                       message: "В локальном репозитории шрифтов не найден словарь для \(vcName)")
             return UIFont.systemFont(ofSize: 14)
         }
 
         guard let fontDict = viewControllerDict[uiElementName] as? [String: Any] else {
-            assertionFailure(AssertionErrorMessages
-                .noElementInPlist(uiElementName)
-                .assertionErrorMessage)
+            Logger.log(to: .error,
+                       message: "В локальном репозитории шрифтов не найден шрифт для \(uiElementName)")
             return UIFont.systemFont(ofSize: 14)
         }
 
         guard let fontName = fontDict["fontName"] as? String,
               let fontSize = fontDict["size"] as? CGFloat else {
-            assertionFailure(AssertionErrorMessages
-                .noFontNameOrFontSize(uiElementName)
-                .assertionErrorMessage)
+            Logger.log(to: .error,
+                       message: "Не удалось достать данные для UIFont для ui элемента' \(uiElementName) из локального репозитория")
+            // swiftlint:disable:previous line_length
             return UIFont.systemFont(ofSize: 14)
         }
 
         guard let font = UIFont(name: fontName, size: fontSize) else {
-            assertionFailure(AssertionErrorMessages.noFont(uiElementName).assertionErrorMessage)
+            Logger.log(to: .error,
+                       message: "Не удалось собрать UIFont для ui элемента' \(uiElementName) из локального репозитория")
             return UIFont.systemFont(ofSize: 14)
         }
 

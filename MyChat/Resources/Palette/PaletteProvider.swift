@@ -7,6 +7,7 @@
 
 import UIKit
 import Models
+import Logger
 
 protocol PaletteProtocol {
     /// Клоужер для локальной настройки цвета
@@ -30,20 +31,22 @@ extension PaletteProvider: PaletteProtocol {
         { [remoteConfig]  uiElement in
             let viewControllerName = String(describing: T.self)
             guard let colorsForViewController = remoteConfig?()?.viewControllers[viewControllerName] else {
-                // TODO: Залогировать отсутствие значения из конфига
+                Logger.log(to: .warning,
+                           message: "В remoteConfig для цветов не найден контроллер \(viewControllerName)")
                 guard let localColor = UIColor(named: uiElement.rawValue) else {
-                    assert(UIColor(named: uiElement.rawValue) != nil,
-                           AssertionErrorMessages.noColor.assertionErrorMessage)
+                    Logger.log(to: .error,
+                               message: "Не найден цвет из assets для \(uiElement.rawValue)")
                     return UIColor()
                 }
                 return localColor
             }
 
             guard let colorsPair = colorsForViewController.uiElements[uiElement.rawValue] else {
-                // TODO: Залогировать отсутствие значения из конфига
+                Logger.log(to: .warning,
+                           message: "В remoteConfig для цветов не найден ui элемент \(uiElement.rawValue)")
                 guard let localColor = UIColor(named: uiElement.rawValue) else {
-                    assert(UIColor(named: uiElement.rawValue) != nil,
-                           AssertionErrorMessages.noColor.assertionErrorMessage)
+                    Logger.log(to: .error,
+                               message: "Не найден цвет из assets для \(uiElement.rawValue)")
                     return UIColor()
                 }
                 return localColor
@@ -61,10 +64,11 @@ extension PaletteProvider: PaletteProtocol {
             }
 
             guard let color = color else {
-                // TODO: Залогировать невозможность перевести hex
+                Logger.log(to: .warning,
+                           message: "Не получилось конвертировать hex для \(uiElement.rawValue)")
                 guard let localColor = UIColor(named: uiElement.rawValue) else {
-                    assert(UIColor(named: uiElement.rawValue) != nil,
-                           AssertionErrorMessages.noColorByHex.assertionErrorMessage)
+                    Logger.log(to: .error,
+                               message: "Не найден цвет из assets для \(uiElement.rawValue)")
                     return UIColor()
                 }
                 return localColor

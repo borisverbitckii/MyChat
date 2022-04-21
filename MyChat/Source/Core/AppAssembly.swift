@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import Models
+import Logger
 import RxSwift
 import RxCocoa
-import Models
 import Services
+import FirebaseCrashlytics
 
 final class AppAssembly {
 
@@ -67,17 +69,20 @@ final class AppAssembly {
                 if self?.appConfig?.texts != appConfig?.texts && self?.appConfig != nil {
                     NotificationCenter.default.post(name: NSNotification.appConfigTextsWereUpdated,
                                                     object: nil)
+                    Logger.log(to: .info, message: "Отправлено уведомление об обновлении текстов")
                 }
 
                 // Постит нотификацию только при изменении шрифтов
                 if self?.appConfig?.fonts != appConfig?.fonts && self?.appConfig != nil {
                     NotificationCenter.default.post(name: NSNotification.appConfigFontsWereUpdated,
                                                     object: nil)
+                    Logger.log(to: .info, message: "Отправлено уведомление об обновлении шрифтов")
                 }
 
                 // Постит нотификацию цветов каждый раз, когда она прилетает
                 NotificationCenter.default.post(name: NSNotification.userInterfaceStyleNotification,
                                                 object: nil)
+                Logger.log(to: .info, message: "Отправлено уведомление об обновлении цветов")
                 if self?.isInitialLoad == true {
                     coordinator.presentSplashViewController()
                     self?.isInitialLoad = false
@@ -93,6 +98,7 @@ final class AppAssembly {
                 if self?.isInitialLoad == false {
                     // Для обновления UI во всех контроллерах при смене темы
                     self?.configManager.reloadUIConfig()
+                    Logger.log(to: .info, message: "Пользователь сменил тему на телефоне")
                 }
             })
             .disposed(by: bag)

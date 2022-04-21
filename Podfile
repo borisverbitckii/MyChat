@@ -3,45 +3,65 @@ use_frameworks!
 platform :ios, '13.0'
 
 target 'MyChat' do
-  # Comment the next line if you don't want to use dynamic frameworks
   workspace 'MyChat.xcworkspace'
 
+ pod 'SwiftLint'
+
  pod 'Texture'
+ pod 'lottie-ios'
+
  pod 'RxSwift'
  pod 'RxRelay'
  pod 'RxCocoa'
- pod 'SwiftLint'
- pod 'Firebase/RemoteConfig'
- pod 'Firebase/Firestore'
- pod 'Firebase/Auth'
+
  pod 'FBSDKLoginKit'
  pod 'GoogleSignIn'
- pod 'lottie-ios'
+
+ pod 'Firebase'
+ pod 'Firebase/Auth'
  pod 'Firebase/Messaging'
+ pod 'Firebase/Firestore'
+ pod 'Firebase/Analytics'
+ pod 'Firebase/Crashlytics'
+ pod 'Firebase/RemoteConfig'
 
 end
 
 target 'Services' do
   xcodeproj './Modules/Services/Services.xcodeproj'
-  # Comment the next line if you don't want to use dynamic frameworks
 
  pod 'RxSwift'
  pod 'RxRelay'
- pod 'Firebase/Firestore'
- pod 'Firebase/RemoteConfig'
- pod 'Firebase/Auth'
+
  pod 'FBSDKLoginKit'
  pod 'GoogleSignIn'
+
+ pod 'Firebase/Auth'
+ pod 'Firebase/Firestore'
  pod 'Firebase/Messaging'
+ pod 'Firebase/RemoteConfig'
 
 end
 
 target 'UI' do
   xcodeproj './Modules/UI/UI.xcodeproj'
-  # Comment the next line if you don't want to use dynamic frameworks
 
  pod 'Texture'
  pod 'lottie-ios'
+
+end
+
+target 'Analytics' do
+  xcodeproj './Modules/Analytics/Analytics.xcodeproj'
+
+ pod 'Firebase/Analytics'
+
+end
+
+target 'Logger' do
+  xcodeproj './Modules/Logger/Logger.xcodeproj'
+
+ pod 'Firebase/Crashlytics'
 
 end
 

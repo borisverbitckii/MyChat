@@ -7,6 +7,7 @@
 
 import UIKit
 import Models
+import Logger
 
 protocol TextProviderProtocol {
     /// Клоужер для локальной настройки текста
@@ -30,15 +31,16 @@ extension TextProvider: TextProviderProtocol {
             let viewControllerName = String(describing: T.self)
 
             guard let textsForViewController = remoteConfig?()?.viewControllers[viewControllerName] else {
-                // TODO: Залогировать отсутствие значения из конфига
+                Logger.log(to: .warning,
+                           message: "В remoteConfig для текста не найден контроллер \(viewControllerName)")
                 return self.getDefaultText(for: uiElement.rawValue)
             }
 
             guard let uiElement = textsForViewController.uiElements[uiElement.rawValue] else {
-                // TODO: Залогировать отсутствие значения из конфига
+                Logger.log(to: .warning,
+                           message: "В remoteConfig для текста не найден ui элемент \(uiElement.rawValue)")
                 return self.getDefaultText(for: uiElement.rawValue)
             }
-
             return uiElement.text
         }
     }
@@ -48,11 +50,13 @@ extension TextProvider: TextProviderProtocol {
         let viewControllerName = String(describing: T.self)
 
         guard let viewControllerDict = self.localConfig[viewControllerName] as? [String: Any] else {
-            assertionFailure(AssertionErrorMessages.noElementInPlist(viewControllerName).assertionErrorMessage)
+            Logger.log(to: .error,
+                       message: "В локальном репозитории текстов не найден словарь для \(viewControllerName)")
             return "" }
 
         guard let string = viewControllerDict[uiElementName] as? String else {
-            assertionFailure(AssertionErrorMessages.noText(uiElementName).assertionErrorMessage)
+            Logger.log(to: .error,
+                       message: "В локальном репозитории текстов не найден текст для \(uiElementName)")
             return "" }
         return string
     }

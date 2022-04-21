@@ -5,16 +5,18 @@
 //  Created by Борис on 14.02.2022.
 //
 
+import UI
 import UIKit
+import Models
+import Logger
 import RxRelay
 import RxSwift
+import RxCocoa
+import Services
+import CryptoKit
+import Analytics
 import AsyncDisplayKit
 import AuthenticationServices
-import CryptoKit
-import Services
-import Models
-import RxCocoa
-import UI
 
 /// Состояния контроллера, чтобы отображать вид авторизации или регистрации
 enum RegisterViewControllerState {
@@ -378,7 +380,9 @@ extension RegisterViewModel: RegisterViewModelInput {
                                               sourceButtonType: .appleButton,
                                               presenter: presenter)
             case .failure(let error):
-                print(error) // TODO: Залогировать
+                Logger.log(to: .error,
+                           message: "Не удалось авторизироваться в apple",
+                           error: error)
                 let alertController = self.generateAlertController(type: .appleAuth)
                 presenter?.present(alertController, animated: true)
             }
@@ -407,8 +411,9 @@ extension RegisterViewModel: RegisterViewModelInput {
                     authManager.signInWithGoogle(presenterVC: presenter)
                         .subscribe(onSuccess: { [coordinator] chatUser in
                             guard let chatUser = chatUser else { return }
+                            AnalyticReporter.logEvent(.login(loginMethod: "google"))
                             coordinator.presentTabBarViewController(withChatUser: chatUser)
-                        }, onFailure: { [generateAlertController] _ in // TODO: Залогировать ошибку
+                        }, onFailure: { [generateAlertController] _ in
                             let alertController = generateAlertController(.googleAuth)
                             presenter.present(alertController, animated: true)
                         })
@@ -419,8 +424,9 @@ extension RegisterViewModel: RegisterViewModelInput {
                     authManager.signInWithFacebook(presenterVC: presenter)
                         .subscribe(onSuccess: { [coordinator] chatUser in
                             guard let chatUser = chatUser else { return }
+                            AnalyticReporter.logEvent(.login(loginMethod: "facebook"))
                             coordinator.presentTabBarViewController(withChatUser: chatUser)
-                        }, onFailure: { [generateAlertController] _ in // TODO: Залогировать ошибку
+                        }, onFailure: { [generateAlertController] _ in
                             let alertController = generateAlertController(.facebookAuth)
                             presenter.present(alertController, animated: true)
                         })
@@ -428,10 +434,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                 }
 
             case .appleButton:
-                guard let chatUser = appleChatUser else {
-                    assertionFailure(AssertionErrorMessages.appleAuthError.assertionErrorMessage)
-                    return
-                }
+                guard let chatUser = appleChatUser else { return }
                 coordinator.presentTabBarViewController(withChatUser: chatUser)
 
             case .submitButtonOrReturnButton:
@@ -443,7 +446,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                     .subscribe(onSuccess: { [coordinator] chatUser in
                         guard let chatUser = chatUser else { return }
                         coordinator.presentTabBarViewController(withChatUser: chatUser)
-                    }, onFailure: { [generateAlertController] _ in // TODO: Залогировать ошибку
+                    }, onFailure: { [generateAlertController] _ in
                         let alertController = generateAlertController(.notCorrectLoginOrPassword)
                         presenter.present(alertController, animated: true)
                     })
@@ -466,7 +469,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                         self?.passwordTextfieldText.accept("")
                         self?.secondPasswordTextfieldText.accept("")
                     }
-                    print(error) // TODO: Обработать ошибки и залогировать
+                    // TODO: Обработать ошибки
                 }
                 .disposed(by: disposeBag)
         }
@@ -498,9 +501,9 @@ extension RegisterViewModel: RegisterViewModelInput {
                 let oldColor = errorLabelAttributedStringDataSource.value.color
 
                 // swiftlint:disable:next line_length
-                errorLabelAttributedStringDataSource.accept((text: texts(.errorLabelPasswordsNotTheSame), // TODO: Внести в source Text
-                                                font: oldFont,
-                                                color: oldColor))
+                errorLabelAttributedStringDataSource.accept((text: texts(.errorLabelPasswordsNotTheSame),
+                                                             font: oldFont,
+                                                             color: oldColor))
                 errorLabelIsHidden.accept(false)
                 return
             } else if password == secondPassword && (password != "" && secondPassword != "") {
@@ -669,4 +672,4 @@ extension RegisterViewModel: RegisterViewModelInput {
         passwordTextfieldText.accept("")
         secondPasswordTextfieldText.accept("")
     }
-}
+} // swiftlint:disable:this file_length

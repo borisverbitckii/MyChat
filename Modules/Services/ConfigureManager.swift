@@ -5,9 +5,9 @@
 //  Created by Boris Verbitsky on 05.04.2022.
 //
 
-import RxSwift
-import RxRelay
 import Models
+import Logger
+import RxRelay
 import FirebaseRemoteConfig
 
 private enum UIConfigType: String {
@@ -44,7 +44,10 @@ extension ConfigureManager: ConfigureManagerProtocol {
     public func reloadUIConfig() {
         remoteConfig.fetchAndActivate { [weak self] status, error in
             guard let self = self else { return }
-            if let _ = error { // TODO: Залогировать
+            if let error = error {
+                Logger.log(to: .error,
+                           message: "Не удалось скачать удаленный конфиг",
+                           error: error)
                 self.uiConfigObserver.accept(nil)
                 return
             }
@@ -71,7 +74,9 @@ extension ConfigureManager: ConfigureManagerProtocol {
         do {
             return try JSONDecoder().decode(T.self, from: jsonData)
         } catch {
-            print(error) // TODO: Залогировать
+            Logger.log(to: .error,
+                       message: "Не удалось декодировать удаленный конфиг",
+                       error: error)
             return nil
         }
     }

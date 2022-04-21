@@ -7,6 +7,7 @@
 
 import Models
 import RxSwift
+import Logger
 
 /// Базовый класс для всех провайдеров
 ///
@@ -59,7 +60,8 @@ class Provider <T> {
                     config = dict
                 }
             } catch {
-                assertionFailure(error.localizedDescription)
+                Logger.log(to: .critical,
+                           message: "Не удалось загрузить локальный репозиторий для \(String(describing: plistName))")
             }
         }
         return config

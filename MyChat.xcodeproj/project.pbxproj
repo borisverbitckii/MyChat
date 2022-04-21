@@ -42,7 +42,6 @@
 		D722AA47280916D500569D47 /* TextsDataSource.plist in Resources */ = {isa = PBXBuildFile; fileRef = D722AA46280916D500569D47 /* TextsDataSource.plist */; };
 		D722AA5028092F0A00569D47 /* FontsDataSource.plist in Resources */ = {isa = PBXBuildFile; fileRef = D722AA4F28092F0A00569D47 /* FontsDataSource.plist */; };
 		D722AA52280930BD00569D47 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D722AA51280930BD00569D47 /* Provider.swift */; };
-		D722AA55280937C700569D47 /* AssertionErrorMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = D722AA54280937C700569D47 /* AssertionErrorMessages.swift */; };
 		D72FFE0727FC889A003F6E9A /* ChatsListUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72FFE0627FC889A003F6E9A /* ChatsListUI.swift */; };
 		D72FFE0D27FC8EBF003F6E9A /* ChatsListDocOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72FFE0C27FC8EBF003F6E9A /* ChatsListDocOverview.swift */; };
 		D72FFE1427FDADD9003F6E9A /* PaletteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72FFE1327FDADD9003F6E9A /* PaletteProvider.swift */; };
@@ -53,6 +52,12 @@
 		D73FD4E92801D83B00912D46 /* UI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4E72801D83B00912D46 /* UI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D746C27B27F1C814009416F7 /* RegisterUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D746C27A27F1C814009416F7 /* RegisterUI.swift */; };
 		D74D044B27FAC6FE00222699 /* FontsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74D044A27FAC6FE00222699 /* FontsProvider.swift */; };
+		D75E0BFF2811271200970308 /* UIViewController + swizzling.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75E0BFE2811271200970308 /* UIViewController + swizzling.swift */; };
+		D75E0C0128112CAA00970308 /* NSObject + className.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75E0C0028112CAA00970308 /* NSObject + className.swift */; };
+		D75E0C03281154B800970308 /* Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C02281154B800970308 /* Logger.framework */; };
+		D75E0C04281154B800970308 /* Logger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C02281154B800970308 /* Logger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D75E0C1B281186CC00970308 /* Analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C1A281186CC00970308 /* Analytics.framework */; };
+		D75E0C1C281186CC00970308 /* Analytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C1A281186CC00970308 /* Analytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75FD5FE28017363001B1359 /* (null) in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D764EDB12807F82700963C61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D764EDB02807F82700963C61 /* Utils.swift */; };
 		D7708EE0280334BB00D1E41D /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7708EDF280334BB00D1E41D /* Models.framework */; };
@@ -79,6 +84,8 @@
 				D73FD4E92801D83B00912D46 /* UI.framework in Embed Frameworks */,
 				D79CBCCB2804368E004722FE /* Services.framework in Embed Frameworks */,
 				D75FD5FE28017363001B1359 /* (null) in Embed Frameworks */,
+				D75E0C04281154B800970308 /* Logger.framework in Embed Frameworks */,
+				D75E0C1C281186CC00970308 /* Analytics.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -127,7 +134,6 @@
 		D722AA4E28092B5C00569D47 /* RegisterModule.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = RegisterModule.md; sourceTree = "<group>"; };
 		D722AA4F28092F0A00569D47 /* FontsDataSource.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = FontsDataSource.plist; sourceTree = "<group>"; };
 		D722AA51280930BD00569D47 /* Provider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Provider.swift; sourceTree = "<group>"; };
-		D722AA54280937C700569D47 /* AssertionErrorMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssertionErrorMessages.swift; sourceTree = "<group>"; };
 		D72FFE0627FC889A003F6E9A /* ChatsListUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListUI.swift; sourceTree = "<group>"; };
 		D72FFE0C27FC8EBF003F6E9A /* ChatsListDocOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListDocOverview.swift; sourceTree = "<group>"; };
 		D72FFE1327FDADD9003F6E9A /* PaletteProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteProvider.swift; sourceTree = "<group>"; };
@@ -137,12 +143,17 @@
 		D73FD4E72801D83B00912D46 /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D746C27A27F1C814009416F7 /* RegisterUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUI.swift; sourceTree = "<group>"; };
 		D74D044A27FAC6FE00222699 /* FontsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontsProvider.swift; sourceTree = "<group>"; };
+		D75E0BFE2811271200970308 /* UIViewController + swizzling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + swizzling.swift"; sourceTree = "<group>"; };
+		D75E0C0028112CAA00970308 /* NSObject + className.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject + className.swift"; sourceTree = "<group>"; };
+		D75E0C02281154B800970308 /* Logger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Logger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D75E0C1A281186CC00970308 /* Analytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Analytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75FD66B2801CD48001B1359 /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D764EDB02807F82700963C61 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		D7708EDF280334BB00D1E41D /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D77A6C45280D4CB10057817C /* Reactive + extention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reactive + extention.swift"; sourceTree = "<group>"; };
 		D77A6C47280D76C80057817C /* UIResourceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIResourceType.swift; sourceTree = "<group>"; };
 		D79CBCC92804368E004722FE /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7ACEAD32810087900D19784 /* Logger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Logger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7D15EF427FFF68C00072821 /* RegisterConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterConstants.swift; sourceTree = "<group>"; };
 		D7DE73B7280063BB00DF2037 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		D7F5BE08280D9358000ACDD4 /* NotificationCenter + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter + extension.swift"; sourceTree = "<group>"; };
@@ -158,6 +169,8 @@
 				D73FD4E82801D83B00912D46 /* UI.framework in Frameworks */,
 				D79CBCCA2804368E004722FE /* Services.framework in Frameworks */,
 				E95ACCA23B31924B074EC47C /* Pods_MyChat.framework in Frameworks */,
+				D75E0C03281154B800970308 /* Logger.framework in Frameworks */,
+				D75E0C1B281186CC00970308 /* Analytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +180,9 @@
 		8D89884A6872C86BB0CF73C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D75E0C1A281186CC00970308 /* Analytics.framework */,
+				D75E0C02281154B800970308 /* Logger.framework */,
+				D7ACEAD32810087900D19784 /* Logger.framework */,
 				D79CBCC92804368E004722FE /* Services.framework */,
 				D7708EDF280334BB00D1E41D /* Models.framework */,
 				D73FD4E72801D83B00912D46 /* UI.framework */,
@@ -298,6 +314,8 @@
 			isa = PBXGroup;
 			children = (
 				A101D5D327B7A4BA00A38901 /* UIViewController + transitionHandler.swift */,
+				D75E0BFE2811271200970308 /* UIViewController + swizzling.swift */,
+				D75E0C0028112CAA00970308 /* NSObject + className.swift */,
 				D7F5BE08280D9358000ACDD4 /* NotificationCenter + extension.swift */,
 				D77A6C45280D4CB10057817C /* Reactive + extention.swift */,
 				D7334453280C0C32007B1F37 /* UIColor + extension.swift */,
@@ -361,15 +379,6 @@
 			path = Palette;
 			sourceTree = "<group>";
 		};
-		D722AA56280937CE00569D47 /* Errors */ = {
-			isa = PBXGroup;
-			children = (
-				D722AA54280937C700569D47 /* AssertionErrorMessages.swift */,
-				D7DE73B7280063BB00DF2037 /* Errors.swift */,
-			);
-			path = Errors;
-			sourceTree = "<group>";
-		};
 		D72FFE0527FC87F4003F6E9A /* Module */ = {
 			isa = PBXGroup;
 			children = (
@@ -394,7 +403,7 @@
 		D764EDAF2807F76100963C61 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				D722AA56280937CE00569D47 /* Errors */,
+				D7DE73B7280063BB00DF2037 /* Errors.swift */,
 				A101D58127B7750C00A38901 /* AppDelegate.swift */,
 				A101D5D027B78B9C00A38901 /* AppAssembly.swift */,
 				A101D5B027B7790F00A38901 /* Coordinator.swift */,
@@ -437,6 +446,7 @@
 				A101D57C27B7750C00A38901 /* Resources */,
 				D75FD5FF28017363001B1359 /* Embed Frameworks */,
 				0F996D91BD4988774FAF01D4 /* [CP] Embed Pods Frameworks */,
+				D75E0C0528115F0500970308 /* Crashlitics */,
 			);
 			buildRules = (
 			);
@@ -537,6 +547,26 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D75E0C0528115F0500970308 /* Crashlitics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = Crashlitics;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
 		D7D2E01927EB29690038B82A /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -568,6 +598,7 @@
 				A101D5C527B77D5B00A38901 /* ManagerFactory.swift in Sources */,
 				A101D5C727B77D7F00A38901 /* ModuleFactory.swift in Sources */,
 				D77A6C48280D76C80057817C /* UIResourceType.swift in Sources */,
+				D75E0BFF2811271200970308 /* UIViewController + swizzling.swift in Sources */,
 				D72FFE0D27FC8EBF003F6E9A /* ChatsListDocOverview.swift in Sources */,
 				D764EDB12807F82700963C61 /* Utils.swift in Sources */,
 				A101D5C927B77F6400A38901 /* SplashModuleBuilder.swift in Sources */,
@@ -582,7 +613,6 @@
 				A101D5DB27B9119F00A38901 /* TextProvider.swift in Sources */,
 				A101D5AF27B778BC00A38901 /* SplashViewModel.swift in Sources */,
 				D7F5BE09280D9359000ACDD4 /* NotificationCenter + extension.swift in Sources */,
-				D722AA55280937C700569D47 /* AssertionErrorMessages.swift in Sources */,
 				A101D58227B7750C00A38901 /* AppDelegate.swift in Sources */,
 				D7334454280C0C32007B1F37 /* UIColor + extension.swift in Sources */,
 				D73BA30627FE9AB200225B39 /* ViewControllers.swift in Sources */,
@@ -601,6 +631,7 @@
 				D72FFE1427FDADD9003F6E9A /* PaletteProvider.swift in Sources */,
 				A101D5B927B779C000A38901 /* ChatViewController.swift in Sources */,
 				A101D5A327B7776C00A38901 /* TabBarController.swift in Sources */,
+				D75E0C0128112CAA00970308 /* NSObject + className.swift in Sources */,
 				A101D5D127B78B9C00A38901 /* AppAssembly.swift in Sources */,
 				A101D5AD27B778A900A38901 /* SplashViewController.swift in Sources */,
 				D72FFE0727FC889A003F6E9A /* ChatsListUI.swift in Sources */,
@@ -754,6 +785,7 @@
 				CODE_SIGN_ENTITLEMENTS = MyChat/MyChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = PQ6LM8W269;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
@@ -794,6 +826,7 @@
 				CODE_SIGN_ENTITLEMENTS = MyChat/MyChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = PQ6LM8W269;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
