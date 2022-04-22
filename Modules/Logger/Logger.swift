@@ -58,6 +58,8 @@ public final class Logger {
         }
     }
 
+    public static var isOn = true
+
     // MARK: Private properties
 
     /// Режим, в котором в консоль выводится только сообщение
@@ -82,83 +84,84 @@ public final class Logger {
                            file: String = #fileID,
                            function: String = #function,
                            line: Int  = #line) {
+        if !isOn {
+            return
+        }
 
-        DispatchQueue.global().async { [self] in
-            // Дата
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "MM.dd.yy HH:mm:ss"
-            let date = "\n [ДАТА]: " + dateFormatter.string(from: Date())
+        // Дата
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM.dd.yy HH:mm:ss"
+        let date = "\n [ДАТА]: " + dateFormatter.string(from: Date())
 
-            // Цвет и тип уведомления
-            var emoji = ""
-            var messageType = ""
+        // Цвет и тип уведомления
+        var emoji = ""
+        var messageType = ""
 
-            switch type {
-            case .debug:
-                emoji = " 🔍 "
-                messageType = "[ДЕБАГ]:"
-            case .info:
-                emoji = " 🌿 "
-                messageType = "[ИНФО]:"
-            case .notice:
-                emoji = " ❕ "
-                messageType = "[УВЕДОМЛЕНИЕ]:"
-            case .warning:
-                emoji = " ⚠️ "
-                messageType = "[ПРЕДУПРЕЖДЕНИЕ]:"
-            case .error:
-                emoji = " ❌ "
-                messageType = "[ОШИБКА]:"
-            case .critical:
-                emoji = " ♠️ "
-                messageType = "[КРИТИЧЕСКАЯ ОШИБКА]:"
+        switch type {
+        case .debug:
+            emoji = " 🔍 "
+            messageType = "[ДЕБАГ]:"
+        case .info:
+            emoji = " 🌿 "
+            messageType = "[ИНФО]:"
+        case .notice:
+            emoji = " ❕ "
+            messageType = "[УВЕДОМЛЕНИЕ]:"
+        case .warning:
+            emoji = " ⚠️ "
+            messageType = "[ПРЕДУПРЕЖДЕНИЕ]:"
+        case .error:
+            emoji = " ❌ "
+            messageType = "[ОШИБКА]:"
+        case .critical:
+            emoji = " ♠️ "
+            messageType = "[КРИТИЧЕСКАЯ ОШИБКА]:"
+        }
+
+        let description = " \n [ОПИСАНИЕ]: \(error?.localizedDescription ?? "---")"
+        let file = "\n [ФАЙЛ]: \(file)"
+        let function = "\n [МЕТОД]: \(function)"
+        let line = "\n [СТРОКА]: \(line)"
+        let separator = "\n ----------------------------------------------------"
+
+        // Сохранение результатов
+        crashlytics.log(messageType + emoji + message)
+
+        if let uid = userInfo?["uid"] {
+            AnalyticReporter.setUserID(uid)
+            crashlytics.setUserID(uid)
+        }
+
+        write(generateString(destination: .logFile,
+                             messageType: messageType,
+                             emoji: emoji,
+                             message: message,
+                             description: description,
+                             date: date,
+                             file: file,
+                             function: function,
+                             line: line,
+                             separator: separator))
+
+        print(generateString(destination: .console,
+                             messageType: messageType,
+                             emoji: emoji,
+                             message: message,
+                             description: description,
+                             date: date,
+                             file: file,
+                             function: function,
+                             line: line,
+                             separator: separator))
+
+        // Ассерт на случай ошибок
+        switch type {
+        case .error, .critical:
+            if let error = error {
+                crashlytics.record(error: error)
             }
-
-            let description = " \n [ОПИСАНИЕ]: \(error?.localizedDescription ?? "---")"
-            let file = "\n [ФАЙЛ]: \(file)"
-            let function = "\n [МЕТОД]: \(function)"
-            let line = "\n [СТРОКА]: \(line)"
-            let separator = "\n ----------------------------------------------------"
-
-            // Сохранение результатов
-            crashlytics.log(messageType + emoji + message)
-
-            if let uid = userInfo?["uid"] {
-                AnalyticReporter.setUserID(uid)
-                crashlytics.setUserID(uid)
-            }
-
-            write(generateString(destination: .logFile,
-                                 messageType: messageType,
-                                 emoji: emoji,
-                                 message: message,
-                                 description: description,
-                                 date: date,
-                                 file: file,
-                                 function: function,
-                                 line: line,
-                                 separator: separator))
-
-            print(generateString(destination: .console,
-                                 messageType: messageType,
-                                 emoji: emoji,
-                                 message: message,
-                                 description: description,
-                                 date: date,
-                                 file: file,
-                                 function: function,
-                                 line: line,
-                                 separator: separator))
-
-            // Ассерт на случай ошибок
-            switch type {
-            case .error, .critical: 
-                if let error = error {
-                    crashlytics.record(error: error)
-                }
-                // assertionFailure()
-            default: break
-            }
+            // assertionFailure()
+        default: break
         }
     }
 

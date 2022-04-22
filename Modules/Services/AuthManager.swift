@@ -19,14 +19,21 @@ public protocol AuthManagerSplashProtocol {         // для SplashViewControll
 }
 
 public protocol AuthManagerRegisterProtocol {       // для RegisterViewController
-    func createUser(withEmail email: String, password: String) -> Single<ChatUser?>
+    func createUser(withEmail email: String, password: String,
+                    hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?>
     func signIn(withEmail email: String,
-                password: String) -> Single<ChatUser?>
-    func signInWithFacebook(presenterVC: UIViewController) -> Single<ChatUser?>
-    func signInWithGoogle(presenterVC: UIViewController) -> Single<ChatUser?>
+                password: String,
+                hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?>
+    func signInWithFacebook(presenterVC: UIViewController,
+                            showActivityIndicator: @escaping () -> Void,
+                            hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?>
+    func signInWithGoogle(presenterVC: UIViewController,
+                          showActivityIndicator: @escaping () -> Void,
+                          hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?>
     func signInWithApple(delegate:  ASAuthorizationControllerDelegate?,
-                         provider: ASAuthorizationControllerPresentationContextProviding?)
-    -> ((String) -> (Single<ChatUser?>))
+                         provider: ASAuthorizationControllerPresentationContextProviding?,
+                         showActivityIndicator: @escaping () -> Void,
+                         hideActivityIndicator: @escaping () -> Void) -> (String) -> (Single<ChatUser?>)
     func signOut() -> Single<Any?>
 }
 
@@ -72,9 +79,12 @@ extension AuthManager: AuthManagerSplashProtocol {
 // MARK: - extension + AuthManagerProtocol -
 extension AuthManager: AuthManagerRegisterProtocol {
 
-    public func createUser(withEmail email: String, password: String) -> Single<ChatUser?> {
+    public func createUser(withEmail email: String,
+                           password: String,
+                           hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?> {
         Single<ChatUser?>.create { [auth] observer in
             auth.createUser(withEmail: email, password: password) { authResult, error in
+                hideActivityIndicator()
                 if let error = error {
                     Logger.log(to: .error,
                                message: "Не удалось зарегистрировать пользователя в firebase с e-mail и паролем",
@@ -112,10 +122,12 @@ extension AuthManager: AuthManagerRegisterProtocol {
     }
 
     public func signIn(withEmail email: String,
-                       password: String) -> Single<ChatUser?> {
+                       password: String,
+                       hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?> {
         Single<ChatUser?>.create { [auth] observer in
             auth.signIn(withEmail: email,
                         password: password) { authResult, error in
+                hideActivityIndicator()
                 if let error = error {
                     Logger.log(to: .error,
                                message: "Не удалось авторизироваться в firebase через e-mail и пароль",
@@ -141,7 +153,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
         }
     }
 
-    public func signInWithFacebook(presenterVC: UIViewController) -> Single<ChatUser?> {
+    public func signInWithFacebook(presenterVC: UIViewController,
+                                   showActivityIndicator: @escaping () -> Void,
+                                   hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?> {
         return Single<ChatUser?>.create { [weak self] observer in
             let fbLoginManager = LoginManager()
             fbLoginManager.logIn(permissions: [], from: presenterVC) { result, error in
@@ -160,6 +174,8 @@ extension AuthManager: AuthManagerRegisterProtocol {
                         observer(.failure(NSError()))
                         return
                     }
+
+                    showActivityIndicator()
                     AnalyticReporter.logEvent(.login(loginMethod: "facebook"))
                     Logger.log(to: .notice,
                                message: "Пользователь авторизировался через facebook")
@@ -167,14 +183,18 @@ extension AuthManager: AuthManagerRegisterProtocol {
                     let credential = FacebookAuthProvider
                         .credential(withAccessToken: AccessToken.current!.tokenString)
 
-                    self?.signInToFirebase(credentials: credential, observer: observer)
+                    self?.signInToFirebase(credentials: credential,
+                                           observer: observer,
+                                           hideActivityIndicator: hideActivityIndicator)
                 }
             }
             return Disposables.create()
         }
     }
 
-    public func signInWithGoogle(presenterVC: UIViewController) -> Single<ChatUser?> {
+    public func signInWithGoogle(presenterVC: UIViewController,
+                                 showActivityIndicator: @escaping () -> Void,
+                                 hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?> {
         Single<ChatUser?>.create { [weak self] observer in
             if let clientID = FirebaseApp.app()?.options.clientID {
                 let config = GIDConfiguration(clientID: clientID)
@@ -187,6 +207,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
                         observer(.failure(error))
                         return
                     }
+
+                    showActivityIndicator()
+
                     guard let authentication = user?.authentication,
                           let idToken = authentication.idToken else { return }
 
@@ -196,7 +219,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
                     Logger.log(to: .notice,
                                message: "Пользователь авторизировался через google")
 
-                    self?.signInToFirebase(credentials: credential, observer: observer)
+                    self?.signInToFirebase(credentials: credential,
+                                           observer: observer,
+                                           hideActivityIndicator: hideActivityIndicator)
                 }
             }
             return Disposables.create()
@@ -204,8 +229,9 @@ extension AuthManager: AuthManagerRegisterProtocol {
     }
 
     public func signInWithApple(delegate:  ASAuthorizationControllerDelegate?,
-                                provider: ASAuthorizationControllerPresentationContextProviding?) ->
-    (String) -> (Single<ChatUser?>){
+                                provider: ASAuthorizationControllerPresentationContextProviding?,
+                                showActivityIndicator: @escaping () -> Void,
+                                hideActivityIndicator: @escaping () -> Void) -> (String) -> (Single<ChatUser?>) {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.email, .fullName]
@@ -217,12 +243,15 @@ extension AuthManager: AuthManagerRegisterProtocol {
         authorizationController.presentationContextProvider = provider
         authorizationController.performRequests()
         return { [sighInWithAppleInFirebase] idTokenString in
-            sighInWithAppleInFirebase(idTokenString, currentNonce)
+            showActivityIndicator()
+            return sighInWithAppleInFirebase(idTokenString, currentNonce, hideActivityIndicator)
         }
     }
 
     // MARK: Private methods
-    private func sighInWithAppleInFirebase(idTokenForAuth: String, nonce: String) -> Single<ChatUser?> {
+    private func sighInWithAppleInFirebase(idTokenForAuth: String,
+                                           nonce: String,
+                                           hideActivityIndicator: @escaping () -> Void) -> Single<ChatUser?> {
         Single<ChatUser?>.create { [weak self] observer in
             let credential: AuthCredential = OAuthProvider.credential(withProviderID: "apple.com",
                                                                       idToken: idTokenForAuth,
@@ -231,14 +260,18 @@ extension AuthManager: AuthManagerRegisterProtocol {
             Logger.log(to: .notice,
                        message: "Пользователь авторизировался через apple")
             
-            self?.signInToFirebase(credentials: credential, observer: observer)
+            self?.signInToFirebase(credentials: credential,
+                                   observer: observer,
+                                   hideActivityIndicator: hideActivityIndicator)
             return Disposables.create()
         }
     }
 
     private func signInToFirebase(credentials: AuthCredential,
-                                  observer: @escaping (Result<ChatUser?, Error>) -> Void ) {
+                                  observer: @escaping (Result<ChatUser?, Error>) -> Void,
+                                  hideActivityIndicator: @escaping () -> Void) {
         Auth.auth().signIn(with: credentials) { authResult, error in
+            hideActivityIndicator()
             if let error = error {
                 Logger.log(to: .error,
                            message: "Не удалось авторизироваться в firebase",

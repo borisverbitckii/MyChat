@@ -29,6 +29,8 @@ final class AppAssembly {
     private var isInitialLoad = true
     /// Конфиг для обновления приложения, автоматически захватывается клоужером
     private var appConfig: AppConfig?
+    /// Для сравнения темы, чтобы можно было обновить цвета по всему приложению в случае изменения
+    private var lastUserInterfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
 
     // MARK: Init
     init(window: UIWindow,
@@ -63,26 +65,35 @@ final class AppAssembly {
 
         uiConfigObserverDisposable = configManager.uiConfigObserver
             .subscribe(onNext: { [weak self] appConfig in
+
+                var notificationsNames = [Notification.Name]()
+
+                if self?.appConfig?.texts != appConfig?.texts {
+                    notificationsNames.append(NSNotification.shouldUpdateTexts)
+                    Logger.log(to: .info, message: "Будет отправлено уведомление об обновлении текстов")
+                }
+
+                if self?.appConfig?.fonts != appConfig?.fonts {
+                    notificationsNames.append(NSNotification.shouldUpdateFonts)
+                    Logger.log(to: .info, message: "Будет отправлено уведомление об обновлении шрифтов")
+                }
+
+                if self?.lastUserInterfaceStyle != UIScreen.main.traitCollection.userInterfaceStyle {
+                    self?.lastUserInterfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
+                    notificationsNames.append(NSNotification.shouldUpdatePalette)
+                    Logger.log(to: .info, message: "Будет отправлено уведомление об обновлении цветов в связи с изменением темы")
+                } else if self?.appConfig?.palette != appConfig?.palette {
+                    notificationsNames.append(NSNotification.shouldUpdatePalette)
+                    Logger.log(to: .info, message: "Будет отправлено уведомление об обновлении цветов")
+                }
+
                 self?.appConfig = appConfig
 
-                // Постит нотификацию только при изменении текстов
-                if self?.appConfig?.texts != appConfig?.texts && self?.appConfig != nil {
-                    NotificationCenter.default.post(name: NSNotification.appConfigTextsWereUpdated,
+                for notificationName in notificationsNames {
+                    NotificationCenter.default.post(name: notificationName,
                                                     object: nil)
-                    Logger.log(to: .info, message: "Отправлено уведомление об обновлении текстов")
                 }
 
-                // Постит нотификацию только при изменении шрифтов
-                if self?.appConfig?.fonts != appConfig?.fonts && self?.appConfig != nil {
-                    NotificationCenter.default.post(name: NSNotification.appConfigFontsWereUpdated,
-                                                    object: nil)
-                    Logger.log(to: .info, message: "Отправлено уведомление об обновлении шрифтов")
-                }
-
-                // Постит нотификацию цветов каждый раз, когда она прилетает
-                NotificationCenter.default.post(name: NSNotification.userInterfaceStyleNotification,
-                                                object: nil)
-                Logger.log(to: .info, message: "Отправлено уведомление об обновлении цветов")
                 if self?.isInitialLoad == true {
                     coordinator.presentSplashViewController()
                     self?.isInitialLoad = false

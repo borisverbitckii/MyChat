@@ -39,6 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Настройка логгера
         Logger.printingMode = .onlyMessages
+        Logger.isOn = true
         return true
     }
 

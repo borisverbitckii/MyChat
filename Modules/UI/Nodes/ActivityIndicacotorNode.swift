@@ -5,9 +5,8 @@
 //  Created by Boris Verbitsky on 13.04.2022.
 //
 
-import AsyncDisplayKit
 import Lottie
-import UIKit
+import AsyncDisplayKit
 
 protocol ActivityIndicatoProtocol {
     func startAnimating()
@@ -19,17 +18,13 @@ public final class ActivityIndicatorNode: ASDisplayNode {
     private lazy var activityIndicatorAnimationView: AnimationView = {
         assert(Animation.named("activityAnimation") != nil, "Не найден файл анимации")
         $0.animation = Animation.named("activityAnimation")
-        $0.contentMode = .scaleAspectFill
-        $0.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
+        $0.contentMode = .scaleAspectFit
         return $0
     }(AnimationView())
 
-    private lazy var activityIndicatorNode: ASDisplayNode = {
-        let node = ASDisplayNode {
-            return self.activityIndicatorAnimationView
-        }
-        return node
-    }()
+    private lazy var activityIndicatorNode = ASDisplayNode { [activityIndicatorAnimationView] in
+        activityIndicatorAnimationView
+    }
 
     // MARK: Override properties
     public override var style: ASLayoutElementStyle {
@@ -40,11 +35,7 @@ public final class ActivityIndicatorNode: ASDisplayNode {
 
     public override init() {
         super.init()
-        borderWidth = 4
-        clipsToBounds = true
         automaticallyManagesSubnodes = true
-        cornerRadius = style.preferredSize.height / 2
-        borderColor = UIColor.gray.withAlphaComponent(0.15).cgColor
     }
 
 

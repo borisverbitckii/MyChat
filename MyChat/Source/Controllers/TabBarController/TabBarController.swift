@@ -34,6 +34,6 @@ final class TabBarController: ASTabBarController {
 // MARK: - extension + UITabBarControllerDelegate -
 extension TabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        Logger.log(to: .info, message: "В таббар контроллере выбран \(className)")
+        Logger.log(to: .info, message: "В таббар контроллере выбран \(viewController.className)")
     }
 }

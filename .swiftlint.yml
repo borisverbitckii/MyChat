@@ -3,4 +3,6 @@ included: # paths to include during linting. `--path` is ignored if present.
 
 disabled_rules: # rule identifiers to exclude from running
   - line_length
+  - cyclomatic_complexity
+  - function_body_length
 

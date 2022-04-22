@@ -42,6 +42,10 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         }
     }
 
+    /// Клоужер, чтобы показать activityIndicator, пока происходит логин в firebase
+    private let showActivityIndicator: () -> Void
+    private let hideActivityIndicator: () -> Void
+
     // MARK: Init
     init(uiElements: RegisterUI,
          registerViewModel: RegisterViewModelProtocol,
@@ -49,6 +53,24 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         self.uiElements = uiElements
         self.constants = constants
         self.viewModel = registerViewModel
+
+        showActivityIndicator = {
+            UIView.animate(withDuration: constants.animationDurationForActivityIndicator) {
+                uiElements.activityIndicator.isHidden = false
+                uiElements.activityIndicator.startAnimating()
+                uiElements.activityIndicator.alpha = 1
+            }
+        }
+
+        hideActivityIndicator = {
+            UIView.animate(withDuration: constants.animationDurationForActivityIndicator) {
+                uiElements.activityIndicator.alpha = 0
+            } completion: { _ in
+                uiElements.activityIndicator.stopAnimating()
+                uiElements.activityIndicator.isHidden = true
+            }
+        }
+
         super.init(node: ASDisplayNode())
         self.node.automaticallyManagesSubnodes = true
         self.node.layoutSpecBlock = layout()
@@ -181,25 +203,28 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             let overlayButtonSpec = ASOverlayLayoutSpec(child: vStackWithInsetsTextfieldsSpec,
                                                         overlay: insetsButtonsSpec)
 
-            return overlayButtonSpec
+            let activityIndicatorOverlaySpec = ASOverlayLayoutSpec(child: overlayButtonSpec,
+                                                                   overlay: self.uiElements.activityIndicator)
+            return activityIndicatorOverlaySpec
         }
     }
 
     /// Бинд всех данных из вью модели в ui элементы
-    private func bindUIElements() { // swiftlint:disable:this function_body_length
+    private func bindUIElements() {
 
         // viewController
         viewModel.output.viewControllerBackgroundColor
             .distinctUntilChanged()
-            .subscribe { [weak node, constants] event in
-                UIView.animate(withDuration: constants.animationDurationForColors) {
-                    node?.backgroundColor = event.element
-                }
+            .subscribe { [weak node] event in
+                node?.backgroundColor = event.element
             }
             .disposed(by: bag)
 
         // submitButton
         viewModel.output.submitButtonTitle
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.title == rhs.title && lhs.font == rhs.font
+            }
             .subscribe { [weak uiElements, constants] event in
                 guard let button = uiElements?.submitButton.view else { return }
                 UIView.transition(with: button,
@@ -241,6 +266,9 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // changeStateButton
         viewModel.output.changeStateButtonTitle
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.font == rhs.font && lhs.title == rhs.title
+            }
             .subscribe { [weak uiElements, constants] event in
 
                 guard let button = uiElements?.changeStateButton.view else { return }
@@ -282,7 +310,8 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                     [ uiElements?.nameTextField,
                       uiElements?.passwordTestField,
                       uiElements?.passwordSecondTimeTextfield
-                    ].forEach { $0?.textfield.backgroundColor = event.element }
+                    ].forEach { $0?.textfield.backgroundColor = event.element
+                    }
                 }
             }
             .disposed(by: bag)
@@ -297,9 +326,18 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.nameTextfieldPlaceholder
-            .distinctUntilChanged()
-            .subscribe { [weak uiElements] event in
-                uiElements?.nameTextField.textfield.placeholder = event.element
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.color == rhs.color && lhs.text == rhs.text
+            }
+            .subscribe { [weak uiElements, constants] event in
+                guard let text = event.element?.text,
+                      let color = event.element?.color else { return }
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    // swiftlint:disable:next colon
+                    let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor : color]
+                    let attributedPlaceholder = NSAttributedString(string: text, attributes: attributes)
+                    uiElements?.nameTextField.textfield.attributedPlaceholder = attributedPlaceholder
+                }
             }.disposed(by: bag)
 
         // passwordTextfield
@@ -313,9 +351,18 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.passwordTextfieldPlaceholder
-            .distinctUntilChanged()
-            .subscribe { [weak uiElements] event in
-                uiElements?.passwordTestField.textfield.placeholder = event.element
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.color == rhs.color && lhs.text == rhs.text
+            }
+            .subscribe { [weak uiElements, constants] event in
+                guard let text = event.element?.text,
+                      let color = event.element?.color else { return }
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    // swiftlint:disable:next colon
+                    let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor : color]
+                    let attributedPlaceholder = NSAttributedString(string: text, attributes: attributes)
+                    uiElements?.passwordTestField.textfield.attributedPlaceholder = attributedPlaceholder
+                }
             }
             .disposed(by: bag)
 
@@ -330,9 +377,18 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.secondPasswordTextfieldPlaceholder
-            .distinctUntilChanged()
-            .subscribe { [weak uiElements] event in
-                uiElements?.passwordSecondTimeTextfield.textfield.placeholder = event.element
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.color == rhs.color && lhs.text == rhs.text
+            }
+            .subscribe { [weak uiElements, constants] event in
+                guard let text = event.element?.text,
+                      let color = event.element?.color else { return }
+                UIView.animate(withDuration: constants.animationDurationForColors) {
+                    // swiftlint:disable:next colon
+                    let attributes: [NSAttributedString.Key : Any] = [NSAttributedString.Key.foregroundColor : color]
+                    let attributedPlaceholder = NSAttributedString(string: text, attributes: attributes)
+                    uiElements?.passwordSecondTimeTextfield.textfield.attributedPlaceholder = attributedPlaceholder
+                }
             }
             .disposed(by: bag)
 
@@ -357,6 +413,9 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // errorLabelText
         viewModel.output.errorLabelAttributedStringDataSource
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.color == rhs.color && lhs.font == rhs.font && lhs.text == rhs.text
+            }
             .subscribe { [weak uiElements] event in
                 guard let text = event.element?.text,
                       let font = event.element?.font,
@@ -398,6 +457,9 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
         // orLabel
         viewModel.output.orLabelAttributedStringDataSource
+            .distinctUntilChanged { lhs, rhs in
+                return lhs.color == rhs.color && lhs.font == rhs.font && lhs.text == rhs.text
+            }
             .subscribe { [weak uiElements] event in
                 guard let text = event.element?.text,
                       let font = event.element?.font,
@@ -424,6 +486,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
          */
 
         viewModel.output.viewControllerState
+            .distinctUntilChanged()
             .subscribe { [weak viewModel, weak uiElements] _ in
                 viewModel?.input.secondTimeTextfieldIsHiddenToggle()
                 viewModel?.input.changeButtonsTitle()
@@ -432,11 +495,15 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                 [uiElements?.nameTextField,
                  uiElements?.passwordTestField,
                  uiElements?.passwordSecondTimeTextfield]
-                    .forEach { $0?.resignFirstResponder()}
+                    .forEach {
+                        $0?.resignFirstResponder()
+                        $0?.textfield.text = ""
+                    }
             }.disposed(by: bag)
 
         // Изменение состояния submitButton
         viewModel.output.submitButtonState
+            .distinctUntilChanged()
             .subscribe { [weak viewModel] _ in
                 viewModel?.input.submitButtonChangeIsEnable() // активирует/деактивирует кнопку
                 viewModel?.input.submitButtonChangeAlpha()    // меняет непрозрачность кнопки
@@ -520,26 +587,26 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     // Реализация тапа кнопки submitButton
     @objc private func submitButtonTapped() {
         let username = uiElements.nameTextField.textfield.text as String
-        viewModel.input.presentTabBarController(withEmail: username,
-                                                password: passwordText,
-                                                sourceButtonType: .submitButtonOrReturnButton,
-                                                presenter: self)
+        viewModel.input.tryToLogin(sourceButtonType: .submitButtonOrReturnButton(username: username,
+                                                                                 password: passwordText,
+                                                                                 presenter: self),
+                                   showActivityIndicator: showActivityIndicator,
+                                   hideActivityIndicator: hideActivityIndicator)
+        showActivityIndicator()
     }
 
     // Реализация логина через google
     @objc private func googleSignInButtonTapped() {
-        viewModel.input.presentTabBarController(withEmail: nil,
-                                                password: nil,
-                                                sourceButtonType: .googleButton,
-                                                presenter: self)
+        viewModel.input.tryToLogin(sourceButtonType: .googleButton(presenterVC: self),
+                                   showActivityIndicator: showActivityIndicator,
+                                   hideActivityIndicator: hideActivityIndicator)
     }
 
     // Реализация логина через Facebook
     @objc private func facebookSignInButtonTapped() {
-        viewModel.input.presentTabBarController(withEmail: nil,
-                                                password: nil,
-                                                sourceButtonType: .facebookButton,
-                                                presenter: self)
+        viewModel.input.tryToLogin(sourceButtonType: .facebookButton(presenterVC: self),
+                                   showActivityIndicator: showActivityIndicator,
+                                   hideActivityIndicator: hideActivityIndicator)
     }
 
     private var appleIDTokenClosure: (() -> String)?
@@ -547,7 +614,9 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
     // Реализация логина через Apple
     @objc private func appleSignInButtonTapped() {
         viewModel.input.startAppleAuthFlow(delegate: self,
-                                           presentationContextProvider: self)
+                                           presentationContextProvider: self,
+                                           showActivityIndicator: showActivityIndicator,
+                                           hideActivityIndicator: hideActivityIndicator)
     }
 
     // Реализация тапа кнопки changeStateButton
@@ -555,10 +624,8 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         // стираем заранее сохраненные пароли их текстфилдов
         passwordText = ""
         secondPasswordText = ""
-        // отчищаются текстфилды
-        viewModel.input.cleanTextfields()
-        viewModel.input.changeViewControllerState()
         // переключаем состояние контроллера между авторизацией и регистрацией
+        viewModel.input.changeViewControllerState()
         viewModel.input.disableSubmitButton() // Отключаем submitButton
         node.transitionLayout(withAnimation: true, shouldMeasureAsync: false) // обновляем лейаут
     }
@@ -604,10 +671,12 @@ extension RegisterViewController: UITextFieldDelegate {
         // Если кнопка submitButton активна, перекидываем на tabBarController
         switch viewModel.output.submitButtonState.value {
         case .enable:
-            viewModel.input.presentTabBarController(withEmail: uiElements.nameTextField.textfield.text as String,
-                                                    password: passwordText,
-                                                    sourceButtonType: .submitButtonOrReturnButton,
-                                                    presenter: self)
+            let username = uiElements.nameTextField.textfield.text as String
+            viewModel.input.tryToLogin(sourceButtonType: .submitButtonOrReturnButton(username: username,
+                                                                                     password: passwordText,
+                                                                                     presenter: self),
+                                       showActivityIndicator: showActivityIndicator,
+                                       hideActivityIndicator: hideActivityIndicator)
         case .disable:
             /*
              Если кнопка submitButton не активна, определяем, какой текстфилд сделать респондером
@@ -694,7 +763,10 @@ extension RegisterViewController: ASAuthorizationControllerDelegate {
             }
 
             guard let appleAuthClosure = viewModel.output.appleAuthClosure else { return }
-            viewModel.input.authInApple(single: appleAuthClosure(idTokenString), presenter: self)
+            viewModel.input.authInApple(single: appleAuthClosure(idTokenString),
+                                        presenter: self,
+                                        showActivityIndicator: showActivityIndicator,
+                                        hideActivityIndicator: hideActivityIndicator)
         }
     }
 

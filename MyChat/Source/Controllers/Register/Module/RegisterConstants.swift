@@ -28,4 +28,5 @@ struct RegisterConstants {
     // Время анимации
     let animationDurationForColors: TimeInterval = 0.25
     let animationDurationForErrorLabel: TimeInterval = 0.15
+    let animationDurationForActivityIndicator: TimeInterval = 0.3
 }

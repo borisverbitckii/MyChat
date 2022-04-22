@@ -48,12 +48,15 @@ enum AlertControllerType {
     /// На валидный пароль
     case invalidPassword
     /// Аккаунт уже существует
-    case isAlreadySignUp
+    case isAlreadySignedUp
 }
 
 /// Для определения, по какой кнопке совершена попытка авторизации
 enum RegisterAuthButtonType {
-    case googleButton, facebookButton, appleButton, submitButtonOrReturnButton
+    case googleButton(presenterVC: UIViewController)
+    case facebookButton(presenterVC: UIViewController)
+    case appleButton
+    case submitButtonOrReturnButton(username: String, password: String, presenter: TransitionHandler)
 }
 
 protocol RegisterViewModelProtocol: AnyObject {
@@ -63,13 +66,17 @@ protocol RegisterViewModelProtocol: AnyObject {
 
 protocol RegisterViewModelInput {
     func startAppleAuthFlow(delegate: ASAuthorizationControllerDelegate?,
-                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?)
-    func authInApple(single: Single<ChatUser?>, presenter: UIViewController?)
+                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?,
+                            showActivityIndicator: @escaping () -> Void,
+                            hideActivityIndicator: @escaping () -> Void)
+    func authInApple(single: Single<ChatUser?>,
+                     presenter: UIViewController?,
+                     showActivityIndicator: @escaping () -> Void,
+                     hideActivityIndicator: @escaping () -> Void)
     func showAppleAuthError(presenter: TransitionHandler)
-    func presentTabBarController(withEmail username: String?,
-                                 password: String?,
-                                 sourceButtonType: RegisterAuthButtonType,
-                                 presenter: UIViewController?)
+    func tryToLogin(sourceButtonType: RegisterAuthButtonType,
+                    showActivityIndicator: @escaping () -> Void,
+                    hideActivityIndicator: (() -> Void)?)
     func checkTextfields(email: String?,
                          password: String?,
                          secondPassword: String?)
@@ -117,20 +124,20 @@ protocol RegisterViewModelOutput {
     var textfieldsBackgroundColor: BehaviorRelay<UIColor> { get }
     // nameTextfield
     var nameTextfieldText: PublishRelay<String> { get }
-    var nameTextfieldPlaceholder: BehaviorRelay<String> { get }
+    var nameTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)> { get }
     // passwordTextfield
     var passwordTextfieldText: PublishRelay<String> { get }
-    var passwordTextfieldPlaceholder: BehaviorRelay<String> { get }
+    var passwordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)> { get }
     // secondPasswordTextfield
     var secondPasswordTextfieldText: PublishRelay<String> { get }
-    var secondPasswordTextfieldPlaceholder: BehaviorRelay<String> { get }
+    var secondPasswordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)> { get }
     /// Скрытие/отобраение 3его текстфилда
     var secondPasswordTextfieldIsHidden: BehaviorRelay<Bool> { get }
     // errorPasswordText
     /// Шрифт, текст и цвет для errorPasswordLabel
     var errorLabelAttributedStringDataSource: BehaviorRelay<(text: String, // swiftlint:disable:this large_tuple
-                                                font: UIFont,
-                                                color: UIColor)> { get }
+                                                             font: UIFont,
+                                                             color: UIColor)> { get }
     /// Включение/выключение лейбла, который пишет, что пароли не совпадают при регистрации
     var errorLabelIsHidden: BehaviorRelay<Bool> { get }
     // AuthButtons
@@ -138,8 +145,8 @@ protocol RegisterViewModelOutput {
     // orLabel
     /// Шрифт,текст и цвет для orLabel
     var orLabelAttributedStringDataSource: BehaviorRelay<(text: String,    // swiftlint:disable:this large_tuple
-                                font: UIFont,
-                                color: UIColor)> { get }
+                                                          font: UIFont,
+                                                          color: UIColor)> { get }
     var appleAuthClosure: ((String) -> Single<ChatUser?>)? { get set }
 }
 
@@ -166,27 +173,27 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     var textfieldsBackgroundColor: BehaviorRelay<UIColor>
     // nameTextfield
     var nameTextfieldText = PublishRelay<String>()
-    var nameTextfieldPlaceholder: BehaviorRelay<String>
+    var nameTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
     // passwordTextfield
     var passwordTextfieldText = PublishRelay<String>()
-    var passwordTextfieldPlaceholder: BehaviorRelay<String>
+    var passwordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
     // secondPasswordTextfield
     var secondPasswordTextfieldText = PublishRelay<String>()
-    var secondPasswordTextfieldPlaceholder: BehaviorRelay<String>
+    var secondPasswordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
     var secondPasswordTextfieldIsHidden = BehaviorRelay<Bool>(value: false)
     // errorPasswordsLabel
     // swiftlint:disable:next large_tuple
     var errorLabelAttributedStringDataSource: BehaviorRelay<(text: String,
-                                                font: UIFont,
-                                                color: UIColor)>
+                                                             font: UIFont,
+                                                             color: UIColor)>
     var errorLabelIsHidden = BehaviorRelay<Bool>(value: true)
     // AuthButtons
     var authButtonsBackgroundColor: BehaviorRelay<UIColor>
     // orLabel
     // swiftlint:disable:next large_tuple
     var orLabelAttributedStringDataSource: BehaviorRelay<(text: String,
-                                font: UIFont,
-                                color: UIColor)>
+                                                          font: UIFont,
+                                                          color: UIColor)>
     /// Клоужер для отработки авторизации apple
     var appleAuthClosure: ((String) -> Single<ChatUser?>)?
 
@@ -205,6 +212,9 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     private let palette: (RegisterViewControllerPalette) -> UIColor
     /// Модель юзера для открытия tabBarController после authInApple
     private var appleChatUser: ChatUser?
+
+    /// Для сравнения значений, чтобы не отправлять лишние сигналы
+    private var oldErrorLabelTitle = ""
 
     // MARK: Init
     // swiftlint:disable:next function_body_length
@@ -241,15 +251,22 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         self.changeStateButtonColor = BehaviorRelay<UIColor>(value: palette(.changeStateButtonColor))
         // nameTextfield
         let nameTextFieldPlaceholderText = texts(.namePlaceholder)
-        self.nameTextfieldPlaceholder = BehaviorRelay<String>(value: nameTextFieldPlaceholderText)
+        let placeholderColor = palette(.textfieldsPlaceholderColor)
+        self.nameTextfieldPlaceholder = BehaviorRelay<(text: String,
+                                                       color: UIColor)>(value: (text: nameTextFieldPlaceholderText,
+                                                                                color: placeholderColor))
 
         // passwordTextfield
         let passwordPlaceholderText = texts(.passwordPlaceholder)
-        self.passwordTextfieldPlaceholder = BehaviorRelay<String>(value: passwordPlaceholderText)
+        self.passwordTextfieldPlaceholder = BehaviorRelay<(text: String,
+                                                           color: UIColor)>(value: (text: passwordPlaceholderText,
+                                                                                    color: placeholderColor))
 
         // secondPasswordTextfield
         let secondPassPlaceholderText = texts(.secondPasswordPlaceholder)
-        self.secondPasswordTextfieldPlaceholder = BehaviorRelay<String>(value: secondPassPlaceholderText)
+        self.secondPasswordTextfieldPlaceholder = BehaviorRelay<(text: String,
+                                                                 color: UIColor)>(value: (text: secondPassPlaceholderText,
+                                                                                          color: placeholderColor))
 
         // Для всех текстфилдов
         self.textfieldsFont = BehaviorRelay<UIFont>(value: fonts(.registerTextfield))
@@ -258,11 +275,11 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         // errorPasswordLabel
         let errorPasswordText = texts(.errorLabelPasswordsNotTheSame)
         self.errorLabelAttributedStringDataSource = BehaviorRelay<(text: String,
-                                                 font: UIFont,
-                                                 color: UIColor)>(value: (
-                                                    text: errorPasswordText,
-                                                    font: fonts(.registerErrorLabel),
-                                                    color: palette(.errorLabelTextColor)))
+                                                                   font: UIFont,
+                                                                   color: UIColor)>(value: (
+                                                                    text: errorPasswordText,
+                                                                    font: fonts(.registerErrorLabel),
+                                                                    color: palette(.errorLabelTextColor)))
         // AuthButtons
         self.authButtonsBackgroundColor = BehaviorRelay<UIColor>(value: palette(.authButtonBackground))
         // orLabel
@@ -270,16 +287,16 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         let orLabelFont = fonts(.registerOrLabel)
         let orLabelColor = palette(.orLabelTextColor)
         orLabelAttributedStringDataSource = BehaviorRelay<(text: String,
-                                 font: UIFont,
-                                 color: UIColor)>(value:
-                                                    (text: orLabelText,
-                                                     font: orLabelFont,
-                                                     color: orLabelColor))
+                                                           font: UIFont,
+                                                           color: UIColor)>(value:
+                                                                                (text: orLabelText,
+                                                                                 font: orLabelFont,
+                                                                                 color: orLabelColor))
 
         // Подписка на изменения темы пользователя для автоматического обновления цвета
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(userInterfaceStyleNotification),
-                                               name: NSNotification.userInterfaceStyleNotification,
+                                               selector: #selector(shouldUpdateColors),
+                                               name: NSNotification.shouldUpdatePalette,
                                                object: nil)
 
     }
@@ -292,12 +309,12 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         switch type {
         case .email:
             errorLabelAttributedStringDataSource.accept((text: texts(.errorLabelEmailInvalid),
-                                            font: oldFont,
-                                            color: oldColor))
+                                                         font: oldFont,
+                                                         color: oldColor))
         case .password:
             errorLabelAttributedStringDataSource.accept((text: texts(.errorLabelPasswordInvalid),
-                                            font: oldFont,
-                                            color: oldColor))
+                                                         font: oldFont,
+                                                         color: oldColor))
         }
         errorLabelIsHidden.accept(false)
     }
@@ -322,7 +339,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
             alertController.message = texts(.alertControllerFacebookAuthError)
         case .invalidEmail:
             alertController.message = texts(.alertControllerInvalidEmail)
-        case .isAlreadySignUp:
+        case .isAlreadySignedUp:
             alertController.message = texts(.alertControllerIsAlreadySignUp)
         case .invalidPassword:
             alertController.message = texts(.alertControllerInvalidPassword)
@@ -339,7 +356,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
 
     // MARK: OBJC private methods
     /// Обновление ui после изменения темы телефона
-    @objc private func userInterfaceStyleNotification() {
+    @objc private func shouldUpdateColors() {
         viewControllerBackgroundColor.accept(palette(.viewControllerBackgroundColor))
         submitButtonTextColor.accept(palette(.submitButtonTextColor))
         switch submitButtonIsEnable.value {
@@ -351,6 +368,18 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         changeStateButtonColor.accept(palette(.changeStateButtonColor))
         textfieldsBackgroundColor.accept(palette(.textFieldBackgroundColor))
         authButtonsBackgroundColor.accept(palette(.authButtonBackground))
+
+        let orLabelText = orLabelAttributedStringDataSource.value.text
+        let orLabelFont = orLabelAttributedStringDataSource.value.font
+        orLabelAttributedStringDataSource.accept((text: orLabelText,
+                                                  font: orLabelFont,
+                                                  color: palette(.orLabelTextColor)))
+
+        let errorLabelText = errorLabelAttributedStringDataSource.value.text
+        let errorLabelFont = errorLabelAttributedStringDataSource.value.font
+        errorLabelAttributedStringDataSource.accept((text: errorLabelText,
+                                                     font: errorLabelFont,
+                                                     color: palette(.errorLabelTextColor)))
     }
 }
 
@@ -364,24 +393,31 @@ extension RegisterViewModel: RegisterViewModelInput {
 
     // MARK: Public Methods
     func startAppleAuthFlow(delegate: ASAuthorizationControllerDelegate?,
-                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?) {
+                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?,
+                            showActivityIndicator: @escaping () -> Void,
+                            hideActivityIndicator: @escaping () -> Void) {
         appleAuthClosure = authManager.signInWithApple(delegate: delegate,
-                                       provider: presentationContextProvider)
+                                                       provider: presentationContextProvider,
+                                                       showActivityIndicator: showActivityIndicator,
+                                                       hideActivityIndicator: hideActivityIndicator)
     }
 
-    func authInApple(single: Single<ChatUser?>, presenter: UIViewController?) {
+    func authInApple(single: Single<ChatUser?>,
+                     presenter: UIViewController?,
+                     showActivityIndicator: @escaping () -> Void,
+                     hideActivityIndicator: @escaping () -> Void) {
         single.subscribe({ [weak self] event in
             guard let self = self else { return }
             switch event {
             case .success(let chatUser):
                 self.appleChatUser = chatUser
-                self.presentTabBarController(withEmail: nil,
-                                              password: nil,
-                                              sourceButtonType: .appleButton,
-                                              presenter: presenter)
+                self.tryToLogin(sourceButtonType: .appleButton,
+                                showActivityIndicator: showActivityIndicator,
+                                hideActivityIndicator: hideActivityIndicator)
             case .failure(let error):
                 Logger.log(to: .error,
                            message: "Не удалось авторизироваться в apple",
+
                            error: error)
                 let alertController = self.generateAlertController(type: .appleAuth)
                 presenter?.present(alertController, animated: true)
@@ -398,73 +434,76 @@ extension RegisterViewModel: RegisterViewModelInput {
     }
 
     // swiftlint:disable:next function_body_length
-    func presentTabBarController(withEmail email: String?, // swiftlint:disable:this cyclomatic_complexity
-                                 password: String?,
-                                 sourceButtonType: RegisterAuthButtonType,
-                                 presenter: UIViewController?) {
+    func tryToLogin(sourceButtonType: RegisterAuthButtonType, // swiftlint:disable:this cyclomatic_complexity
+                    showActivityIndicator: @escaping () -> Void,
+                    hideActivityIndicator: (() -> Void)? = nil) {
 
         switch viewControllerState.value {
         case .auth:
             switch sourceButtonType {
-            case .googleButton:
-                if let presenter = presenter {
-                    authManager.signInWithGoogle(presenterVC: presenter)
-                        .subscribe(onSuccess: { [coordinator] chatUser in
-                            guard let chatUser = chatUser else { return }
-                            AnalyticReporter.logEvent(.login(loginMethod: "google"))
-                            coordinator.presentTabBarViewController(withChatUser: chatUser)
-                        }, onFailure: { [generateAlertController] _ in
-                            let alertController = generateAlertController(.googleAuth)
-                            presenter.present(alertController, animated: true)
-                        })
-                        .disposed(by: disposeBag)
-                }
-            case .facebookButton:
-                if let presenter = presenter {
-                    authManager.signInWithFacebook(presenterVC: presenter)
-                        .subscribe(onSuccess: { [coordinator] chatUser in
-                            guard let chatUser = chatUser else { return }
-                            AnalyticReporter.logEvent(.login(loginMethod: "facebook"))
-                            coordinator.presentTabBarViewController(withChatUser: chatUser)
-                        }, onFailure: { [generateAlertController] _ in
-                            let alertController = generateAlertController(.facebookAuth)
-                            presenter.present(alertController, animated: true)
-                        })
-                        .disposed(by: disposeBag)
-                }
-
+            case .googleButton(let presenter):
+                guard let hideActivityIndicator = hideActivityIndicator else { return }
+                authManager.signInWithGoogle(presenterVC: presenter,
+                                             showActivityIndicator: showActivityIndicator,
+                                             hideActivityIndicator: hideActivityIndicator)
+                .subscribe(onSuccess: { [coordinator] chatUser in
+                    guard let chatUser = chatUser else { return }
+                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                }, onFailure: { [generateAlertController] _ in
+                    let alertController = generateAlertController(.googleAuth)
+                    presenter.present(alertController, animated: true)
+                })
+                .disposed(by: disposeBag)
+            case .facebookButton(let presenter):
+                guard let hideActivityIndicator = hideActivityIndicator else { return }
+                authManager.signInWithFacebook(presenterVC: presenter,
+                                               showActivityIndicator: showActivityIndicator,
+                                               hideActivityIndicator: hideActivityIndicator)
+                .subscribe(onSuccess: { [coordinator] chatUser in
+                    guard let chatUser = chatUser else { return }
+                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                }, onFailure: { [generateAlertController] _ in
+                    let alertController = generateAlertController(.facebookAuth)
+                    presenter.present(alertController, animated: true)
+                })
+                .disposed(by: disposeBag)
             case .appleButton:
                 guard let chatUser = appleChatUser else { return }
                 coordinator.presentTabBarViewController(withChatUser: chatUser)
 
-            case .submitButtonOrReturnButton:
-                guard let username = email,
-                      let password = password,
-                      let presenter = presenter else { return }
-
-                authManager.signIn(withEmail: username, password: password)
-                    .subscribe(onSuccess: { [coordinator] chatUser in
-                        guard let chatUser = chatUser else { return }
-                        coordinator.presentTabBarViewController(withChatUser: chatUser)
-                    }, onFailure: { [generateAlertController] _ in
-                        let alertController = generateAlertController(.notCorrectLoginOrPassword)
-                        presenter.present(alertController, animated: true)
-                    })
-                    .disposed(by: disposeBag)
+            case .submitButtonOrReturnButton(let username, let password, let presenter):
+                guard let hideActivityIndicator = hideActivityIndicator else { return }
+                authManager.signIn(withEmail: username,
+                                   password: password,
+                                   hideActivityIndicator: hideActivityIndicator)
+                .subscribe(onSuccess: { [coordinator] chatUser in
+                    guard let chatUser = chatUser else { return }
+                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                }, onFailure: { [generateAlertController] _ in
+                    let alertController = generateAlertController(.notCorrectLoginOrPassword)
+                    presenter.presentViewController(viewController: alertController,
+                                                    animated: true,
+                                                    completion: nil)
+                })
+                .disposed(by: disposeBag)
             }
 
         case .register:
-            guard let username = email, let password = password else { return }
-            authManager.createUser(withEmail: username, password: password)
+            switch sourceButtonType {
+            case .submitButtonOrReturnButton(let username, let password, let presenter):
+                guard let hideActivityIndicator = hideActivityIndicator else { return }
+                authManager.createUser(withEmail: username,
+                                       password: password,
+                                       hideActivityIndicator: hideActivityIndicator)
                 .subscribe { [coordinator] chatUser in
                     guard let chatUser = chatUser else { return }
                     coordinator.presentTabBarViewController(withChatUser: chatUser)
                 } onFailure: { [weak self, generateAlertController] error in
-                    if (error as NSError).code == 17007 { // Уже существует аккаунт
-                        let allertController = generateAlertController(.isAlreadySignUp)
-                        presenter?.presentViewController(viewController: allertController,
-                                                         animated: true,
-                                                         completion: nil)
+                    if (error as NSError).code == 17007 {   // Уже существует аккаунт
+                        let allertController = generateAlertController(.isAlreadySignedUp)
+                        presenter.presentViewController(viewController: allertController,
+                                                        animated: true,
+                                                        completion: nil)
                         self?.nameTextfieldText.accept("")
                         self?.passwordTextfieldText.accept("")
                         self?.secondPasswordTextfieldText.accept("")
@@ -472,6 +511,8 @@ extension RegisterViewModel: RegisterViewModelInput {
                     // TODO: Обработать ошибки
                 }
                 .disposed(by: disposeBag)
+            default: break
+            }
         }
     }
 

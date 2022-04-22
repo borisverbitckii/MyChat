@@ -16,6 +16,11 @@ final class RegisterUI {
     lazy var submitButton = ASButtonNode()
     lazy var changeStateButton = ASButtonNode()
     lazy var authButtons = AuthButtonsStackNode()
+    lazy var activityIndicator: ActivityIndicatorNode = {
+        $0.alpha = 0
+        $0.isHidden = true
+        return $0
+    }(ActivityIndicatorNode())
 
     lazy var nameTextField: TextFieldWithBottomBorderNode = {
         $0.textfield.autocorrectionType = .no

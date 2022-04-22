@@ -5,7 +5,7 @@
 //  Created by Boris Verbitsky on 07.04.2022.
 //
 
-public struct AppConfig {
+public struct AppConfig: Equatable {
     public let fonts: Fonts?
     public let texts: Texts?
     public let palette: Palette?

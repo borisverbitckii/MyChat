@@ -66,6 +66,7 @@ enum RegisterViewControllerPalette: String {
     case viewControllerBackgroundColor
     case changeStateButtonColor
     case textFieldBackgroundColor
+    case textfieldsPlaceholderColor
     case submitButtonTextColor
     case submitButtonDisableTintColor
     case submitButtonActiveTintColor
