@@ -7,6 +7,7 @@
 
 import Models
 import Logger
+import RxSwift
 import RxRelay
 import FirebaseRemoteConfig
 

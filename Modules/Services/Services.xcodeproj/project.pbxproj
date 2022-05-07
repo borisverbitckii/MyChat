@@ -10,18 +10,19 @@
 		521CB42B754A6018D5AB3AD6 /* Pods_Services.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BCD58D089B5C6DEF2585FC2 /* Pods_Services.framework */; };
 		D73FD4B52801D3AC00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; };
 		D73FD4B62801D3AC00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		D74E3F47280A824B00F4B0B5 /* EncryptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D74E3F46280A824B00F4B0B5 /* EncryptHandler.swift */; };
 		D75E0BFA2811053500970308 /* Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0BF92811053500970308 /* Logger.framework */; };
 		D75E0BFB2811053500970308 /* Logger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0BF92811053500970308 /* Logger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75E0C252811983B00970308 /* Analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C242811983B00970308 /* Analytics.framework */; };
 		D75E0C262811983B00970308 /* Analytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C242811983B00970308 /* Analytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		D75FD6712801D083001B1359 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6702801D083001B1359 /* AuthManager.swift */; };
 		D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD67E2801D195001B1359 /* ConfigureManager.swift */; };
 		D75FD6822801D195001B1359 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD67F2801D195001B1359 /* NetworkManager.swift */; };
-		D75FD6832801D195001B1359 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6802801D195001B1359 /* StorageManager.swift */; };
-		D781F94528042E4700F401D7 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781F94428042E4700F401D7 /* Firebase.swift */; };
-		D781F94728042EE400F401D7 /* Facebook.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781F94628042EE400F401D7 /* Facebook.swift */; };
-		D781F94B2804305500F401D7 /* Google.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781F94A2804305500F401D7 /* Google.swift */; };
+		D7D06B122822A50D0061EA01 /* Google.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B0D2822A50D0061EA01 /* Google.swift */; };
+		D7D06B132822A50D0061EA01 /* Facebook.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B0E2822A50D0061EA01 /* Facebook.swift */; };
+		D7D06B142822A50D0061EA01 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B0F2822A50D0061EA01 /* Firebase.swift */; };
+		D7D06B152822A50D0061EA01 /* EncryptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B102822A50D0061EA01 /* EncryptHandler.swift */; };
+		D7D06B162822A50D0061EA01 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B112822A50D0061EA01 /* AuthManager.swift */; };
+		D7D06B192822A5280061EA01 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B182822A5280061EA01 /* StorageManager.swift */; };
+		D7D36DC528212B8400F3A118 /* RemoteDataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */; };
 		D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,17 +47,18 @@
 		2BCD58D089B5C6DEF2585FC2 /* Pods_Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8093C7E054C9555C61FC9AA /* Pods-Services.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Services.debug.xcconfig"; path = "Target Support Files/Pods-Services/Pods-Services.debug.xcconfig"; sourceTree = "<group>"; };
 		D73FD4B42801D3AC00912D46 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D74E3F46280A824B00F4B0B5 /* EncryptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptHandler.swift; sourceTree = "<group>"; };
 		D75E0BF92811053500970308 /* Logger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Logger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75E0C242811983B00970308 /* Analytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Analytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75FD65C2801C775001B1359 /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D75FD6702801D083001B1359 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		D75FD67E2801D195001B1359 /* ConfigureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigureManager.swift; sourceTree = "<group>"; };
 		D75FD67F2801D195001B1359 /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		D75FD6802801D195001B1359 /* StorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
-		D781F94428042E4700F401D7 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
-		D781F94628042EE400F401D7 /* Facebook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Facebook.swift; sourceTree = "<group>"; };
-		D781F94A2804305500F401D7 /* Google.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Google.swift; sourceTree = "<group>"; };
+		D7D06B0D2822A50D0061EA01 /* Google.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Google.swift; sourceTree = "<group>"; };
+		D7D06B0E2822A50D0061EA01 /* Facebook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Facebook.swift; sourceTree = "<group>"; };
+		D7D06B0F2822A50D0061EA01 /* Firebase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
+		D7D06B102822A50D0061EA01 /* EncryptHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncryptHandler.swift; sourceTree = "<group>"; };
+		D7D06B112822A50D0061EA01 /* AuthManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		D7D06B182822A5280061EA01 /* StorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDataBaseManager.swift; sourceTree = "<group>"; };
 		D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,11 +101,12 @@
 		D75FD6522801C775001B1359 = {
 			isa = PBXGroup;
 			children = (
-				D781F94328042E1800F401D7 /* AuthManager */,
+				D7D06B0B2822A50D0061EA01 /* AuthManager */,
+				D7D06B172822A5280061EA01 /* StorageManager */,
 				D75FD67E2801D195001B1359 /* ConfigureManager.swift */,
+				D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */,
 				D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */,
 				D75FD67F2801D195001B1359 /* NetworkManager.swift */,
-				D75FD6802801D195001B1359 /* StorageManager.swift */,
 				D75FD65D2801C775001B1359 /* Products */,
 				133C22E0F04F10D67E4484CF /* Frameworks */,
 				4E342AA5E39C58C14D45B742 /* Pods */,
@@ -118,24 +121,32 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D781F94328042E1800F401D7 /* AuthManager */ = {
+		D7D06B0B2822A50D0061EA01 /* AuthManager */ = {
 			isa = PBXGroup;
 			children = (
-				D781F94828042F0B00F401D7 /* SignInServices */,
-				D75FD6702801D083001B1359 /* AuthManager.swift */,
-				D74E3F46280A824B00F4B0B5 /* EncryptHandler.swift */,
+				D7D06B0C2822A50D0061EA01 /* SignInServices */,
+				D7D06B102822A50D0061EA01 /* EncryptHandler.swift */,
+				D7D06B112822A50D0061EA01 /* AuthManager.swift */,
 			);
-			name = AuthManager;
+			path = AuthManager;
 			sourceTree = "<group>";
 		};
-		D781F94828042F0B00F401D7 /* SignInServices */ = {
+		D7D06B0C2822A50D0061EA01 /* SignInServices */ = {
 			isa = PBXGroup;
 			children = (
-				D781F94428042E4700F401D7 /* Firebase.swift */,
-				D781F94628042EE400F401D7 /* Facebook.swift */,
-				D781F94A2804305500F401D7 /* Google.swift */,
+				D7D06B0D2822A50D0061EA01 /* Google.swift */,
+				D7D06B0E2822A50D0061EA01 /* Facebook.swift */,
+				D7D06B0F2822A50D0061EA01 /* Firebase.swift */,
 			);
-			name = SignInServices;
+			path = SignInServices;
+			sourceTree = "<group>";
+		};
+		D7D06B172822A5280061EA01 /* StorageManager */ = {
+			isa = PBXGroup;
+			children = (
+				D7D06B182822A5280061EA01 /* StorageManager.swift */,
+			);
+			path = StorageManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,6 +167,7 @@
 			buildConfigurationList = D75FD6632801C775001B1359 /* Build configuration list for PBXNativeTarget "Services" */;
 			buildPhases = (
 				4C5CD659B67517096CDDFFC3 /* [CP] Check Pods Manifest.lock */,
+				D7317A98281A7A5C00CFB130 /* SwiftLint */,
 				D75FD6572801C775001B1359 /* Headers */,
 				D75FD6582801C775001B1359 /* Sources */,
 				D75FD6592801C775001B1359 /* Frameworks */,
@@ -237,6 +249,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D7317A98281A7A5C00CFB130 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which \"${PODS_ROOT}/SwiftLint/swiftlint\" >/dev/null; then\n    ${PODS_ROOT}/SwiftLint/swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -244,15 +274,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D781F94528042E4700F401D7 /* Firebase.swift in Sources */,
+				D7D06B152822A50D0061EA01 /* EncryptHandler.swift in Sources */,
 				D75FD6822801D195001B1359 /* NetworkManager.swift in Sources */,
-				D74E3F47280A824B00F4B0B5 /* EncryptHandler.swift in Sources */,
+				D7D36DC528212B8400F3A118 /* RemoteDataBaseManager.swift in Sources */,
+				D7D06B142822A50D0061EA01 /* Firebase.swift in Sources */,
 				D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */,
-				D75FD6712801D083001B1359 /* AuthManager.swift in Sources */,
-				D781F94728042EE400F401D7 /* Facebook.swift in Sources */,
+				D7D06B132822A50D0061EA01 /* Facebook.swift in Sources */,
 				D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */,
-				D781F94B2804305500F401D7 /* Google.swift in Sources */,
-				D75FD6832801D195001B1359 /* StorageManager.swift in Sources */,
+				D7D06B192822A5280061EA01 /* StorageManager.swift in Sources */,
+				D7D06B122822A50D0061EA01 /* Google.swift in Sources */,
+				D7D06B162822A50D0061EA01 /* AuthManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

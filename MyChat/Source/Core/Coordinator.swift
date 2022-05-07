@@ -16,6 +16,8 @@ protocol CoordinatorProtocol: AnyObject {
     func presentSplashViewController()
     func presentTabBarViewController(withChatUser user: ChatUser)
     func presentRegisterViewController(presenter: TransitionHandler)
+
+    func pushChatViewController(chat: Chat, presenterVC: TransitionHandler)
 }
 
 final class Coordinator {
@@ -46,7 +48,7 @@ extension Coordinator: CoordinatorProtocol {
     }
 
     func presentTabBarViewController(withChatUser user: ChatUser) {
-        guard let tabBarController = moduleFactory?.getTabBarController() else { return }
+        guard let tabBarController = moduleFactory?.getTabBarController(with: user) else { return }
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
 
@@ -77,5 +79,10 @@ extension Coordinator: CoordinatorProtocol {
         emptyViewController.presentViewController(viewController: splashViewController,
                                                   animated: false,
                                                   completion: nil)
+    }
+
+    func pushChatViewController(chat: Chat, presenterVC: TransitionHandler) {
+        guard let chatViewController = moduleFactory?.getChatModule(chat: chat, coordinator: self) else { return }
+        presenterVC.pushViewController(viewController: chatViewController, animated: true)
     }
 }

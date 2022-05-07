@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E258" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Chat" representedClassName="Chat" syncable="YES">
+        <attribute name="id" attributeType="String"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Message" inverseName="chat" inverseEntity="Message"/>
+        <relationship name="targetUser" maxCount="1" deletionRule="No Action" destinationEntity="User" inverseName="chat" inverseEntity="User"/>
+    </entity>
+    <entity name="Message" representedClassName="Message" syncable="YES">
+        <attribute name="action" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="messageID" attributeType="String"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="chat" maxCount="1" deletionRule="No Action" destinationEntity="Chat" inverseName="messages" inverseEntity="Chat"/>
+        <relationship name="room" maxCount="1" deletionRule="No Action" destinationEntity="Room" inverseName="message" inverseEntity="Room"/>
+        <relationship name="sender" maxCount="1" deletionRule="No Action" destinationEntity="Sender" inverseName="message" inverseEntity="Sender"/>
+    </entity>
+    <entity name="Room" representedClassName="Room" parentEntity="Message" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <relationship name="message" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Message" inverseName="room" inverseEntity="Message"/>
+    </entity>
+    <entity name="Sender" representedClassName="Sender" parentEntity="Message" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <relationship name="message" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Message" inverseName="sender" inverseEntity="Message"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="avatarURL" optional="YES" attributeType="URI"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="isEmailVerified" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="surname" optional="YES" attributeType="String"/>
+        <relationship name="chat" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Chat" inverseName="targetUser" inverseEntity="Chat"/>
+    </entity>
+    <elements>
+        <element name="Chat" positionX="18" positionY="63" width="128" height="88"/>
+        <element name="Message" positionX="-556.9921875" positionY="144.6796875" width="128" height="148"/>
+        <element name="Room" positionX="-557.31640625" positionY="-14.9609375" width="128" height="73"/>
+        <element name="Sender" positionX="-147.09375" positionY="182.046875" width="128" height="73"/>
+        <element name="User" positionX="-303.73828125" positionY="-120.046875" width="128" height="148"/>
+    </elements>
+</model>

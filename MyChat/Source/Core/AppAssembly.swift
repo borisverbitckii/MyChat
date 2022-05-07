@@ -65,7 +65,6 @@ final class AppAssembly {
 
         uiConfigObserverDisposable = configManager.uiConfigObserver
             .subscribe(onNext: { [weak self] appConfig in
-
                 var notificationsNames = [Notification.Name]()
 
                 if self?.appConfig?.texts != appConfig?.texts {

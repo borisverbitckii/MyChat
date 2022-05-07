@@ -5,4 +5,5 @@ disabled_rules: # rule identifiers to exclude from running
   - line_length
   - cyclomatic_complexity
   - function_body_length
+  - function_parameter_count
 

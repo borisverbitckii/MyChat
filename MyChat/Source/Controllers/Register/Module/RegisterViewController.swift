@@ -749,7 +749,7 @@ extension RegisterViewController: UITextFieldDelegate {
 }
 
 // MARK: - extension + ASAuthorizationControllerDelegate  -
-extension RegisterViewController: ASAuthorizationControllerDelegate {
+extension RegisterViewController: ASAuthorizationControllerDelegate { // TODO: Перенести в NSObject
     func authorizationController(controller: ASAuthorizationController,
                                  didCompleteWithAuthorization authorization: ASAuthorization) {
         if let appleIDCredentials = authorization.credential as? ASAuthorizationAppleIDCredential {
@@ -779,7 +779,7 @@ extension RegisterViewController: ASAuthorizationControllerDelegate {
 }
 
 // MARK: - extension + ASAuthorizationControllerDelegate  -
-extension RegisterViewController: ASAuthorizationControllerPresentationContextProviding {
+extension RegisterViewController: ASAuthorizationControllerPresentationContextProviding { // TODO: Перенести в NSObject
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         guard let appDelegate = UIApplication.shared.delegate,
               let window = appDelegate.window,

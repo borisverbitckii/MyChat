@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		29A8BA647FB72AF14E76645E /* Pods_UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC1421DAECEE3EDD8FBF0F2 /* Pods_UI.framework */; };
+		D72D9B65281BB52B00A35EDD /* MessageCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72D9B64281BB52B00A35EDD /* MessageCellNode.swift */; };
 		D73FD4EB2801D87B00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; };
 		D73FD4EC2801D87B00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7627DF028069DAC004DAD16 /* ActivityIndicacotorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		37F14DE98C1685B99A9BBA6B /* Pods-UI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.release.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.release.xcconfig"; sourceTree = "<group>"; };
 		B9CED2F57CCA7B34EC73A333 /* Pods-UI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.debug.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.debug.xcconfig"; sourceTree = "<group>"; };
+		D72D9B64281BB52B00A35EDD /* MessageCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellNode.swift; sourceTree = "<group>"; };
 		D73FD4C22801D67800912D46 /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D73FD4EA2801D87B00912D46 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicacotorNode.swift; sourceTree = "<group>"; };
@@ -120,10 +122,11 @@
 			isa = PBXGroup;
 			children = (
 				D722AA41280864C800569D47 /* Textfield */,
+				D7627EAD2806C9A8004DAD16 /* Auth */,
 				D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */,
 				D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */,
 				D7708ECC28032AC900D1E41D /* ChatCellNode.swift */,
-				D7627EAD2806C9A8004DAD16 /* Auth */,
+				D72D9B64281BB52B00A35EDD /* MessageCellNode.swift */,
 			);
 			path = Nodes;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 			buildConfigurationList = D73FD4C92801D67800912D46 /* Build configuration list for PBXNativeTarget "UI" */;
 			buildPhases = (
 				8AF799551E8152A657280B2B /* [CP] Check Pods Manifest.lock */,
+				D7317A99281A7A6D00CFB130 /* SwiftLint */,
 				D73FD4BD2801D67800912D46 /* Headers */,
 				D73FD4BE2801D67800912D46 /* Sources */,
 				D73FD4BF2801D67800912D46 /* Frameworks */,
@@ -226,6 +230,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D7317A99281A7A6D00CFB130 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which \"${PODS_ROOT}/SwiftLint/swiftlint\" >/dev/null; then\n    ${PODS_ROOT}/SwiftLint/swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -236,6 +258,7 @@
 				D7627EAC2806C6C6004DAD16 /* AuthButtonNode.swift in Sources */,
 				D7ACEAA4280FEDA300D19784 /* ASTextFieldNode.swift in Sources */,
 				D7627DF028069DAC004DAD16 /* ActivityIndicacotorNode.swift in Sources */,
+				D72D9B65281BB52B00A35EDD /* MessageCellNode.swift in Sources */,
 				D7708ED528032AC900D1E41D /* TextFieldWithBottomBorderNode.swift in Sources */,
 				D7708ED728032AC900D1E41D /* AuthButtonsStackNode.swift in Sources */,
 				D7708ED628032AC900D1E41D /* ChatCellNode.swift in Sources */,

@@ -5,6 +5,9 @@
       location = "group:MyChat.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Modules/Messaging/Messaging.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Modules/Services/Services.xcodeproj">
    </FileRef>
    <FileRef

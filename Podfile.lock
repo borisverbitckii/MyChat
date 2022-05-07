@@ -423,6 +423,9 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (~> 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
+  - FirebaseDatabase (8.15.0):
+    - FirebaseCore (~> 8.0)
+    - leveldb-library (~> 1.22)
   - FirebaseFirestore (8.14.0):
     - abseil/algorithm (= 0.20200225.0)
     - abseil/base (= 0.20200225.0)
@@ -591,6 +594,7 @@ DEPENDENCIES:
   - Firebase/Firestore
   - Firebase/Messaging
   - Firebase/RemoteConfig
+  - FirebaseDatabase
   - GoogleSignIn
   - lottie-ios
   - RxCocoa
@@ -615,6 +619,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseCrashlytics
+    - FirebaseDatabase
     - FirebaseFirestore
     - FirebaseInstallations
     - FirebaseMessaging
@@ -655,6 +660,7 @@ SPEC CHECKSUMS:
   FirebaseCore: b84a44ee7ba999e0f9f76d198a9c7f60a797b848
   FirebaseCoreDiagnostics: fd0c8490f34287229c1d6c103d3a55f81ec85712
   FirebaseCrashlytics: 079ef36f5c4b7161188928faec40fa276ebefd84
+  FirebaseDatabase: f567afd233e54a303d84423207736590a6feb419
   FirebaseFirestore: fff37682b934e3e94d83e5c24936721890a2edf0
   FirebaseInstallations: 7d1d967a307c12f1aadd76844fc321cef699b1ce
   FirebaseMessaging: 5ebc42d281567658a2cb72b9ef3506e4a1a1a6e4
@@ -680,6 +686,6 @@ SPEC CHECKSUMS:
   SwiftLint: d41cc46a2ae58ac6d9f26954bc89f1d72e71fdef
   Texture: 2e8ab2519452515f7f5a520f5a8f7e0a413abfa3
 
-PODFILE CHECKSUM: e3ef91bb3295ac98268a2bd60249c9ce397c3228
+PODFILE CHECKSUM: 492e250d0dbb15121b391a31d0436cc3ab2d34ba
 
 COCOAPODS: 1.11.3

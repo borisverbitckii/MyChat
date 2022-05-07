@@ -8,6 +8,7 @@
 import Foundation
 
 extension NSNotification {
+
     /// Нотификация для того, чтобы уведомить, что пришла новая конфигурация appConfig и цвета отличаются
     static let shouldUpdatePalette = Notification.Name("appConfigPaletteWasUpdated")
     /// Нотификация для того, чтобы уведомить, что пришла новая конфигурация appConfig и тексты отличаются

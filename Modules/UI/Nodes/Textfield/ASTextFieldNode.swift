@@ -171,16 +171,14 @@ public final class ASTextFieldNode: ASDisplayNode, UITextInputTraits {
     }
 
     public var lineHeight: CGFloat {
-        get {
-            guard let font = font else {
-                return UIFont.systemFont(ofSize: 17).lineHeight
-            }
-            return font.lineHeight
+        guard let font = font else {
+            return UIFont.systemFont(ofSize: 17).lineHeight
         }
+        return font.lineHeight
     }
 
     // MARK: Init
-    override init() {
+    public override init() {
         let textfield = ASTextFieldView()
         textField = textfield
         textFieldNode = ASDisplayNode {

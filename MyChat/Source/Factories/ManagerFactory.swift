@@ -6,11 +6,12 @@
 //
 
 import Services
+import Messaging
 
 protocol ManagerFactoryForModulesProtocol {
     func getAuthManager() -> AuthManager
-    func getNetworkManager() -> NetworkManagerProtocol
     func getStorageManager() -> StorageManagerProtocol
+    func getWebSocketsFlowFacade() -> WebSocketsFlowFacade
 }
 
 protocol ManagerFactoryGlobalProtocol {
@@ -19,22 +20,21 @@ protocol ManagerFactoryGlobalProtocol {
 }
 
 final class ManagerFactory {
+
     // MARK: - Private properties
-    private lazy var networkManager = NetworkManager()
     private lazy var storageManager = StorageManager()
     private lazy var authManager = AuthManager()
     private lazy var configureManager = ConfigureManager()
     private lazy var pushNotificationsManager = PushNotificationManager()
     private lazy var configManager = ConfigureManager()
+    private lazy var webSocketsFlowFacade = WebSocketsFlowFacade(
+        webSocketsConnector: WebSocketsConnector(),
+        storageManager: storageManager)
 
 }
 
 // MARK: - extension + ManagerFactoryForModulesProtocol
 extension ManagerFactory: ManagerFactoryForModulesProtocol {
-
-    func getNetworkManager() -> NetworkManagerProtocol {
-        networkManager
-    }
 
     func getStorageManager() -> StorageManagerProtocol {
         storageManager
@@ -42,6 +42,9 @@ extension ManagerFactory: ManagerFactoryForModulesProtocol {
 
     func getAuthManager() -> AuthManager {
         authManager
+    }
+    func getWebSocketsFlowFacade() -> WebSocketsFlowFacade {
+        webSocketsFlowFacade
     }
 }
 

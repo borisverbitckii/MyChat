@@ -37,3 +37,14 @@ extension TabBarController: UITabBarControllerDelegate {
         Logger.log(to: .info, message: "В таббар контроллере выбран \(viewController.className)")
     }
 }
+
+// MARK: - extension + URLSessionWebSocketDelegate -
+extension TabBarController: URLSessionWebSocketDelegate {
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        Logger.log(to: .info, message: "Подключился к web sockets")
+    }
+
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
+        Logger.log(to: .info, message: "Web sockets подключение завершено")
+    }
+}

@@ -18,7 +18,7 @@ public protocol PushNotificationManagerProtocol {
 }
 
 public final class PushNotificationManager {
-    
+
     // MARK: Public properties
     public var pushNotificationHandler: (() -> Void)?
 

@@ -57,7 +57,7 @@ extension SplashViewModel: SplashViewModelInputProtocol {
                 case .success(let user):
                     if let user = user {
                         self?.coordinator.presentTabBarViewController(withChatUser: user)
-                        Logger.log(to: .info, message: "Пользователь уже авторизован", userInfo: ["uid": user.uid])
+                        Logger.log(to: .info, message: "Пользователь уже авторизован", userInfo: ["uid": user.userID])
                     } else {
                         self?.coordinator.presentRegisterViewController(presenter: presenter)
                         Logger.log(to: .notice, message: "Пользователь не авторизован")

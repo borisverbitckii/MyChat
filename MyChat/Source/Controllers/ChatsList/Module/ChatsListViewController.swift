@@ -5,9 +5,11 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import AsyncDisplayKit
-import RxSwift
 import UI
+import Logger
+import RxSwift
+import AsyncDisplayKit
+import CoreData
 
 final class ChatsListViewController: ASDKViewController<ASCollectionNode> {
 
@@ -23,6 +25,8 @@ final class ChatsListViewController: ASDKViewController<ASCollectionNode> {
         self.viewModel = chatsListViewModel
         let node = uiElements.chatsCollectionView
         super.init(node: node)
+        node.automaticallyManagesSubnodes = true
+
         node.delegate = self
         node.dataSource = self
     }
@@ -37,6 +41,8 @@ final class ChatsListViewController: ASDKViewController<ASCollectionNode> {
         node.backgroundColor = .white
         setupNavigationBar()
         bindUIElements()
+        subscribeToViewModel()
+        setupDelegates()
     }
 
     // MARK: Private methods
@@ -61,9 +67,21 @@ final class ChatsListViewController: ASDKViewController<ASCollectionNode> {
             .disposed(by: bag)
     }
 
+    private func subscribeToViewModel() {
+        viewModel.output.chatsCollectionShouldReload
+            .subscribe { [uiElements] _ in
+                uiElements.chatsCollectionView.reloadData()
+            }
+            .disposed(by: bag)
+    }
+
+    private func setupDelegates() {
+        viewModel.output.fetchResultsController.delegate = self
+    }
+
     // MARK: OBJC methods
     @objc private func addChat() {
-        print("add chat")
+        viewModel.input.createChatRoom(withChatAt: IndexPath(), presenterVC: self)
     }
 }
 
@@ -71,13 +89,13 @@ final class ChatsListViewController: ASDKViewController<ASCollectionNode> {
 extension ChatsListViewController: ASCollectionDataSource {
 
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.output.chatsCount
+        return viewModel.input.getChatsCount(section: section)
     }
 
     func collectionNode(_ collectionNode: ASCollectionNode,
                         nodeBlockForItemAt
                         indexPath: IndexPath) -> ASCellNodeBlock {
-        let chat = viewModel.output.chatForIndexPath(index: indexPath.item)
+        let chat = viewModel.output.chatForIndexPath(indexPath: indexPath)
         return {
             let cell = ChatCellNode()
             cell.configureWithChat(chat)
@@ -89,4 +107,32 @@ extension ChatsListViewController: ASCollectionDataSource {
 // MARK: - ChatsListViewController + ASCollectionDelegate -
 extension ChatsListViewController: ASCollectionDelegate {
 
+    func collectionNode(_ collectionNode: ASCollectionNode, didSelectItemAt indexPath: IndexPath) {
+        collectionNode.deselectItem(at: indexPath, animated: true)
+        viewModel.input.createChatRoom(withChatAt: indexPath, presenterVC: self)
+    }
+}
+
+// MARK: - extension + NSFetchedResultsControllerDelegate -
+extension ChatsListViewController: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        guard let indexPath = indexPath else { return }
+        switch type {
+        case .insert:
+            uiElements.chatsCollectionView.insertItems(at: [indexPath])
+        case .delete:
+            uiElements.chatsCollectionView.deleteItems(at: [indexPath])
+        case .move:
+            guard let newIndexPath = newIndexPath else { return }
+            uiElements.chatsCollectionView.moveItem(at: [indexPath.item], to: [newIndexPath.item])
+        case .update:
+            uiElements.chatsCollectionView.reloadItems(at: [indexPath])
+        @unknown default:
+            break
+        }
+    }
 }

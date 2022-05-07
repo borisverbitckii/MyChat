@@ -11,13 +11,13 @@ import RxSwift
 
 protocol ModuleFactoryProtocol {
     func getEmptyViewController() -> ASDKViewController<ASDisplayNode>
-    func getTabBarController() -> ASTabBarController
+    func getTabBarController(with user: ChatUser) -> ASTabBarController
     func getRegisterViewController() -> ASDKViewController<ASDisplayNode>
     func getSplashModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
     func getProfileModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController
-    func getChatsListModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController
+    func getChatsListModule(coordinator: CoordinatorProtocol, user: ChatUser) -> ASDKNavigationController
     func getNewChatModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
-    func getChatModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
+    func getChatModule(chat: Chat, coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
 }
 
 final class ModuleFactory {
@@ -44,9 +44,9 @@ extension ModuleFactory: ModuleFactoryProtocol {
         EmptyViewController()
     }
 
-    func getTabBarController() -> ASTabBarController {
+    func getTabBarController(with user: ChatUser) -> ASTabBarController {
         guard let coordinator = coordinator else { return ASTabBarController()  }
-        let chatsListVC = getChatsListModule(coordinator: coordinator)
+        let chatsListVC = getChatsListModule(coordinator: coordinator, user: user)
         let profileVC = getProfileModule(coordinator: coordinator)
         let viewControllers = [chatsListVC, profileVC]
         return TabBarControllerModuleBuilder().build(coordinator: coordinator,
@@ -77,9 +77,10 @@ extension ModuleFactory: ModuleFactoryProtocol {
                                             palette: resource.paletteProvider.getColor())
     }
 
-    func getChatsListModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController {
+    func getChatsListModule(coordinator: CoordinatorProtocol, user: ChatUser) -> ASDKNavigationController {
         let resource: ResourceProtocol = Resource<ChatsListViewController>(configProvider: uiConfigProvider)
-        return ChatsListModuleBuilder().build(managers: managerFactory,
+        return ChatsListModuleBuilder().build(user: user,
+                                              managers: managerFactory,
                                               coordinator: coordinator,
                                               texts: resource.textsProvider.getText(),
                                               fonts: resource.fontsProvider.getFont(),
@@ -90,8 +91,9 @@ extension ModuleFactory: ModuleFactoryProtocol {
         NewChatModuleBuilder().build(coordinator: coordinator)
     }
 
-    func getChatModule(coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode> {
-        ChatModuleBuilder().build(managerFactory: managerFactory,
+    func getChatModule(chat: Chat, coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode> {
+        ChatModuleBuilder().build(chat: chat,
+                                  managerFactory: managerFactory,
                                   coordinator: coordinator)
     }
 }

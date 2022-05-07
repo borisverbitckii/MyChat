@@ -19,6 +19,7 @@ target 'MyChat' do
 
  pod 'Firebase'
  pod 'Firebase/Auth'
+ pod 'FirebaseDatabase'
  pod 'Firebase/Messaging'
  pod 'Firebase/Firestore'
  pod 'Firebase/Analytics'
@@ -37,6 +38,7 @@ target 'Services' do
  pod 'GoogleSignIn'
 
  pod 'Firebase/Auth'
+ pod 'FirebaseDatabase'
  pod 'Firebase/Firestore'
  pod 'Firebase/Messaging'
  pod 'Firebase/RemoteConfig'
@@ -48,6 +50,14 @@ target 'UI' do
 
  pod 'Texture'
  pod 'lottie-ios'
+
+end
+
+target 'Messaging' do
+  xcodeproj './Modules/Messaging/Messaging.xcodeproj'
+
+ pod 'RxSwift'
+ pod 'RxRelay'
 
 end
 

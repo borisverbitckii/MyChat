@@ -20,11 +20,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: Private properties
     private var appAssembly: AppAssembly?
-
     private lazy var globalManagerFactory: ManagerFactoryGlobalProtocol = ManagerFactory()
     private lazy var configManager: ConfigureManagerProtocol = {
         globalManagerFactory.getConfigManager()
     }()
+
     private lazy var pushNotificationsManager: PushNotificationManagerProtocol = {
         globalManagerFactory.getPushNotificationManager()
     }()
@@ -78,8 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        appAssembly?.uiConfigObserverDisposable?.dispose()
         Logger.log(to: .info, message: "Приложение выключается")
+        appAssembly?.uiConfigObserverDisposable?.dispose()
     }
 
     func application(_ application: UIApplication,
@@ -101,7 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 /// Для получения новых appConfig в реальном времени
-extension AppDelegate: MessagingDelegate {
+extension AppDelegate: MessagingDelegate { // TODO: Перенести в отдельный NSObject
 
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         messaging.subscribe(toTopic: "PUSH_RC") { error in
@@ -114,5 +114,5 @@ extension AppDelegate: MessagingDelegate {
     }
 }
 
-extension AppDelegate: UNUserNotificationCenterDelegate {
+extension AppDelegate: UNUserNotificationCenterDelegate { // TODO: Перенести в отдельный NSObject
 }
