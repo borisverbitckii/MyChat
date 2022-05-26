@@ -10,14 +10,19 @@ import Models
 import Logger
 import Services
 
+private enum LocalConstants {
+    static let animationDuration: TimeInterval = 0.3
+}
+
 protocol CoordinatorProtocol: AnyObject {
     func injectModuleFactory(moduleFactory: ModuleFactoryProtocol)
 
-    func presentSplashViewController()
     func presentTabBarViewController(withChatUser user: ChatUser)
     func presentRegisterViewController(presenter: TransitionHandler)
+    func presentNewChatViewController(presenter: TransitionHandler)
+    func presentChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler)
 
-    func pushChatViewController(chat: Chat, presenterVC: TransitionHandler)
+    func pushChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler)
 }
 
 final class Coordinator {
@@ -26,17 +31,9 @@ final class Coordinator {
     private var window: UIWindow
     private var moduleFactory: ModuleFactoryProtocol?
 
-    /// Заглушка, чтобы не было мерцаний при переходе на splashViewController, пока грузится config
-    private lazy var emptyViewController: EmptyViewController = {
-        $0.node.backgroundColor = .white /// Цвет фона должен быть такой же, как у splashViewController
-        return $0
-    }(EmptyViewController())
-
     // MARK: Init
     init(window: UIWindow) {
         self.window = window
-        window.rootViewController = emptyViewController
-        window.makeKeyAndVisible()
     }
 }
 
@@ -53,7 +50,7 @@ extension Coordinator: CoordinatorProtocol {
         window.makeKeyAndVisible()
 
         UIView.transition(with: window,
-                          duration: 0.3,
+                          duration: LocalConstants.animationDuration,
                           options: .transitionCrossDissolve,
                           animations: nil)
     }
@@ -64,25 +61,27 @@ extension Coordinator: CoordinatorProtocol {
         window.makeKeyAndVisible()
 
         UIView.transition(with: window,
-                          duration: 0.3,
+                          duration: LocalConstants.animationDuration,
                           options: .transitionCrossDissolve,
                           animations: nil)
     }
 
-    /// Презентация SplashViewController
-    /// - Parameter presenter: Презентующий контроллер
-    ///
-    /// Модуль сплеша для проверки авторизации
-    func presentSplashViewController() {
-        guard let splashViewController = moduleFactory?.getSplashModule(coordinator: self) else { return }
-        splashViewController.modalPresentationStyle = .fullScreen
-        emptyViewController.presentViewController(viewController: splashViewController,
-                                                  animated: false,
-                                                  completion: nil)
+    func presentNewChatViewController(presenter: TransitionHandler) {
+        guard let newChatViewController = moduleFactory?.getNewChatModule(coordinator: self,
+                                                                          presentingViewController: presenter) else { return }
+        presenter.presentViewController(viewController: newChatViewController, animated: true, completion: nil)
+
     }
 
-    func pushChatViewController(chat: Chat, presenterVC: TransitionHandler) {
-        guard let chatViewController = moduleFactory?.getChatModule(chat: chat, coordinator: self) else { return }
+    func presentChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler) {
+        guard let chatViewController = moduleFactory?.getChatModule(receiverUser: receiverUser,
+                                                                    coordinator: self) else { return }
+        presenterVC.presentViewController(viewController: chatViewController, animated: true, completion: nil)
+    }
+
+    func pushChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler) {
+        guard let chatViewController = moduleFactory?.getChatModule(receiverUser: receiverUser,
+                                                                    coordinator: self) else { return }
         presenterVC.pushViewController(viewController: chatViewController, animated: true)
     }
 }

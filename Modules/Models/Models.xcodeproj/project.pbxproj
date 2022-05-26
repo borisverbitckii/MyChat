@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D727157F283CF55C0036BDE7 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D727157D283CF55B0036BDE7 /* Message+CoreDataProperties.swift */; };
 		D7334452280C0441007B1F37 /* DataSourceForViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7334451280C0441007B1F37 /* DataSourceForViewControllers.swift */; };
 		D75FD6E02801D285001B1359 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD6D72801D285001B1359 /* AppConfig.swift */; };
 		D77ECB4E2824FCD000626E21 /* CodingUserInfoKey + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77ECB4D2824FCD000626E21 /* CodingUserInfoKey + extension.swift */; };
 		D7B20C642823A08400C4E1A1 /* MyChat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C622823A08400C4E1A1 /* MyChat.xcdatamodeld */; };
 		D7B20C6D2823A1EF00C4E1A1 /* Sender+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C652823A1EE00C4E1A1 /* Sender+CoreDataProperties.swift */; };
-		D7B20C6E2823A1EF00C4E1A1 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C662823A1EE00C4E1A1 /* Message+CoreDataProperties.swift */; };
 		D7B20C6F2823A1EF00C4E1A1 /* Room+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C672823A1EF00C4E1A1 /* Room+CoreDataProperties.swift */; };
 		D7B20C712823A1EF00C4E1A1 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C692823A1EF00C4E1A1 /* Message+CoreDataClass.swift */; };
 		D7B20C722823A1EF00C4E1A1 /* Chat+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C6A2823A1EF00C4E1A1 /* Chat+CoreDataClass.swift */; };
@@ -40,13 +40,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D727157D283CF55B0036BDE7 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Message+CoreDataProperties.swift"; path = "/Users/borisverbitsky/Desktop/MyChat/Modules/Models/Core Data/Message/Room/Message+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		D7334451280C0441007B1F37 /* DataSourceForViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSourceForViewControllers.swift; sourceTree = "<group>"; };
 		D75FD68F2801D20B001B1359 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75FD6D72801D285001B1359 /* AppConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		D77ECB4D2824FCD000626E21 /* CodingUserInfoKey + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CodingUserInfoKey + extension.swift"; sourceTree = "<group>"; };
 		D7B20C632823A08400C4E1A1 /* MyChat.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyChat.xcdatamodel; sourceTree = "<group>"; };
 		D7B20C652823A1EE00C4E1A1 /* Sender+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Sender+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		D7B20C662823A1EE00C4E1A1 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D7B20C672823A1EF00C4E1A1 /* Room+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Room+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D7B20C692823A1EF00C4E1A1 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D7B20C6A2823A1EF00C4E1A1 /* Chat+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Chat+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 				D7B20C752823A28500C4E1A1 /* Sender */,
 				D7B20C772823A2EA00C4E1A1 /* Room */,
 				D7B20C692823A1EF00C4E1A1 /* Message+CoreDataClass.swift */,
-				D7B20C662823A1EE00C4E1A1 /* Message+CoreDataProperties.swift */,
+				D727157D283CF55B0036BDE7 /* Message+CoreDataProperties.swift */,
 				D7D06B822822B5990061EA01 /* MessageAction.swift */,
 			);
 			path = Message;
@@ -149,9 +149,9 @@
 			isa = PBXGroup;
 			children = (
 				D7B20C622823A08400C4E1A1 /* MyChat.xcdatamodeld */,
-				D77ECB4D2824FCD000626E21 /* CodingUserInfoKey + extension.swift */,
 				D7B20C762823A28C00C4E1A1 /* Message */,
 				D7B20C782823A2F900C4E1A1 /* Chat */,
+				D77ECB4D2824FCD000626E21 /* CodingUserInfoKey + extension.swift */,
 			);
 			path = "Core Data";
 			sourceTree = "<group>";
@@ -271,8 +271,8 @@
 				D7E7BD00282537EE008CB795 /* Chat+CoreDataProperties.swift in Sources */,
 				D7D06B832822B5990061EA01 /* MessageAction.swift in Sources */,
 				D7B20C712823A1EF00C4E1A1 /* Message+CoreDataClass.swift in Sources */,
-				D7B20C6E2823A1EF00C4E1A1 /* Message+CoreDataProperties.swift in Sources */,
 				D7B20C742823A1EF00C4E1A1 /* Sender+CoreDataClass.swift in Sources */,
+				D727157F283CF55C0036BDE7 /* Message+CoreDataProperties.swift in Sources */,
 				D75FD6E02801D285001B1359 /* AppConfig.swift in Sources */,
 				D7B20C722823A1EF00C4E1A1 /* Chat+CoreDataClass.swift in Sources */,
 				D7B20C6D2823A1EF00C4E1A1 /* Sender+CoreDataProperties.swift in Sources */,

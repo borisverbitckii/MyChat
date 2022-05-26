@@ -38,7 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIViewController.swizzleViewDidAppear()
 
         // Настройка логгера
-        Logger.printingMode = .onlyMessages
+//        Logger.printingMode = .onlyMessages
+        Logger.printingMode = .print([.file, .function, .line])
         Logger.isOn = true
         return true
     }

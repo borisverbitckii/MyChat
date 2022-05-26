@@ -9,6 +9,8 @@ import Models
 import Logger
 import RxSwift
 import RxRelay
+import Services
+import CoreData
 import Messaging
 
 protocol ChatViewModelProtocol {
@@ -18,12 +20,11 @@ protocol ChatViewModelProtocol {
 
 protocol ChatViewModelInput {
     func sendMessage(with text: String)
-    func getMessage(for index: Int) -> Message
-    func getMessagesCount() -> Int
 }
 
 protocol  ChatViewModelOutput {
     var messageCollectionViewShouldReload: PublishRelay<Any?> { get }
+    var fetchResultsController: NSFetchedResultsController<Message>? { get }
 }
 
 final class ChatViewModel {
@@ -32,7 +33,8 @@ final class ChatViewModel {
     var input: ChatViewModelInput { return self }
     var output: ChatViewModelOutput { return self }
 
-    public let chat: Chat
+    let receiverUser: ChatUser
+    private(set) var fetchResultsController: NSFetchedResultsController<Message>?
 
     var messageCollectionViewShouldReload = PublishRelay<Any?>()
 
@@ -41,19 +43,39 @@ final class ChatViewModel {
     private let messagesFlowCoordinator: MessagesFlowProtocol
 
     private lazy var bag = DisposeBag()
+
     private lazy var messages = [Message]() {
         didSet {
             messageCollectionViewShouldReload.accept(nil)
         }
     }
+    private var phoneUserID: String?
+    private var chatID: String?
 
     // MARK: - Init
-    init(chat: Chat,
+    init(receiverUser: ChatUser,
          coordinator: CoordinatorProtocol,
-         messagesFlowCoordinator: MessagesFlowProtocol) {
-        self.chat = chat
+         webSocketsFacade: WebSocketsFlowFacade,
+         storageManager: StorageManagerProtocol) {
+        self.receiverUser = receiverUser
         self.coordinator = coordinator
-        self.messagesFlowCoordinator = messagesFlowCoordinator
+        self.messagesFlowCoordinator = webSocketsFacade
+
+        guard let phoneUserID = AuthManager.currentUser?.uid else { return }
+        self.phoneUserID = phoneUserID
+        let chatID = ChatIDGenerator.generateChatID(phoneUserID: phoneUserID, targetUserID: receiverUser.userID)
+        self.chatID = chatID
+        self.fetchResultsController = storageManager.getMessagesFetchResultsController(chatID: chatID)
+
+        webSocketsFacade.joinPrivateRoom(chatID: chatID,
+                                         receiverUserID: receiverUser.userID) { result in
+            switch result {
+            case .success:
+                Logger.log(to: .info, message: "Успешно зашел в комнату с id \(chatID)")
+            case .failure(let error):
+                break
+            }
+        }
     }
 }
 
@@ -66,19 +88,19 @@ extension ChatViewModel: ChatViewModelProtocol {
 extension ChatViewModel: ChatViewModelInput {
 
     func sendMessage(with text: String) {
-//        messagingFlowManager.sendMessage(with: text, to: chat.targetUserUUID)
-//            .subscribe()
-//            .disposed(by: bag)
-//
-//        messagesFlowCoordinator.sendMessage(messageText: text, chatID: chat.id, senderID: chat.sender, completion: <#T##(Result<Any?, Error>) -> Void#>)
-    }
-
-    func getMessage(for index: Int) -> Message {
-        messages[index]
-    }
-
-    func getMessagesCount() -> Int {
-        messages.count
+        guard let chatID = chatID,
+                let phoneUserID = phoneUserID else { return }
+        messagesFlowCoordinator.sendMessage(messageText: text,
+                                            chatID: chatID,
+                                            senderID: phoneUserID,
+                                            receiverID: receiverUser.userID) { result in
+            switch result {
+            case .success:
+                Logger.log(to: .info, message: "Сообщение отправлено и сохранено в чат")
+            case .failure(let error):
+                break
+            }
+        }
     }
 }
 
@@ -86,10 +108,3 @@ extension ChatViewModel: ChatViewModelInput {
 extension ChatViewModel: ChatViewModelOutput {
 
 }
-
-//// MARK: - extension + ChatViewModelOutputProtocol -
-//extension ChatViewModel: MessagesReceiverProtocol {
-//    func showMessage(_ message: Message) {
-//        messages.insert(message, at: 0)
-//    }
-//}

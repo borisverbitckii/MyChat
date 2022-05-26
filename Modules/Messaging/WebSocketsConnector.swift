@@ -17,24 +17,33 @@ public protocol WebSocketsConnectorProtocol {
     func setUserID(userID: String)
     func setURLSessionWebSocketsDelegate(with delegate: URLSessionWebSocketDelegate)
     func executeWebSocketOperation(message: Message) -> Single<Any?>
+    func closeConnection()
 }
 
 public class WebSocketsConnector {
 
     // MARK: Public properties
-    public var userID: String?
+    public var userID: String? {
+        didSet {
+            url = URL(string: "ws://localhost:8080?uuid=\(userID ?? "")")
+        }
+    }
     public lazy var rawMessageStringObserver = PublishRelay<String>()
 
     // MARK: Private properties
-    private lazy var url = URL(string: "ws://localhost:8080?uuid=\(userID ?? "")")!
-    private var urlSession: URLSession?
+    private var url: URL?
+    private var urlSession: URLSession? {
+        didSet {
+            guard let urlSession = urlSession,
+                  let url = url else { return }
+            let task = urlSession.webSocketTask(with: url)
+            webSocketTask = task
+            connectToServer()
+        }
+    }
 
-    private lazy var webSocketTask: URLSessionWebSocketTask? = {
-        guard let urlSession = urlSession else { return nil }
-        let request = URLRequest(url: url)
-        let task = urlSession.webSocketTask(with: url)
-        return task
-    }()
+    private var webSocketTask: URLSessionWebSocketTask?
+    private let lock = NSLock()
 
     // MARK: Init
     public init() {}
@@ -52,7 +61,9 @@ public class WebSocketsConnector {
                 Logger.log(to: .info, message: "Получено сообщение по web socket")
                 switch result {
                 case .string(let string):
+                    self?.lock.lock()
                     self?.rawMessageStringObserver.accept(string)
+                    self?.lock.unlock()
                 case .data:
                     break
                 @unknown default:
@@ -86,7 +97,9 @@ extension WebSocketsConnector: WebSocketsConnectorProtocol {
     /// Требуется для инициализации
     /// - Parameter delegate: Делегат URLSession
     public func setURLSessionWebSocketsDelegate(with delegate: URLSessionWebSocketDelegate) {
-        urlSession = URLSession(configuration: .default, delegate: delegate, delegateQueue: OperationQueue())
+        urlSession = URLSession(configuration: .default,
+                                delegate: delegate,
+                                delegateQueue: OperationQueue()) // TODO: Проверить нужен ли оперейшн
     }
 
     /// Установка id пользователя телефона, чтобы отправлять этот id на сервер
@@ -95,7 +108,6 @@ extension WebSocketsConnector: WebSocketsConnectorProtocol {
     /// - Parameter userID: ID пользователя телефона
     public func setUserID(userID: String) {
         self.userID = userID
-        connectToServer()
     }
 
     public func executeWebSocketOperation(message: Message) -> Single<Any?> {
@@ -126,4 +138,7 @@ extension WebSocketsConnector: WebSocketsConnectorProtocol {
         .observe(on: MainScheduler.instance)
     }
 
+    public func closeConnection() {
+        webSocketTask?.cancel()
+    }
 }

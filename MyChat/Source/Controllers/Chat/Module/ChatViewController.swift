@@ -8,6 +8,7 @@
 import UI
 import RxSwift
 import AsyncDisplayKit
+import CoreData
 
 final class ChatViewController: ASDKViewController<ASDisplayNode> {
 
@@ -47,6 +48,7 @@ final class ChatViewController: ASDKViewController<ASDisplayNode> {
         hidesBottomBarWhenPushed = true
         setupToolBar()
         subscribeToViewModel()
+        viewModel.output.fetchResultsController?.delegate = self
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -93,11 +95,16 @@ final class ChatViewController: ASDKViewController<ASDisplayNode> {
 extension ChatViewController: ASCollectionDataSource {
 
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
-        viewModel.input.getMessagesCount()
+        let sectionInfo = viewModel.output.fetchResultsController?.sections?[section]
+        return sectionInfo?.numberOfObjects ?? 0
     }
 
     func collectionNode(_ collectionNode: ASCollectionNode, nodeBlockForItemAt indexPath: IndexPath) -> ASCellNodeBlock {
-        let message = viewModel.input.getMessage(for: indexPath.row)
+        guard let message = viewModel.output.fetchResultsController?.object(at: indexPath) else {
+            return {
+                ASCellNode()
+            }
+        }
         return {
             let cell = MessageCellNode()
             cell.configureCell(with: message)
@@ -109,4 +116,30 @@ extension ChatViewController: ASCollectionDataSource {
 // MARK: - extension + ASCollectionDelegate -
 extension ChatViewController: ASCollectionDelegate {
 
+}
+
+// MARK: - extension + NSFetchedResultsControllerDelegate -
+extension ChatViewController: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+
+        DispatchQueue.main.async {
+            switch type {
+            case .insert:
+                guard let newIndexPath = newIndexPath else { return }
+                self.uiElements.messagesCollectionNode.insertItems(at: [newIndexPath])
+            case .delete:
+                guard let indexPath = indexPath else { return }
+                self.uiElements.messagesCollectionNode.deleteItems(at: [indexPath])
+            case .move:
+                guard let indexPath = indexPath,
+                      let newIndexPath = newIndexPath else { return }
+                self.uiElements.messagesCollectionNode.moveItem(at: [indexPath.item], to: [newIndexPath.item])
+            case .update:
+                guard let indexPath = indexPath else { return }
+                self.uiElements.messagesCollectionNode.reloadItems(at: [indexPath])
+            @unknown default:
+                break
+            }
+        }
+    }
 }

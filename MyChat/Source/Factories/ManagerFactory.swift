@@ -9,9 +9,11 @@ import Services
 import Messaging
 
 protocol ManagerFactoryForModulesProtocol {
+    func getAuthFacade() -> AuthFacadeProtocol
     func getAuthManager() -> AuthManager
     func getStorageManager() -> StorageManagerProtocol
     func getWebSocketsFlowFacade() -> WebSocketsFlowFacade
+    func getRemoteDataBaseManager() -> RemoteDataBaseManagerProtocol
 }
 
 protocol ManagerFactoryGlobalProtocol {
@@ -24,6 +26,9 @@ final class ManagerFactory {
     // MARK: - Private properties
     private lazy var storageManager = StorageManager()
     private lazy var authManager = AuthManager()
+    private lazy var remoteDataBaseManager = RemoteDataBaseManager()
+    private lazy var authFacade = AuthFacade(authManager: authManager,
+                                             remoteDatabaseManager: remoteDataBaseManager)
     private lazy var configureManager = ConfigureManager()
     private lazy var pushNotificationsManager = PushNotificationManager()
     private lazy var configManager = ConfigureManager()
@@ -43,8 +48,17 @@ extension ManagerFactory: ManagerFactoryForModulesProtocol {
     func getAuthManager() -> AuthManager {
         authManager
     }
+
+    func getAuthFacade() -> AuthFacadeProtocol {
+        authFacade
+    }
+
     func getWebSocketsFlowFacade() -> WebSocketsFlowFacade {
         webSocketsFlowFacade
+    }
+
+    func getRemoteDataBaseManager() -> RemoteDataBaseManagerProtocol {
+        remoteDataBaseManager
     }
 }
 

@@ -15,7 +15,7 @@
 		D75E0C252811983B00970308 /* Analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C242811983B00970308 /* Analytics.framework */; };
 		D75E0C262811983B00970308 /* Analytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C242811983B00970308 /* Analytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD67E2801D195001B1359 /* ConfigureManager.swift */; };
-		D75FD6822801D195001B1359 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD67F2801D195001B1359 /* NetworkManager.swift */; };
+		D77F35C02827A7AE0046D494 /* Apple.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77F35BF2827A7AE0046D494 /* Apple.swift */; };
 		D7D06B122822A50D0061EA01 /* Google.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B0D2822A50D0061EA01 /* Google.swift */; };
 		D7D06B132822A50D0061EA01 /* Facebook.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B0E2822A50D0061EA01 /* Facebook.swift */; };
 		D7D06B142822A50D0061EA01 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B0F2822A50D0061EA01 /* Firebase.swift */; };
@@ -51,7 +51,7 @@
 		D75E0C242811983B00970308 /* Analytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Analytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75FD65C2801C775001B1359 /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75FD67E2801D195001B1359 /* ConfigureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigureManager.swift; sourceTree = "<group>"; };
-		D75FD67F2801D195001B1359 /* NetworkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		D77F35BF2827A7AE0046D494 /* Apple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Apple.swift; sourceTree = "<group>"; };
 		D7D06B0D2822A50D0061EA01 /* Google.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Google.swift; sourceTree = "<group>"; };
 		D7D06B0E2822A50D0061EA01 /* Facebook.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Facebook.swift; sourceTree = "<group>"; };
 		D7D06B0F2822A50D0061EA01 /* Firebase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
@@ -106,7 +106,6 @@
 				D75FD67E2801D195001B1359 /* ConfigureManager.swift */,
 				D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */,
 				D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */,
-				D75FD67F2801D195001B1359 /* NetworkManager.swift */,
 				D75FD65D2801C775001B1359 /* Products */,
 				133C22E0F04F10D67E4484CF /* Frameworks */,
 				4E342AA5E39C58C14D45B742 /* Pods */,
@@ -137,6 +136,7 @@
 				D7D06B0D2822A50D0061EA01 /* Google.swift */,
 				D7D06B0E2822A50D0061EA01 /* Facebook.swift */,
 				D7D06B0F2822A50D0061EA01 /* Firebase.swift */,
+				D77F35BF2827A7AE0046D494 /* Apple.swift */,
 			);
 			path = SignInServices;
 			sourceTree = "<group>";
@@ -275,7 +275,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7D06B152822A50D0061EA01 /* EncryptHandler.swift in Sources */,
-				D75FD6822801D195001B1359 /* NetworkManager.swift in Sources */,
 				D7D36DC528212B8400F3A118 /* RemoteDataBaseManager.swift in Sources */,
 				D7D06B142822A50D0061EA01 /* Firebase.swift in Sources */,
 				D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */,
@@ -284,6 +283,7 @@
 				D7D06B192822A5280061EA01 /* StorageManager.swift in Sources */,
 				D7D06B122822A50D0061EA01 /* Google.swift in Sources */,
 				D7D06B162822A50D0061EA01 /* AuthManager.swift in Sources */,
+				D77F35C02827A7AE0046D494 /* Apple.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

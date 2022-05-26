@@ -47,11 +47,22 @@
 	<dict>
 		<key>title</key>
 		<string>Chat list</string>
+		<key>searchBarPlaceholder</key>
+		<string>Search for chats</string>
+		<key>deleteButtonTitle</key>
+		<string>Delete</string>
 	</dict>
 	<key>ProfileViewController</key>
 	<dict>
 		<key>title</key>
 		<string>Profile</string>
+	</dict>
+	<key>NewChatViewController</key>
+	<dict>
+		<key>navBarTitle</key>
+		<string>Write Message</string>
+		<key>searchBarPlaceholder</key>
+		<string>Write user email</string>
 	</dict>
 </dict>
 </plist>

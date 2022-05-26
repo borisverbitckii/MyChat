@@ -15,6 +15,7 @@ import FirebaseDatabase
 public protocol RemoteDataBaseManagerProtocol {
     func saveUserData(with user: ChatUser) -> Single<Any?>
     func fetchUsersUUIDs(email: String) -> Single<[ChatUser]>
+    func fetchUser(uuid: String) -> Single<ChatUser?>
 }
 
 public final class RemoteDataBaseManager {
@@ -35,6 +36,10 @@ public final class RemoteDataBaseManager {
 
     // MARK: Init
     public init() {}
+}
+
+// MARK: - extension + RemoteDataBaseManagerProtocol -
+extension RemoteDataBaseManager: RemoteDataBaseManagerProtocol {
 
     // MARK: Public Methods
     public func saveUserData(with user: ChatUser) -> Single<Any?> {
@@ -61,12 +66,40 @@ public final class RemoteDataBaseManager {
         }
     }
 
+    public func fetchUser(uuid: String) -> Single<ChatUser?> {
+        let query = directDatabasePath
+            .queryOrdered(byChild: "userID")
+            .queryEqual(toValue: uuid)
+        return Single<ChatUser?>.create { [weak self] obs in
+            let xxx = self?.fetchUsers(with: query)
+                .subscribe { users in
+                    guard let user = users.first else {
+                        obs(.success(nil))
+                        return
+                    }
+                    obs(.success(user))
+                } onFailure: { error in
+                    obs(.failure(error))
+                }
+            return Disposables.create()
+        }
+    }
+
     public func fetchUsersUUIDs(email: String) -> Single<[ChatUser]> {
-        Single<[ChatUser]>.create { [directDatabasePath] obs in
-            let query = directDatabasePath.queryOrdered(byChild: "email").queryStarting(atValue: email)
+        let email = email.lowercased()
+        let query = directDatabasePath
+            .queryOrdered(byChild: "email")
+            .queryStarting(atValue: email)
+            .queryEnding(atValue: email + "~")
+        return fetchUsers(with: query)
+    }
+
+    // MARK: Private methods
+    private func fetchUsers(with query: DatabaseQuery) -> Single<[ChatUser]> {
+        Single<[ChatUser]>.create { obs in
 
             query.observeSingleEvent(of: .value) { snapshot in
-                guard var json = snapshot.value as? [String: Any] else { return }
+                guard var json = snapshot.value as? [String: Any] else { return obs(.success([ChatUser]())) }
 
                 do {
                     var users = [ChatUser]()
@@ -74,8 +107,13 @@ public final class RemoteDataBaseManager {
                         json["id"] = key
                         let chatUserData = try JSONSerialization.data(withJSONObject: value)
                         let chatUser = try JSONDecoder().decode(ChatUser.self, from: chatUserData)
+                        if chatUser.userID == AuthManager.currentUser?.uid {
+                            continue
+                        }
                         users.append(chatUser)
                     }
+
+                    users = users.sorted { $0.email ?? "" > $1.email ?? ""}
 
                     Logger.log(to: .info, message: "Данные о пользователях скачаны с firebase")
                     obs(.success(users))

@@ -141,7 +141,8 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             }
 
             let vStackCenterSpec = ASCenterLayoutSpec(centeringOptions: .XY,
-                                                      sizingOptions: [], child: vStack)
+                                                      sizingOptions: [],
+                                                      child: vStack)
 
             // Кнопки + errorLabel
             let labelCenterLayoutSpec = ASCenterLayoutSpec(centeringOptions: .XY,
@@ -613,10 +614,9 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
 
     // Реализация логина через Apple
     @objc private func appleSignInButtonTapped() {
-        viewModel.input.startAppleAuthFlow(delegate: self,
-                                           presentationContextProvider: self,
-                                           showActivityIndicator: showActivityIndicator,
-                                           hideActivityIndicator: hideActivityIndicator)
+        viewModel.input.tryToLogin(sourceButtonType: .appleButton(presenterVC: self),
+                                   showActivityIndicator: showActivityIndicator,
+                                   hideActivityIndicator: hideActivityIndicator)
     }
 
     // Реализация тапа кнопки changeStateButton
@@ -747,45 +747,4 @@ extension RegisterViewController: UITextFieldDelegate {
         return false
     }
 }
-
-// MARK: - extension + ASAuthorizationControllerDelegate  -
-extension RegisterViewController: ASAuthorizationControllerDelegate { // TODO: Перенести в NSObject
-    func authorizationController(controller: ASAuthorizationController,
-                                 didCompleteWithAuthorization authorization: ASAuthorization) {
-        if let appleIDCredentials = authorization.credential as? ASAuthorizationAppleIDCredential {
-            guard let appleIDToken = appleIDCredentials.identityToken else {
-                Logger.log(to: .error, message: "Не удалось получить appleIDToken")
-                return
-            }
-            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-                Logger.log(to: .error, message: "Не удалось перевести appleIDToken в string")
-                return
-            }
-
-            guard let appleAuthClosure = viewModel.output.appleAuthClosure else { return }
-            viewModel.input.authInApple(single: appleAuthClosure(idTokenString),
-                                        presenter: self,
-                                        showActivityIndicator: showActivityIndicator,
-                                        hideActivityIndicator: hideActivityIndicator)
-        }
-    }
-
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        Logger.log(to: .error,
-                   message: "Не удалось авторизироваться в apple",
-                   error: error)
-        viewModel.input.showAppleAuthError(presenter: self)
-    }
-}
-
-// MARK: - extension + ASAuthorizationControllerDelegate  -
-extension RegisterViewController: ASAuthorizationControllerPresentationContextProviding { // TODO: Перенести в NSObject
-    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        guard let appDelegate = UIApplication.shared.delegate,
-              let window = appDelegate.window,
-              let window = window else { return UIWindow() }
-        return window
-    }
-}
-
 // swiftlint:disable:this file_length

@@ -34,8 +34,9 @@ public class Message: NSManagedObject, Codable {
         do {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.id = try container.decodeIfPresent(String.self, forKey: .id)
+            self.text = try container.decodeIfPresent(String.self, forKey: .text)
             self.action = try container.decode(MessageAction.self, forKey: .action)
-            self.date = try container.decodeIfPresent(Date.self, forKey: .date)
+            self.date = try container.decode(String.self, forKey: .date)
             self.room = try container.decodeIfPresent(Room.self, forKey: .room)
             self.sender = try container.decodeIfPresent(Sender.self, forKey: .sender)
         } catch {
@@ -57,14 +58,13 @@ public class Message: NSManagedObject, Codable {
     public func setup(action: MessageAction,
                       id: String = UUID().uuidString,
                       text: String,
-                      date: Date = Date(),
                       room: Room? = nil,
                       sender: Sender? = nil) {
         self.action = action
-        self.id = id
-        self.text = text
-        self.date = date
-        self.room = room
+        self.id     = id
+        self.text   = text
+        self.date   = Date().timeIntervalSince1970.description
+        self.room   = room
         self.sender = sender
     }
 }

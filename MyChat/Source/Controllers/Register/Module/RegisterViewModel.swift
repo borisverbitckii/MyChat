@@ -55,7 +55,7 @@ enum AlertControllerType {
 enum RegisterAuthButtonType {
     case googleButton(presenterVC: UIViewController)
     case facebookButton(presenterVC: UIViewController)
-    case appleButton
+    case appleButton(presenterVC: UIViewController)
     case submitButtonOrReturnButton(username: String, password: String, presenter: TransitionHandler)
 }
 
@@ -65,15 +65,6 @@ protocol RegisterViewModelProtocol: AnyObject {
 }
 
 protocol RegisterViewModelInput {
-    func startAppleAuthFlow(delegate: ASAuthorizationControllerDelegate?,
-                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?,
-                            showActivityIndicator: @escaping () -> Void,
-                            hideActivityIndicator: @escaping () -> Void)
-    func authInApple(single: Single<ChatUser?>,
-                     presenter: UIViewController?,
-                     showActivityIndicator: @escaping () -> Void,
-                     hideActivityIndicator: @escaping () -> Void)
-    func showAppleAuthError(presenter: TransitionHandler)
     func tryToLogin(sourceButtonType: RegisterAuthButtonType,
                     showActivityIndicator: @escaping () -> Void,
                     hideActivityIndicator: (() -> Void)?)
@@ -147,7 +138,6 @@ protocol RegisterViewModelOutput {
     var orLabelAttributedStringDataSource: BehaviorRelay<(text: String,    // swiftlint:disable:this large_tuple
                                                           font: UIFont,
                                                           color: UIColor)> { get }
-    var appleAuthClosure: ((String) -> Single<ChatUser?>)? { get set }
 }
 
 final class RegisterViewModel: RegisterViewModelProtocol {
@@ -194,24 +184,18 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     var orLabelAttributedStringDataSource: BehaviorRelay<(text: String,
                                                           font: UIFont,
                                                           color: UIColor)>
-    /// Клоужер для отработки авторизации apple
-    var appleAuthClosure: ((String) -> Single<ChatUser?>)?
-
     // MARK: Private properties
     private let disposeBag = DisposeBag()
     /// Координатор для флоу между контроллерами
     private let coordinator: CoordinatorProtocol
     /// Менеджер для регистрации/авторизации
-    private let authManager: AuthManagerRegisterProtocol
-
+    private let authFacade: AuthFacadeProtocol
     /// Для применения шрифтов
     private let fonts: (RegisterViewControllerFonts) -> UIFont
     /// Для установки всех текстов
     private let texts: (RegisterViewControllerTexts) -> String
     /// Для установки цветов
     private let palette: (RegisterViewControllerPalette) -> UIColor
-    /// Модель юзера для открытия tabBarController после authInApple
-    private var appleChatUser: ChatUser?
 
     /// Для сравнения значений, чтобы не отправлять лишние сигналы
     private var oldErrorLabelTitle = ""
@@ -219,12 +203,12 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     // MARK: Init
     // swiftlint:disable:next function_body_length
     init(coordinator: CoordinatorProtocol,
-         authManager: AuthManagerRegisterProtocol,
+         authFacade: AuthFacadeProtocol,
          fonts: @escaping (RegisterViewControllerFonts) -> UIFont,
          texts: @escaping (RegisterViewControllerTexts) -> String,
          palette: @escaping (RegisterViewControllerPalette) -> UIColor) {
         self.coordinator = coordinator
-        self.authManager = authManager
+        self.authFacade = authFacade
         self.fonts = fonts
         self.texts = texts
         self.palette = palette
@@ -392,47 +376,6 @@ extension RegisterViewModel: RegisterViewModelOutput {
 extension RegisterViewModel: RegisterViewModelInput {
 
     // MARK: Public Methods
-    func startAppleAuthFlow(delegate: ASAuthorizationControllerDelegate?,
-                            presentationContextProvider: ASAuthorizationControllerPresentationContextProviding?,
-                            showActivityIndicator: @escaping () -> Void,
-                            hideActivityIndicator: @escaping () -> Void) {
-        appleAuthClosure = authManager.signInWithApple(delegate: delegate,
-                                                       provider: presentationContextProvider,
-                                                       showActivityIndicator: showActivityIndicator,
-                                                       hideActivityIndicator: hideActivityIndicator)
-    }
-
-    func authInApple(single: Single<ChatUser?>,
-                     presenter: UIViewController?,
-                     showActivityIndicator: @escaping () -> Void,
-                     hideActivityIndicator: @escaping () -> Void) {
-        single.subscribe({ [weak self] event in
-            guard let self = self else { return }
-            switch event {
-            case .success(let chatUser):
-                self.appleChatUser = chatUser
-                self.tryToLogin(sourceButtonType: .appleButton,
-                                showActivityIndicator: showActivityIndicator,
-                                hideActivityIndicator: hideActivityIndicator)
-            case .failure(let error):
-                Logger.log(to: .error,
-                           message: "Не удалось авторизироваться в apple",
-
-                           error: error)
-                let alertController = self.generateAlertController(type: .appleAuth)
-                presenter?.present(alertController, animated: true)
-            }
-        })
-        .disposed(by: disposeBag)
-    }
-
-    func showAppleAuthError(presenter: TransitionHandler) {
-        let alertController = generateAlertController(type: .appleAuth)
-        presenter.presentViewController(viewController: alertController,
-                                        animated: true,
-                                        completion: nil)
-    }
-
     // swiftlint:disable:next function_body_length
     func tryToLogin(sourceButtonType: RegisterAuthButtonType, // swiftlint:disable:this cyclomatic_complexity
                     showActivityIndicator: @escaping () -> Void,
@@ -443,7 +386,7 @@ extension RegisterViewModel: RegisterViewModelInput {
             switch sourceButtonType {
             case .googleButton(let presenter):
                 guard let hideActivityIndicator = hideActivityIndicator else { return }
-                authManager.signInWithGoogle(presenterVC: presenter,
+                authFacade.signInWithGoogle(presenterVC: presenter,
                                              showActivityIndicator: showActivityIndicator,
                                              hideActivityIndicator: hideActivityIndicator)
                 .subscribe(onSuccess: { [coordinator] chatUser in
@@ -456,7 +399,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                 .disposed(by: disposeBag)
             case .facebookButton(let presenter):
                 guard let hideActivityIndicator = hideActivityIndicator else { return }
-                authManager.signInWithFacebook(presenterVC: presenter,
+                authFacade.signInWithFacebook(presenterVC: presenter,
                                                showActivityIndicator: showActivityIndicator,
                                                hideActivityIndicator: hideActivityIndicator)
                 .subscribe(onSuccess: { [coordinator] chatUser in
@@ -467,13 +410,23 @@ extension RegisterViewModel: RegisterViewModelInput {
                     presenter.present(alertController, animated: true)
                 })
                 .disposed(by: disposeBag)
-            case .appleButton:
-                guard let chatUser = appleChatUser else { return }
-                coordinator.presentTabBarViewController(withChatUser: chatUser)
-
+            case .appleButton(let presenter):
+                guard let hideActivityIndicator = hideActivityIndicator else { return }
+                authFacade.signInWithApple(showActivityIndicator: showActivityIndicator,
+                                            hideActivityIndicator: hideActivityIndicator)
+                .subscribe { [coordinator] chatUser in
+                    guard let chatUser = chatUser else { return }
+                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                } onFailure: { [generateAlertController] _ in
+                    let alertController = generateAlertController(.appleAuth)
+                    presenter.presentViewController(viewController: alertController,
+                                                    animated: true,
+                                                    completion: nil)
+                }
+                .disposed(by: disposeBag)
             case .submitButtonOrReturnButton(let username, let password, let presenter):
                 guard let hideActivityIndicator = hideActivityIndicator else { return }
-                authManager.signIn(withEmail: username,
+                authFacade.signIn(withEmail: username,
                                    password: password,
                                    hideActivityIndicator: hideActivityIndicator)
                 .subscribe(onSuccess: { [coordinator] chatUser in
@@ -492,7 +445,7 @@ extension RegisterViewModel: RegisterViewModelInput {
             switch sourceButtonType {
             case .submitButtonOrReturnButton(let username, let password, let presenter):
                 guard let hideActivityIndicator = hideActivityIndicator else { return }
-                authManager.createUser(withEmail: username,
+                authFacade.createUser(withEmail: username,
                                        password: password,
                                        hideActivityIndicator: hideActivityIndicator)
                 .subscribe { [coordinator] chatUser in

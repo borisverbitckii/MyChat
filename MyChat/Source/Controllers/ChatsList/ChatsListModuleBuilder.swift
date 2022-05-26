@@ -21,6 +21,8 @@ final class ChatsListModuleBuilder {
         let viewModel = ChatsListViewModel(user: user,
                                            coordinator: coordinator,
                                            webSocketsFacade: managers.getWebSocketsFlowFacade(),
+                                           storageManager: managers.getStorageManager(),
+                                           remoteDataBaseManager: managers.getRemoteDataBaseManager(),
                                            fonts: fonts,
                                            texts: texts,
                                            palette: palette)

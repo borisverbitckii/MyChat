@@ -15,13 +15,16 @@ final class JoinPrivateRoomOperation: BaseSendMessageOperation {
 
     // MARK: Private properties
     private let chatID: String
+    private let receiverUserID: String
 
     // MARK: Init
     init(chatID: String,
-         storageManager: StorageManagerProtocol, // TODO: Подкинуть протокол
+         receiverUserID: String,
+         storageManager: StorageManagerProtocol,
          webSocketsConnector: WebSocketsConnectorProtocol,
          completion: @escaping (Result<Any?, Error>) -> Void) {
         self.chatID = chatID
+        self.receiverUserID = receiverUserID
 
         super.init(webSocketsConnector: webSocketsConnector,
                    storageManager: storageManager,
@@ -31,10 +34,10 @@ final class JoinPrivateRoomOperation: BaseSendMessageOperation {
     // MARK: Override methods
     override func start() {
         // TODO: Залогировать
-        let context = storageManager.backgroundContextNotForSaving
+        guard let context = storageManager.backgroundContextNotForSaving else { return }
         let room = storageManager.createRoom(id: chatID, in: context)
         let message = storageManager.createMessage(action: .joinRoomPrivateAction,
-                                                   text: "",
+                                                   text: receiverUserID,
                                                    room: room,
                                                    sender: nil,
                                                    in: context)

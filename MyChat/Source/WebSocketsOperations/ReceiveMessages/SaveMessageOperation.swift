@@ -10,17 +10,13 @@ import Models
 import RxSwift
 import Services
 import Foundation
+import CoreData
 
 final class SaveMessageOperation: BaseReceivedMessageOperation {
-    
-    // MARK: Private properties
-    private var completion: ((Result<Any?, Error>) -> Void)?
 
     // MARK: Init
-    init(message: Message,
-         storageManager: StorageManagerProtocol,
-         completion: ((Result<Any?, Error>) -> Void)? = nil) {
-        self.completion = completion
+    override init(message: Message,
+                  storageManager: StorageManagerProtocol) {
         super.init(message: message,
                    storageManager: storageManager)
     }
@@ -31,35 +27,36 @@ final class SaveMessageOperation: BaseReceivedMessageOperation {
         if message.action == .sendMessageAction {
             if let roomID = message.room?.id {
 
-                let context = storageManager.backgroundContextForSaving
+                guard let context = message.managedObjectContext else { return }
 
                 storageManager.fetchChat(id: roomID, from: context)
-                    .subscribe { [completion, message] chat in
-                        chat.addToMessages(message)
-
-                        do {
-                            try context.save()
-                            completion?(.success(nil))
-                        } catch {
-                            Logger.log(to: .error, message: "Не удалось сохранить контекст core data", error: error)
-                            completion?(.failure(error))
+                    .subscribe { [weak self, message] chat in
+                        if let chat = chat {
+                            chat.addToMessages(message)
+                            self?.storageManager.saveContext(with: context, completion: nil)
+                        } else {
+                            self?.createNewChat(id: roomID,
+                                                in: context)
                         }
-                    } onFailure: { [weak self, message] _ in
-                        let chat = self?.storageManager.createChat(id: roomID,
-                                                                   targetUserUUID: message.sender?.id ?? "",
-                                                                   in: context)
-                        chat?.addToMessages(message)
-
-                        do {
-                            try context.save()
-                            self?.completion?(.success(nil))
-                        } catch {
-                            Logger.log(to: .error, message: "Не удалось сохранить контекст core data", error: error)
-                            self?.completion?(.failure(error))
-                        }
+                    } onFailure: { [weak self] _ in
+                        self?.createNewChat(id: roomID,
+                                            in: context)
                     }
                     .disposed(by: bag)
             }
         }
+    }
+
+    // MARK: Private methods
+    private func createNewChat(id: String,
+                               in context: NSManagedObjectContext) {
+
+        guard let context = message.managedObjectContext else { return }
+        let chat = storageManager.createChat(id: id,
+                                             targetUserUUID: message.sender?.id ?? "",
+                                             in: context)
+        chat.addToMessages(message)
+
+        storageManager.saveContext(with: context, completion: nil)
     }
 }

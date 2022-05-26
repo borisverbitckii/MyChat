@@ -16,7 +16,7 @@ final class RegisterModuleBuilder {
                palette: @escaping (RegisterViewControllerPalette) -> UIColor) -> RegisterViewController {
         let uiElements = RegisterUI()
         let viewModel = RegisterViewModel(coordinator: coordinator,
-                                          authManager: managers.getAuthManager(),
+                                          authFacade: managers.getAuthFacade(),
                                           fonts: fonts,
                                           texts: texts,
                                           palette: palette)

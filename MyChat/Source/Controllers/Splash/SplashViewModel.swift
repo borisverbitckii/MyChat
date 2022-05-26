@@ -18,7 +18,7 @@ protocol SplashViewModelProtocol {
 }
 
 protocol SplashViewModelInputProtocol {
-    func viewDidLoad(presenter: TransitionHandler)
+    func checkAuth(presenter: TransitionHandler, coordinator: CoordinatorProtocol)
 }
 
 protocol SplashViewModelOutputProtocol {
@@ -31,15 +31,12 @@ final class SplashViewModel {
     var output: SplashViewModelOutputProtocol { return self }
 
     // MARK: Private properties
-    private let coordinator: CoordinatorProtocol
     private let authManager: AuthManagerSplashProtocol
     private let disposeBag = DisposeBag()
 
     // MARK: Init
-    init(coordinator: CoordinatorProtocol,
-         authManager: AuthManagerSplashProtocol) {
+    init(authManager: AuthManagerSplashProtocol) {
         self.authManager = authManager
-        self.coordinator = coordinator
     }
 }
 
@@ -50,16 +47,16 @@ extension SplashViewModel: SplashViewModelProtocol {
 // MARK: - extension + SplashViewModelInputProtocol -
 extension SplashViewModel: SplashViewModelInputProtocol {
 
-    func viewDidLoad(presenter: TransitionHandler) {
+    func checkAuth(presenter: TransitionHandler, coordinator: CoordinatorProtocol) {
         authManager.checkIsUserAlreadyLoggedIn()
-            .subscribe { [weak self] result in
+            .subscribe { result in
                 switch result {
                 case .success(let user):
                     if let user = user {
-                        self?.coordinator.presentTabBarViewController(withChatUser: user)
+                        coordinator.presentTabBarViewController(withChatUser: user)
                         Logger.log(to: .info, message: "Пользователь уже авторизован", userInfo: ["uid": user.userID])
                     } else {
-                        self?.coordinator.presentRegisterViewController(presenter: presenter)
+                        coordinator.presentRegisterViewController(presenter: presenter)
                         Logger.log(to: .notice, message: "Пользователь не авторизован")
                     }
                 default: break

@@ -2,7 +2,7 @@
 //  Message+CoreDataProperties.swift
 //  
 //
-//  Created by Boris Verbitsky on 05.05.2022.
+//  Created by Boris Verbitsky on 24.05.2022.
 //
 //
 
@@ -17,11 +17,11 @@ extension Message {
     }
 
     @NSManaged public var action: MessageAction
+    @NSManaged public var date: String?
     @NSManaged public var id: String?
     @NSManaged public var text: String?
-    @NSManaged public var date: Date?
+    @NSManaged public var chat: Chat?
     @NSManaged public var room: Room?
     @NSManaged public var sender: Sender?
-    @NSManaged public var chat: Chat?
 
 }

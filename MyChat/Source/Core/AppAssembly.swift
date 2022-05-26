@@ -63,6 +63,11 @@ final class AppAssembly {
                                                                  uiConfigProvider: appConfigClosure)
         coordinator.injectModuleFactory(moduleFactory: moduleFactory)
 
+        // Установка рутового контроллера
+        let splashViewController = moduleFactory.getSplashModule()
+        window.rootViewController = splashViewController
+        window.makeKeyAndVisible()
+
         uiConfigObserverDisposable = configManager.uiConfigObserver
             .subscribe(onNext: { [weak self] appConfig in
                 var notificationsNames = [Notification.Name]()
@@ -94,7 +99,8 @@ final class AppAssembly {
                 }
 
                 if self?.isInitialLoad == true {
-                    coordinator.presentSplashViewController()
+                    splashViewController.viewModel.input.checkAuth(presenter: splashViewController,
+                                                                   coordinator: coordinator)
                     self?.isInitialLoad = false
                 }
             })

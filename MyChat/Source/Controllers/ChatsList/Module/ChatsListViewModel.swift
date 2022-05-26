@@ -19,21 +19,21 @@ protocol ChatsListViewModelProtocol {
 }
 
 protocol ChatsListViewModelInput {
-    func getChatsCount(section: Int) -> Int
-
-    func createChatRoom(withChatAt indexPath: IndexPath, presenterVC: TransitionHandler)
+    func removeChat(at indexPath: IndexPath) -> Single<Any?>
+    func presentNewChatViewController(presenterVC: TransitionHandler)
+    func pushChatViewController(chat atIndexPath: IndexPath, presenterVC: TransitionHandler)
 }
 
 protocol ChatsListViewModelOutput {
     var fetchResultsController: NSFetchedResultsController<Chat> { get }
     var chatsCollectionShouldReload: PublishRelay<Any?> { get }
-    func chatForIndexPath(indexPath: IndexPath) -> Chat
 
     // UI
     var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
     var titleText: BehaviorRelay<String> { get }
     var titleFont: BehaviorRelay<UIFont> { get }
-
+    var searchPlaceholder: BehaviorRelay<String> { get }
+    var deleteButtonTitle: BehaviorRelay<String> { get }
 }
 
 final class ChatsListViewModel {
@@ -44,15 +44,20 @@ final class ChatsListViewModel {
 
     var chatsCollectionShouldReload = PublishRelay<Any?>()
 
+    private(set) var fetchResultsController: NSFetchedResultsController<Chat>
+
     // UI
     var viewControllerBackgroundColor: BehaviorRelay<UIColor>
     var titleText: BehaviorRelay<String>
     var titleFont: BehaviorRelay<UIFont>
+    var searchPlaceholder: BehaviorRelay<String>
+    var deleteButtonTitle: BehaviorRelay<String>
 
     // MARK: Private properties
     private let coordinator: CoordinatorProtocol
     private let chatsCoordinator: ChatsFlowProtocol
-    private(set) var fetchResultsController: NSFetchedResultsController<Chat> // TODO: Подумать, возможно вынести из ChatsFlowCoordinatorProtocol
+    private let remoteDataBaseManager: RemoteDataBaseManagerProtocol
+    private let storageManager: StorageManagerProtocol
 
     private let fonts: (ChatsListViewControllerFonts) -> UIFont
     private let texts: (ChatsListViewControllerTexts) -> String
@@ -64,14 +69,18 @@ final class ChatsListViewModel {
     init(user: ChatUser,
          coordinator: CoordinatorProtocol,
          webSocketsFacade: WebSocketsFlowFacade,
+         storageManager: StorageManagerProtocol,
+         remoteDataBaseManager: RemoteDataBaseManagerProtocol,
          fonts: @escaping (ChatsListViewControllerFonts) -> UIFont,
          texts: @escaping (ChatsListViewControllerTexts) -> String,
          palette: @escaping (ChatsListViewControllerPalette) -> UIColor) {
         self.coordinator = coordinator
+        self.storageManager = storageManager
+        self.remoteDataBaseManager = remoteDataBaseManager
 
         self.chatsCoordinator = webSocketsFacade
         webSocketsFacade.setupConnectionWith(userID: user.userID)
-        self.fetchResultsController = webSocketsFacade.getChatsFetchResultsController()
+        self.fetchResultsController = storageManager.getChatsFetchResultsController()
 
         self.fonts = fonts
         self.texts = texts
@@ -82,29 +91,13 @@ final class ChatsListViewModel {
         self.viewControllerBackgroundColor = BehaviorRelay<UIColor>(value: vcBackgroundColor)
 
         // Настройка текстов
-        let text = texts(.title)
-        self.titleText = BehaviorRelay<String>(value: text)
+        self.titleText = BehaviorRelay<String>(value: texts(.title))
+        self.searchPlaceholder = BehaviorRelay<String>(value: texts(.searchBarPlaceholder))
+        self.deleteButtonTitle = BehaviorRelay<String>(value: texts(.deleteButtonTitle))
 
         // Настройка шрифтов
         let font = fonts(.empty) // TODO: - Убрать
         self.titleFont = BehaviorRelay<UIFont>(value: font)
-
-        let dataBase = RemoteDataBaseManager()
-        dataBase.saveUserData(with: user)
-            .subscribe { [bag] result in
-                switch result {
-                case .success:
-                    dataBase.fetchUsersUUIDs(email: "990")
-                        .subscribe { users in
-                            print(users)
-                        } onFailure: { error in
-                            print(error)
-                        }
-                        .disposed(by: bag)
-                case .failure: break
-                }
-            }
-            .disposed(by: bag)
     }
 }
 
@@ -116,29 +109,29 @@ extension ChatsListViewModel: ChatsListViewModelProtocol {
 // MARK: - extension + ChatsListViewModelInput -
 extension ChatsListViewModel: ChatsListViewModelInput {
 
-    func createChatRoom(withChatAt indexPath: IndexPath, presenterVC: TransitionHandler) {
-        let id = 123456 // TODO: - Убрать
-        chatsCoordinator.joinPrivateRoom(chatID: "\(id)") { result in
-            switch result {
-            case .success:
-                Logger.log(to: .info, message: "Комната с id \(id) успешно создана")
-            case .failure(let error):
-                Logger.log(to: .error, message: "Не удалось создать команту с id \(id)", error: error)
+    func removeChat(at indexPath: IndexPath) -> Single<Any?> {
+        let chat = fetchResultsController.object(at: indexPath)
+        return storageManager.remove(chat: chat)
+    }
+
+    func presentNewChatViewController(presenterVC: TransitionHandler) {
+        coordinator.presentNewChatViewController(presenter: presenterVC)
+    }
+
+    func pushChatViewController(chat atIndexPath: IndexPath, presenterVC: TransitionHandler) {
+        let chat = fetchResultsController.object(at: atIndexPath)
+        guard let targetUserUUID = chat.targetUserUUID else { return }
+        remoteDataBaseManager.fetchUser(uuid: targetUserUUID)
+            .subscribe { [coordinator] user in
+                guard let user = user else { return }
+                coordinator.pushChatViewController(receiverUser: user, presenterVC: presenterVC)
+            } onFailure: { error in
+                //TODO: Доделать
             }
-        }
+            .disposed(by: bag)
     }
 }
 
 // MARK: - extension + ChatsListViewModelOutput -
 extension ChatsListViewModel: ChatsListViewModelOutput {
-
-    // MARK: Public methods
-    func chatForIndexPath(indexPath: IndexPath) -> Chat {
-        fetchResultsController.object(at: indexPath)
-    }
-
-    func getChatsCount(section: Int) -> Int {
-        let sectionInfo = fetchResultsController.sections?[section]
-        return sectionInfo?.numberOfObjects ?? 0
-    }
 }

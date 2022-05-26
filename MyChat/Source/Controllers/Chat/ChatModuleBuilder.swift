@@ -9,12 +9,13 @@ import Models
 
 final class ChatModuleBuilder {
 
-    func build(chat: Chat,
+    func build(receiverUser: ChatUser,
                managerFactory: ManagerFactoryForModulesProtocol,
                coordinator: CoordinatorProtocol) -> ChatViewController {
-        let viewModel = ChatViewModel(chat: chat,
+        let viewModel = ChatViewModel(receiverUser: receiverUser,
                                       coordinator: coordinator,
-                                      messagesFlowCoordinator: managerFactory.getWebSocketsFlowFacade())
+                                      webSocketsFacade: managerFactory.getWebSocketsFlowFacade(),
+                                      storageManager: managerFactory.getStorageManager())
         let uiElements = ChatUI()
         let viewController = ChatViewController(uiElements: uiElements, chatViewModel: viewModel)
         return viewController

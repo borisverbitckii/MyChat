@@ -1,5 +1,5 @@
 //
-//  PorfileModuleBuilder.swift
+//  ProfileModuleBuilder.swift
 //  MyChat
 //
 //  Created by Борис on 12.02.2022.
@@ -16,6 +16,8 @@ final class ProfileModuleBuilder {
                palette: @escaping (ProfileViewControllerPalette) -> UIColor) -> ASDKNavigationController {
         let viewModel = ProfileViewModel(coordinator: coordinator,
                                          authManager: managers.getAuthManager(),
+                                         storageManager: managers.getStorageManager(),
+                                         webSocketsFacade: managers.getWebSocketsFlowFacade(),
                                          texts: texts,
                                          fonts: fonts,
                                          palette: palette)

@@ -19,11 +19,6 @@ enum ViewControllers: String {
     case newChatViewController
 }
 
-// MARK: - EmptyViewControllerPalette -
-enum EmptyViewControllerPalette: String {
-    case splashViewControllerBackgroundColor
-}
-
 // MARK: - SplashViewControllerPalette -
 enum SplashViewControllerPalette: String {
     case backgroundColor
@@ -78,6 +73,8 @@ enum RegisterViewControllerPalette: String {
 // MARK: - ChatsListViewController -
 enum ChatsListViewControllerTexts: String {
     case title
+    case searchBarPlaceholder
+    case deleteButtonTitle
 }
 
 enum ChatsListViewControllerFonts: String {
@@ -99,4 +96,15 @@ enum ProfileViewControllerFonts: String {
 
 enum ProfileViewControllerPalette: String {
     case profileViewControllerBackgroundColor
+}
+
+// MARK: - NewChatViewController -
+enum NewChatViewControllerTexts: String {
+    case navBarTitle
+    case searchBarPlaceholder
+}
+
+enum NewChatViewControllerPalette: String {
+    case searchBarTintColor
+    case userNameCellColor
 }

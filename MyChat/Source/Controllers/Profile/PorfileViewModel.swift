@@ -34,28 +34,34 @@ final class ProfileViewModel {
     var input: ProfileViewModelInputProtocol { return self }
     var output: ProfileViewModelOutputProtocol { return self }
 
+    var state: ProfileViewControllerState = .normal
+
+    // UI
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor>
+
     // MARK: - Private properties
     private let coordinator: CoordinatorProtocol
     private let authManager: AuthManagerProfileProtocol
+    private let storageManager: StorageManagerProtocol
+    private let webSocketConnector: WebSocketConnector
     private let disposeBag = DisposeBag()
 
     private let texts: (ProfileViewControllerTexts) -> String
     private let fonts: (ProfileViewControllerFonts) -> UIFont
     private let palette: (ProfileViewControllerPalette) -> UIColor
 
-    var state: ProfileViewControllerState = .normal
-
-    // UI
-    var viewControllerBackgroundColor: BehaviorRelay<UIColor>
-
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
          authManager: AuthManagerProfileProtocol,
+         storageManager: StorageManagerProtocol,
+         webSocketsFacade: WebSocketsFlowFacade,
          texts: @escaping (ProfileViewControllerTexts) -> String,
          fonts: @escaping (ProfileViewControllerFonts) -> UIFont,
          palette: @escaping (ProfileViewControllerPalette) -> UIColor) {
         self.coordinator = coordinator
         self.authManager = authManager
+        self.storageManager = storageManager
+        self.webSocketConnector = webSocketsFacade
 
         self.texts = texts
         self.fonts = fonts
@@ -75,8 +81,16 @@ extension ProfileViewModel: ProfileViewModelProtocol {
 extension ProfileViewModel: ProfileViewModelInputProtocol {
     func signOut(presenter: TransitionHandler) {
         authManager.signOut()
-            .subscribe { [coordinator] _ in
-                coordinator.presentRegisterViewController(presenter: presenter)
+            .subscribe { [weak self, disposeBag] _ in
+                self?.storageManager.removeEverything() // TODO: Сделать предупреждение, что все удалится
+                    .subscribe { _ in
+                        self?.coordinator.presentRegisterViewController(presenter: presenter)
+                        self?.webSocketConnector.closeConnection()
+                    } onFailure: { error in
+                        // TODO: Обработать
+                    }
+                    .disposed(by: disposeBag)
+
             }
             .disposed(by: disposeBag)
     }
