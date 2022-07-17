@@ -14,29 +14,27 @@ import Services
 
 protocol SplashViewModelProtocol {
     var input: SplashViewModelInputProtocol { get }
-    var output: SplashViewModelOutputProtocol { get }
 }
 
 protocol SplashViewModelInputProtocol {
-    func checkAuth(presenter: TransitionHandler, coordinator: CoordinatorProtocol)
-}
-
-protocol SplashViewModelOutputProtocol {
+    func checkAuth(coordinator: CoordinatorProtocol)
 }
 
 final class SplashViewModel {
 
     // MARK: Public properties
     var input: SplashViewModelInputProtocol { return self }
-    var output: SplashViewModelOutputProtocol { return self }
 
     // MARK: Private properties
     private let authManager: AuthManagerSplashProtocol
-    private let disposeBag = DisposeBag()
+    private let remoteDataBaseManager: RemoteDataBaseManagerProtocol
+    private lazy var disposeBag = DisposeBag()
 
     // MARK: Init
-    init(authManager: AuthManagerSplashProtocol) {
+    init(authManager: AuthManagerSplashProtocol,
+         remoteDataBaseManager: RemoteDataBaseManagerProtocol) {
         self.authManager = authManager
+        self.remoteDataBaseManager = remoteDataBaseManager
     }
 }
 
@@ -47,16 +45,23 @@ extension SplashViewModel: SplashViewModelProtocol {
 // MARK: - extension + SplashViewModelInputProtocol -
 extension SplashViewModel: SplashViewModelInputProtocol {
 
-    func checkAuth(presenter: TransitionHandler, coordinator: CoordinatorProtocol) {
+    func checkAuth(coordinator: CoordinatorProtocol) {
         authManager.checkIsUserAlreadyLoggedIn()
-            .subscribe { result in
+            .subscribe { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .success(let user):
                     if let user = user {
-                        coordinator.presentTabBarViewController(withChatUser: user)
-                        Logger.log(to: .info, message: "Пользователь уже авторизован", userInfo: ["uid": user.userID])
+                        Logger.log(to: .info, message: "Пользователь уже авторизован", userInfo: ["uid": user.id])
+                        /// Подгрузка данных о пользователе из удаленной БД
+                        self.remoteDataBaseManager.fetchUser(fetchType: .selfUser, id: user.id)
+                            .subscribe { chatUser in
+                                guard let chatUser = chatUser else { return }
+                                coordinator.presentChatsListNavigationController(withChatUser: chatUser)
+                            }
+                            .disposed(by: self.disposeBag)
                     } else {
-                        coordinator.presentRegisterViewController(presenter: presenter)
+                        coordinator.presentRegisterViewController()
                         Logger.log(to: .notice, message: "Пользователь не авторизован")
                     }
                 default: break
@@ -64,8 +69,4 @@ extension SplashViewModel: SplashViewModelInputProtocol {
             }
             .disposed(by: disposeBag)
     }
-}
-
-// MARK: - extension + SplashViewModelOutputProtocol -
-extension SplashViewModel: SplashViewModelOutputProtocol {
 }

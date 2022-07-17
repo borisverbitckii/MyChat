@@ -10,13 +10,8 @@ import AsyncDisplayKit
 public final class SearchBarNode: ASDisplayNode {
 
     // MARK: Public properties
-    public var placeholder: String {
-        get {
-            searchBarView.placeholder ?? ""
-        }
-        set {
-            searchBarView.placeholder = newValue
-        }
+    public var textField: UITextField {
+        searchBarView.searchTextField
     }
 
     public var backgroundImage: UIImage {
@@ -43,6 +38,24 @@ public final class SearchBarNode: ASDisplayNode {
         }
         set {
             searchBarView.barTintColor = newValue
+        }
+    }
+
+    public var font: UIFont? {
+        get {
+            searchBarView.searchTextField.font
+        }
+        set {
+            searchBarView.searchTextField.font = newValue
+        }
+    }
+
+    public var attributedPlaceholder: NSAttributedString? {
+        get {
+            searchBarView.searchTextField.attributedPlaceholder
+        }
+        set {
+            searchBarView.searchTextField.attributedPlaceholder = newValue
         }
     }
 
@@ -73,7 +86,7 @@ public final class SearchBarNode: ASDisplayNode {
     }
 
     public func addTarget(target: Any?, action: Selector, for controlEvents: UIControl.Event) {
-        searchBarView.searchTextField.addTarget(nil, action: action, for: controlEvents)
+        searchBarView.searchTextField.addTarget(target, action: action, for: controlEvents)
     }
 
     // MARK: Override methods

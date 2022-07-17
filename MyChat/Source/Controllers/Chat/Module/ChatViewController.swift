@@ -10,12 +10,23 @@ import RxSwift
 import AsyncDisplayKit
 import CoreData
 
+private enum LocalConstants {
+    static let sendButtonIsNotEnableAlpha: CGFloat = 0.5
+}
+
 final class ChatViewController: ASDKViewController<ASDisplayNode> {
 
     // MARK: - Private properties
     private let viewModel: ChatViewModelProtocol
     private let uiElements: ChatUI
     private lazy var bag = DisposeBag()
+
+    private lazy var navBarTitle = ""
+    private var navBarItem: UINavigationItem?
+
+    private var topInset: CGFloat = 0
+    private let bottomSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.bottom
+    private lazy var bottomInset = bottomSafeAreaInset
 
     // MARK: - Init
     init(uiElements: ChatUI,
@@ -26,14 +37,8 @@ final class ChatViewController: ASDKViewController<ASDisplayNode> {
         let node = ASDisplayNode()
         super.init(node: node)
         node.automaticallyManagesSubnodes = true
-        node.layoutSpecBlock = { _, _ in // TODO: Исправить
-            ASWrapperLayoutSpec(layoutElement: uiElements.messagesCollectionNode)
-        }
-
+        node.layoutSpecBlock = layout()
         uiElements.messagesCollectionNode.dataSource = self
-        uiElements.messagesCollectionNode.delegate = self
-
-        uiElements.messagesCollectionNode.inverted = true
     }
 
     required init?(coder: NSCoder) {
@@ -43,36 +48,148 @@ final class ChatViewController: ASDKViewController<ASDisplayNode> {
     // MARK: - Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        node.backgroundColor = .white
-        tabBarController?.tabBar.isHidden = true
-        hidesBottomBarWhenPushed = true
+        viewModel.input.checkIsUserOnline(presenter: self)
+        setupNavigationBar()
         setupToolBar()
+        addSubviews()
+        setupCollectionViewGesture()
+        bindUIElements()
         subscribeToViewModel()
+        addKeyboardObservers()
         viewModel.output.fetchResultsController?.delegate = self
+        viewModel.input.setupSender()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        topInset = (navigationController?.navigationBar.frame.height ?? 0) + uiElements.statusBarView.frame.height
+        node.transitionLayout(withAnimation: false, shouldMeasureAsync: false)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        tabBarController?.tabBar.isHidden = false
         navigationController?.isToolbarHidden = true
+        navBarItem?.title = navBarTitle
     }
 
     // MARK: Private methods
+    private func layout() -> ASLayoutSpecBlock {
+        { [weak self] _, _ in
+            guard let self = self else { return ASLayoutSpec() }
+            self.uiElements.messagesCollectionNode.style.flexShrink = 1
+            self.uiElements.messagesCollectionNode.style.flexGrow = 1
+            let stack = ASStackLayoutSpec()
+            stack.direction = .vertical
+            stack.children = [self.uiElements.messagesCollectionNode, self.uiElements.toolBar]
+            let insets = UIEdgeInsets(top: self.topInset,
+                                      left: 0,
+                                      bottom: self.bottomInset ?? 0,
+                                      right: 0)
+            let insetsSpec = ASInsetLayoutSpec(insets: insets, child: stack)
+            return insetsSpec
+        }
+    }
+
+    private func setupNavigationBar() {
+        navigationController?.navigationBar.items?.forEach { item in
+            if item.title == navigationController?.title {
+                navBarItem = item
+                navBarTitle = navigationController?.title ?? ""
+                item.title = ""
+            }
+        }
+        navigationItem.titleView = setupUserView()
+    }
+
+    private func setupUserView() -> UIView {
+        let view = UIView()
+        uiElements.userNameLabel.font = viewModel.output.userNameFont
+        view.addSubview(uiElements.userIcon)
+        view.addSubview(uiElements.userNameLabel)
+
+        if let barHeight = navigationController?.navigationBar.frame.height {
+            uiElements.userIcon.center.y = barHeight / 2
+            let userNameLabelX = uiElements.userIcon.frame.origin.x + uiElements.userIcon.frame.width + 6
+            uiElements.userNameLabel.frame = CGRect(x: userNameLabelX,
+                                                    y: 0,
+                                                    width: 0,
+                                                    height: 0)
+        }
+
+        view.frame.size = CGSize(width: navigationController?.navigationBar.frame.width ?? 0,
+                                 height: navigationController?.navigationBar.frame.height ?? 0)
+        return view
+    }
+
     private func setupToolBar() {
-        navigationController?.isToolbarHidden = false
-        navigationController?.toolbar.backgroundColor = .gray
+        uiElements.toolBar.sendMessageButton.addTarget(self, action: #selector(send), forControlEvents: .touchUpInside)
+        viewModel.output.sendButtonColor
+            .subscribe { [uiElements] event in
+                uiElements.toolBar.sendMessageButton.tintColor = event.element
+            }
+            .disposed(by: bag)
 
-        var toolbarItems = [UIBarButtonItem]()
+        uiElements.toolBar.messageTextFieldNode.delegate = self
+        uiElements.toolBar.messageTextFieldNode.textField.addTarget(self,
+                                                                    action: #selector(textFieldTextDidChange(sender:)),
+                                                                    for: .editingChanged)
 
-        let textfield = uiElements.textfieldForToolbar
-        textfield.frame.size = CGSize(width: UIScreen.main.bounds.width - 70, height: 40) // TODO: Исправить и перенести
-        let textfieldBarButtonItem = UIBarButtonItem(customView: textfield)
-        toolbarItems.append(textfieldBarButtonItem)
+        let placeholder = viewModel.output.toolBarPlaceholder
+        let font = viewModel.output.toolBarPlaceholderFont
+        let attributes = [NSAttributedString.Key.font: font]
+        uiElements.toolBar.messageTextFieldNode.textField.attributedPlaceholder = NSAttributedString(string: placeholder,
+                                                                                                     attributes: attributes)
+        uiElements.toolBar.messageTextFieldNode.font = font
 
-        let sendBarButtonItem =  UIBarButtonItem(barButtonSystemItem: .play, target: self, action: #selector(send))
-        toolbarItems.append(sendBarButtonItem)
+        viewModel.output.textfieldBackgroundColor
+            .subscribe { [uiElements] event in
+                uiElements.toolBar.messageTextFieldNode.backgroundColor = event.element
+            }
+            .disposed(by: bag)
+    }
 
-        self.toolbarItems = toolbarItems
+    private func addSubviews() {
+        node?.view.addSubview(uiElements.statusBarView)
+    }
+
+    private func setupCollectionViewGesture() {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(tapped))
+        uiElements.messagesCollectionNode.view.addGestureRecognizer(gesture)
+    }
+
+    private func bindUIElements() {
+        viewModel.output.viewControllerBackgroundColor
+            .subscribe { [weak node, weak uiElements] event in
+                node?.backgroundColor = event.element
+                uiElements?.statusBarView.backgroundColor = event.element
+                uiElements?.messagesCollectionNode.backgroundColor = event.element
+            }
+            .disposed(by: bag)
+
+        viewModel.output.receiverUserIcon
+            .subscribe { [weak uiElements] event in
+                uiElements?.userIcon.image = event.element ?? UIImage()
+            }
+            .disposed(by: bag)
+
+        viewModel.output.receiverUserName
+            .subscribe { [weak self, weak uiElements] event in
+                uiElements?.userNameLabel.text = event.element
+                uiElements?.userNameLabel.sizeToFit()
+                uiElements?.userNameLabel.center.y = (self?.navigationController?.navigationBar.frame.height ?? 0) / 2
+            }
+            .disposed(by: bag)
+    }
+
+    private func addKeyboardObservers() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
     }
 
     private func subscribeToViewModel() {
@@ -85,14 +202,46 @@ final class ChatViewController: ASDKViewController<ASDisplayNode> {
 
     // MARK: Objc private methods
     @objc private func send() {
-        guard let messageText = uiElements.textfieldForToolbar.text else { return }
-        uiElements.textfieldForToolbar.text = ""
+        uiElements.toolBar.sendMessageButton.isEnabled = false
+        uiElements.toolBar.sendMessageButton.alpha = LocalConstants.sendButtonIsNotEnableAlpha
+        uiElements.messagesCollectionNode.scrollToItem(at: IndexPath(item: 0, section: 0),
+                                                       at: .bottom,
+                                                       animated: true)
+
+        let messageText = uiElements.toolBar.messageTextFieldNode.text
+        uiElements.toolBar.messageTextFieldNode.text = ""
         viewModel.input.sendMessage(with: messageText)
+    }
+
+    @objc private func keyboardWillShow(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            bottomInset = keyboardSize.height
+            node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+        }
+    }
+
+    @objc private func keyboardWillHide() {
+        bottomInset = bottomSafeAreaInset
+        node.transitionLayout(withAnimation: true, shouldMeasureAsync: false)
+    }
+
+    @objc private func textFieldTextDidChange(sender: UITextField) {
+        uiElements.toolBar.sendMessageButton.isEnabled = sender.text == ""
+        ? false
+        : true
+
+        uiElements.toolBar.sendMessageButton.alpha = sender.text == ""
+        ? LocalConstants.sendButtonIsNotEnableAlpha
+        : 1
+    }
+
+    @objc private func tapped() {
+        uiElements.textfieldForToolbar.resignFirstResponder()
     }
 }
 
 // MARK: - extension + ASCollectionDataSource -
-extension ChatViewController: ASCollectionDataSource {
+extension ChatViewController: ASCollectionDataSource, ASCollectionDelegate {
 
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = viewModel.output.fetchResultsController?.sections?[section]
@@ -105,17 +254,14 @@ extension ChatViewController: ASCollectionDataSource {
                 ASCellNode()
             }
         }
+
+        let cell = MessageCellNode()
+        let model = viewModel.output.getCellModel()
+        cell.configureCell(with: message, model: model)
         return {
-            let cell = MessageCellNode()
-            cell.configureCell(with: message)
-            return cell
+            cell
         }
     }
-}
-
-// MARK: - extension + ASCollectionDelegate -
-extension ChatViewController: ASCollectionDelegate {
-
 }
 
 // MARK: - extension + NSFetchedResultsControllerDelegate -
@@ -141,5 +287,12 @@ extension ChatViewController: NSFetchedResultsControllerDelegate {
                 break
             }
         }
+    }
+}
+
+// MARK: - extension + UITextFieldDelegate -
+extension ChatViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
     }
 }

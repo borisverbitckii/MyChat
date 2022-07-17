@@ -8,12 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		29A8BA647FB72AF14E76645E /* Pods_UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAC1421DAECEE3EDD8FBF0F2 /* Pods_UI.framework */; };
+		D70D5BE8284CEFD50087E47F /* Textfield.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70D5BE7284CEFD50087E47F /* Textfield.swift */; };
+		D711391C286C3D0F00593281 /* DefaultActivityIndicatorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D711391B286C3D0F00593281 /* DefaultActivityIndicatorNode.swift */; };
+		D7113922286DAE9B00593281 /* SettingsCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7113921286DAE9B00593281 /* SettingsCellNode.swift */; };
 		D72D9B65281BB52B00A35EDD /* MessageCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72D9B64281BB52B00A35EDD /* MessageCellNode.swift */; };
 		D734D8F32837A86A0087406F /* NavBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D734D8F22837A86A0087406F /* NavBarNode.swift */; };
 		D734D8F52838D3800087406F /* ContactUserCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D734D8F42838D3800087406F /* ContactUserCellNode.swift */; };
-		D734D8F8283902600087406F /* UserImageNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D734D8F7283902600087406F /* UserImageNode.swift */; };
 		D73FD4EB2801D87B00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; };
 		D73FD4EC2801D87B00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D75621A2285092E400D4C9F0 /* MessageBubbleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75621A1285092E400D4C9F0 /* MessageBubbleNode.swift */; };
+		D75621AF28562B4200D4C9F0 /* textFieldCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75621AE28562B4200D4C9F0 /* textFieldCellNode.swift */; };
+		D75621B128562B4700D4C9F0 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75621B028562B4700D4C9F0 /* ImageCell.swift */; };
+		D75621B32856399E00D4C9F0 /* buttonCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75621B22856399E00D4C9F0 /* buttonCellNode.swift */; };
 		D7627DF028069DAC004DAD16 /* ActivityIndicacotorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */; };
 		D7627EAC2806C6C6004DAD16 /* AuthButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */; };
 		D7708ED528032AC900D1E41D /* TextFieldWithBottomBorderNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */; };
@@ -22,6 +28,8 @@
 		D77E4C542837969500E1657E /* SearchBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77E4C532837969500E1657E /* SearchBarNode.swift */; };
 		D7ACEAA4280FEDA300D19784 /* ASTextFieldNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7ACEAA3280FEDA300D19784 /* ASTextFieldNode.swift */; };
 		D7ACEAA6280FF39000D19784 /* ASTextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7ACEAA5280FF39000D19784 /* ASTextFieldView.swift */; };
+		D7CE07E628731FF000F4A735 /* TableNodeWithEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CE07E528731FF000F4A735 /* TableNodeWithEmptyState.swift */; };
+		D7E7B3E7284F5A08003FCC87 /* MessageToolBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E7B3E6284F5A08003FCC87 /* MessageToolBarNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,12 +49,18 @@
 /* Begin PBXFileReference section */
 		37F14DE98C1685B99A9BBA6B /* Pods-UI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.release.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.release.xcconfig"; sourceTree = "<group>"; };
 		B9CED2F57CCA7B34EC73A333 /* Pods-UI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.debug.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.debug.xcconfig"; sourceTree = "<group>"; };
+		D70D5BE7284CEFD50087E47F /* Textfield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Textfield.swift; sourceTree = "<group>"; };
+		D711391B286C3D0F00593281 /* DefaultActivityIndicatorNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultActivityIndicatorNode.swift; sourceTree = "<group>"; };
+		D7113921286DAE9B00593281 /* SettingsCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCellNode.swift; sourceTree = "<group>"; };
 		D72D9B64281BB52B00A35EDD /* MessageCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellNode.swift; sourceTree = "<group>"; };
 		D734D8F22837A86A0087406F /* NavBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarNode.swift; sourceTree = "<group>"; };
 		D734D8F42838D3800087406F /* ContactUserCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactUserCellNode.swift; sourceTree = "<group>"; };
-		D734D8F7283902600087406F /* UserImageNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserImageNode.swift; sourceTree = "<group>"; };
 		D73FD4C22801D67800912D46 /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D73FD4EA2801D87B00912D46 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D75621A1285092E400D4C9F0 /* MessageBubbleNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubbleNode.swift; sourceTree = "<group>"; };
+		D75621AE28562B4200D4C9F0 /* textFieldCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = textFieldCellNode.swift; sourceTree = "<group>"; };
+		D75621B028562B4700D4C9F0 /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		D75621B22856399E00D4C9F0 /* buttonCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = buttonCellNode.swift; sourceTree = "<group>"; };
 		D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicacotorNode.swift; sourceTree = "<group>"; };
 		D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthButtonNode.swift; sourceTree = "<group>"; };
 		D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldWithBottomBorderNode.swift; sourceTree = "<group>"; };
@@ -55,6 +69,8 @@
 		D77E4C532837969500E1657E /* SearchBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarNode.swift; sourceTree = "<group>"; };
 		D7ACEAA3280FEDA300D19784 /* ASTextFieldNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTextFieldNode.swift; sourceTree = "<group>"; };
 		D7ACEAA5280FF39000D19784 /* ASTextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTextFieldView.swift; sourceTree = "<group>"; };
+		D7CE07E528731FF000F4A735 /* TableNodeWithEmptyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableNodeWithEmptyState.swift; sourceTree = "<group>"; };
+		D7E7B3E6284F5A08003FCC87 /* MessageToolBarNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageToolBarNode.swift; sourceTree = "<group>"; };
 		FAC1421DAECEE3EDD8FBF0F2 /* Pods_UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -90,22 +106,34 @@
 			path = ../../Pods;
 			sourceTree = "<group>";
 		};
-		D722AA41280864C800569D47 /* Textfield */ = {
+		D711391D286C3DA300593281 /* ActivityIndicators */ = {
 			isa = PBXGroup;
 			children = (
+				D711391B286C3D0F00593281 /* DefaultActivityIndicatorNode.swift */,
+				D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */,
+			);
+			path = ActivityIndicators;
+			sourceTree = "<group>";
+		};
+		D722AA41280864C800569D47 /* Textfields */ = {
+			isa = PBXGroup;
+			children = (
+				D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */,
+				D70D5BE7284CEFD50087E47F /* Textfield.swift */,
 				D7ACEAA5280FF39000D19784 /* ASTextFieldView.swift */,
 				D7ACEAA3280FEDA300D19784 /* ASTextFieldNode.swift */,
 			);
-			path = Textfield;
+			path = Textfields;
 			sourceTree = "<group>";
 		};
 		D734D8F6283902520087406F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				D75621AD28562B2900D4C9F0 /* ProfileTableNodeCells */,
 				D7708ECC28032AC900D1E41D /* ChatCellNode.swift */,
+				D7113921286DAE9B00593281 /* SettingsCellNode.swift */,
 				D72D9B64281BB52B00A35EDD /* MessageCellNode.swift */,
 				D734D8F42838D3800087406F /* ContactUserCellNode.swift */,
-				D734D8F7283902600087406F /* UserImageNode.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -128,24 +156,28 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D7627EAD2806C9A8004DAD16 /* Auth */ = {
+		D75621AD28562B2900D4C9F0 /* ProfileTableNodeCells */ = {
 			isa = PBXGroup;
 			children = (
-				D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */,
-				D7708ECD28032AC900D1E41D /* AuthButtonsStackNode.swift */,
+				D75621AE28562B4200D4C9F0 /* textFieldCellNode.swift */,
+				D75621B22856399E00D4C9F0 /* buttonCellNode.swift */,
+				D75621B028562B4700D4C9F0 /* ImageCell.swift */,
 			);
-			path = Auth;
+			path = ProfileTableNodeCells;
 			sourceTree = "<group>";
 		};
 		D7708EC928032AC900D1E41D /* Nodes */ = {
 			isa = PBXGroup;
 			children = (
 				D77E4C532837969500E1657E /* SearchBarNode.swift */,
+				D7CE07E528731FF000F4A735 /* TableNodeWithEmptyState.swift */,
+				D75621A1285092E400D4C9F0 /* MessageBubbleNode.swift */,
+				D7E7B3E6284F5A08003FCC87 /* MessageToolBarNode.swift */,
 				D734D8F22837A86A0087406F /* NavBarNode.swift */,
-				D722AA41280864C800569D47 /* Textfield */,
-				D7627EAD2806C9A8004DAD16 /* Auth */,
-				D7627DEF28069DAC004DAD16 /* ActivityIndicacotorNode.swift */,
-				D7708ECA28032AC900D1E41D /* TextFieldWithBottomBorderNode.swift */,
+				D7627EAB2806C6C6004DAD16 /* AuthButtonNode.swift */,
+				D7708ECD28032AC900D1E41D /* AuthButtonsStackNode.swift */,
+				D722AA41280864C800569D47 /* Textfields */,
+				D711391D286C3DA300593281 /* ActivityIndicators */,
 				D734D8F6283902520087406F /* Cells */,
 			);
 			path = Nodes;
@@ -276,17 +308,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7627EAC2806C6C6004DAD16 /* AuthButtonNode.swift in Sources */,
+				D7E7B3E7284F5A08003FCC87 /* MessageToolBarNode.swift in Sources */,
 				D7ACEAA4280FEDA300D19784 /* ASTextFieldNode.swift in Sources */,
 				D734D8F52838D3800087406F /* ContactUserCellNode.swift in Sources */,
 				D7627DF028069DAC004DAD16 /* ActivityIndicacotorNode.swift in Sources */,
 				D72D9B65281BB52B00A35EDD /* MessageCellNode.swift in Sources */,
+				D75621B128562B4700D4C9F0 /* ImageCell.swift in Sources */,
 				D7708ED528032AC900D1E41D /* TextFieldWithBottomBorderNode.swift in Sources */,
+				D75621AF28562B4200D4C9F0 /* textFieldCellNode.swift in Sources */,
+				D70D5BE8284CEFD50087E47F /* Textfield.swift in Sources */,
 				D7708ED728032AC900D1E41D /* AuthButtonsStackNode.swift in Sources */,
 				D77E4C542837969500E1657E /* SearchBarNode.swift in Sources */,
+				D75621A2285092E400D4C9F0 /* MessageBubbleNode.swift in Sources */,
+				D7CE07E628731FF000F4A735 /* TableNodeWithEmptyState.swift in Sources */,
+				D7113922286DAE9B00593281 /* SettingsCellNode.swift in Sources */,
 				D7708ED628032AC900D1E41D /* ChatCellNode.swift in Sources */,
 				D7ACEAA6280FF39000D19784 /* ASTextFieldView.swift in Sources */,
-				D734D8F8283902600087406F /* UserImageNode.swift in Sources */,
 				D734D8F32837A86A0087406F /* NavBarNode.swift in Sources */,
+				D711391C286C3D0F00593281 /* DefaultActivityIndicatorNode.swift in Sources */,
+				D75621B32856399E00D4C9F0 /* buttonCellNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

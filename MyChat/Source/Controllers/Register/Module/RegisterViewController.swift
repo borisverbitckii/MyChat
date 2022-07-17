@@ -231,7 +231,6 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                 UIView.transition(with: button,
                                   duration: constants.animationDurationForErrorLabel,
                                   options: .transitionCrossDissolve) {
-
                     uiElements?.submitButton.setTitle(event.element?.title ?? "",
                                                       with: event.element?.font,
                                                       with: nil,
@@ -610,8 +609,6 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                                    hideActivityIndicator: hideActivityIndicator)
     }
 
-    private var appleIDTokenClosure: (() -> String)?
-
     // Реализация логина через Apple
     @objc private func appleSignInButtonTapped() {
         viewModel.input.tryToLogin(sourceButtonType: .appleButton(presenterVC: self),
@@ -643,7 +640,7 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         }
     }
 
-    @objc private func keyboardWillHide(notification: NSNotification) {
+    @objc private func keyboardWillHide() {
         if isKeyboardShown {
             isKeyboardShown = false
             keyboardHeight = 0

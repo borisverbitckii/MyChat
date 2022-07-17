@@ -22,7 +22,7 @@ final class ChatsListModuleBuilder {
                                            coordinator: coordinator,
                                            webSocketsFacade: managers.getWebSocketsFlowFacade(),
                                            storageManager: managers.getStorageManager(),
-                                           remoteDataBaseManager: managers.getRemoteDataBaseManager(),
+                                           imageCacheManager: managers.getImageCacheManager(),
                                            fonts: fonts,
                                            texts: texts,
                                            palette: palette)
@@ -32,11 +32,6 @@ final class ChatsListModuleBuilder {
                                                      chatsListViewModel: viewModel)
 
         let navigationController = ASDKNavigationController(rootViewController: viewController)
-
-        let title = texts(.title)
-        navigationController.tabBarItem = UITabBarItem(title: title,
-                                                       image: UIImage(systemName: "heart"),
-                                                       selectedImage: nil)
 
         return navigationController
     }

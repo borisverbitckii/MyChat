@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Chat" representedClassName="Chat" syncable="YES">
-        <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    <entity name="CDChat" representedClassName="CDChat" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String"/>
-        <attribute name="targetUserUUID" optional="YES" attributeType="String"/>
-        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="chat" inverseEntity="Message"/>
+        <attribute name="lastMessageDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="chat" inverseEntity="CDMessage"/>
+        <relationship name="receiver" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CDChatUser" inverseName="chat" inverseEntity="CDChatUser"/>
     </entity>
-    <entity name="Message" representedClassName="Message" syncable="YES">
-        <attribute name="action" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+    <entity name="CDChatUser" representedClassName="CDChatUser" syncable="YES">
+        <attribute name="avatarURL" optional="YES" attributeType="String"/>
+        <attribute name="email" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="isEmailVerified" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="chat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDChat" inverseName="receiver" inverseEntity="CDChat"/>
+        <relationship name="message" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="sender" inverseEntity="CDMessage"/>
+    </entity>
+    <entity name="CDMessage" representedClassName="CDMessage" syncable="YES">
+        <attribute name="action" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="date" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String"/>
+        <attribute name="position" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="text" attributeType="String"/>
-        <relationship name="chat" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Chat" inverseName="messages" inverseEntity="Chat"/>
-        <relationship name="room" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Room" inverseName="message" inverseEntity="Room"/>
-        <relationship name="sender" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Sender" inverseName="message" inverseEntity="Sender"/>
-        <relationship name="target" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Target" inverseName="message" inverseEntity="Target"/>
+        <relationship name="chat" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CDChat" inverseName="messages" inverseEntity="CDChat"/>
+        <relationship name="sender" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDChatUser" inverseName="message" inverseEntity="CDChatUser"/>
+        <relationship name="target" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CDTarget" inverseName="message" inverseEntity="CDTarget"/>
     </entity>
-    <entity name="Room" representedClassName="Room" syncable="YES">
+    <entity name="CDTarget" representedClassName="CDTarget" syncable="YES">
         <attribute name="id" attributeType="String"/>
-        <relationship name="message" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Message" inverseName="room" inverseEntity="Message"/>
-    </entity>
-    <entity name="Sender" representedClassName="Sender" syncable="YES">
-        <attribute name="id" attributeType="String"/>
-        <relationship name="message" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Message" inverseName="sender" inverseEntity="Message"/>
-    </entity>
-    <entity name="Target" representedClassName="Target" syncable="YES" codeGenerationType="class">
-        <attribute name="id" attributeType="String"/>
-        <relationship name="message" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Message" inverseName="target" inverseEntity="Message"/>
+        <relationship name="message" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CDMessage" inverseName="target" inverseEntity="CDMessage"/>
     </entity>
     <elements>
-        <element name="Chat" positionX="-165.68359375" positionY="-213.0390625" width="128" height="89"/>
-        <element name="Message" positionX="-129.2578125" positionY="-43.56640625" width="128" height="149"/>
-        <element name="Room" positionX="307.90625" positionY="208.25" width="128" height="59"/>
-        <element name="Sender" positionX="-213.421875" positionY="281.76953125" width="128" height="59"/>
-        <element name="Target" positionX="-9" positionY="-54" width="128" height="59"/>
+        <element name="CDChat" positionX="-165.68359375" positionY="-213.0390625" width="128" height="89"/>
+        <element name="CDChatUser" positionX="-9" positionY="-54" width="128" height="134"/>
+        <element name="CDMessage" positionX="-129.2578125" positionY="-43.56640625" width="128" height="149"/>
+        <element name="CDTarget" positionX="307.90625" positionY="208.25" width="128" height="59"/>
     </elements>
 </model>

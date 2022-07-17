@@ -5,19 +5,16 @@
 //  Created by Boris Verbitsky on 21.05.2022.
 //
 
+import UIKit
 import Models
 import AsyncDisplayKit
-import Darwin
 
-public struct ContactUserCellModel {
-    let userNameColor: UIColor
-
-    public init(userNameColor: UIColor) {
-        self.userNameColor = userNameColor
-    }
+public protocol ContactUserCellNodeDelegate: AnyObject {
+    func setupUserImage(with image: UIImage?)
 }
 
 private enum LocalConstants {
+    static let defaultImage = UIImage(named: "userImagePlaceholder")?.withRenderingMode(.alwaysTemplate)
     static let imageSize = CGSize(width: 40, height: 40)
     static let vStackInsets = UIEdgeInsets(top: 8,
                                            left: 16,
@@ -36,13 +33,13 @@ private enum LocalConstants {
 
 public final class ContactUserCellNode: ASCellNode {
 
-    // UI
-    private lazy var userImageNode: UserImageNode = {
-        let imageNode = UserImageNode()
-        imageNode.shouldCacheImage = true
+    // MARK: Private properties
+    /// UI
+    private lazy var userImageNode: ASImageNode = {
+        let imageNode = ASImageNode()
+        imageNode.image = LocalConstants.defaultImage
 
         imageNode.contentMode = .scaleAspectFill
-        imageNode.placeholderEnabled = true
         imageNode.tintColor = LocalConstants.placeholderImageTintColor
 
         imageNode.style.preferredSize = LocalConstants.imageSize
@@ -50,32 +47,19 @@ public final class ContactUserCellNode: ASCellNode {
         imageNode.clipsToBounds = true
         return imageNode
     }()
-    private lazy var userNameLabel: ASTextNode = {
-        let userNameLabel = ASTextNode()
-        return userNameLabel
-    }()
-
-    private lazy var userEmailLabel: ASTextNode = {
-        let emailLabel = ASTextNode()
-        return emailLabel
-    }()
+    private lazy var userNameLabel = ASTextNode()
+    private lazy var userEmailLabel = ASTextNode()
 
     // MARK: Init
-    public init(user: ChatUser, cellModel: ContactUserCellModel) {
+    public init(model: ContactCellModel) {
         super.init()
         automaticallyManagesSubnodes = true
-        if user.avatarURL?.absoluteString != nil {
-            userImageNode.url = user.avatarURL
-        } else {
-            userImageNode.image = userImageNode.placeholderImage()
-        }
-
         let nameAttributes = [NSAttributedString.Key.font: LocalConstants.nameFont,
-                              NSAttributedString.Key.foregroundColor: cellModel.userNameColor]
-        userNameLabel.attributedText = NSAttributedString(string: user.name ?? "-", attributes: nameAttributes)
+                              NSAttributedString.Key.foregroundColor: model.nameColor]
         let emailAttributes = [NSAttributedString.Key.foregroundColor: LocalConstants.emailColor]
-        userEmailLabel.attributedText = NSAttributedString(string: user.email ?? "", attributes: emailAttributes)
-
+        userNameLabel.attributedText = NSAttributedString(string: model.name, attributes: nameAttributes)
+        userEmailLabel.attributedText = NSAttributedString(string: model.email,
+                                                           attributes: emailAttributes)
         backgroundColor = .clear
     }
 
@@ -100,5 +84,13 @@ public final class ContactUserCellNode: ASCellNode {
         let hStackInsets = LocalConstants.hStackInsets
         let hStackInsetsSpec = ASInsetLayoutSpec(insets: hStackInsets, child: centerHStackSpec)
         return hStackInsetsSpec
+    }
+}
+
+// MARK: - extension + ContactUserCellNodeDelegate -
+extension ContactUserCellNode: ContactUserCellNodeDelegate {
+    public func setupUserImage(with image: UIImage?) {
+        guard let image = image else { return }
+        userImageNode.image = image
     }
 }

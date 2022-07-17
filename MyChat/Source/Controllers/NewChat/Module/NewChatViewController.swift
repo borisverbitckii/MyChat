@@ -8,12 +8,17 @@
 import UI
 import UIKit
 import RxSwift
+import CoreData
 import AsyncDisplayKit
+
+private enum LocalConstants {
+    static let cellHeight: CGFloat = 50
+}
 
 final class NewChatViewController: ASDKViewController<ASDisplayNode> {
 
     // MARK: Private properties
-    private let viewModel: NewChatViewModelProtocol
+    private var viewModel: NewChatViewModelProtocol
     private let uiElements: NewChatUI
     private lazy var bag = DisposeBag()
 
@@ -25,9 +30,6 @@ final class NewChatViewController: ASDKViewController<ASDisplayNode> {
         super.init(node: node)
         node.layoutSpecBlock = layout()
         node.automaticallyManagesSubnodes = true
-
-        uiElements.contactsTableNode.dataSource = self
-        uiElements.contactsTableNode.delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -37,27 +39,37 @@ final class NewChatViewController: ASDKViewController<ASDisplayNode> {
     // MARK: Override methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        node.backgroundColor = UIColor(named: "splashViewControllerBackgroundColor")
         setupNavigationBar()
         setupSearchBar()
         bindUIElements()
+        setupDelegates()
     }
 
     // MARK: Private methods
     private func setupNavigationBar() {
         let dismissButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(dismissVC))
+        dismissButton.setTitleTextAttributes([NSAttributedString.Key.font: viewModel.output.cancelButtonFont],
+                                             for: .normal)
         uiElements.navigationItem.leftBarButtonItem = dismissButton
         uiElements.navBarNode.setItems(with: [uiElements.navigationItem], animated: false)
+        uiElements.navBarNode.titleTextAttributes = [NSAttributedString.Key.font: viewModel.output.navBarTitleFont]
     }
 
     private func setupSearchBar() {
-        uiElements.searchBarNode.setDelegate(with: self)
+        uiElements.searchBarNode.font = viewModel.output.searchFont
         uiElements.searchBarNode.addTarget(target: self,
                                            action: #selector(searchTextfieldDidChange(sender:)),
                                            for: .editingChanged)
     }
 
     private func bindUIElements() {
+        viewModel.output.viewControllerBackgroundColor
+            .subscribe { [weak node] event in
+                guard let backgroundColor = event.element else { return }
+                node?.backgroundColor = backgroundColor
+            }
+            .disposed(by: bag)
+
         viewModel.output.navBarTitle
             .subscribe { [weak uiElements] event in
                 guard let title = event.element else { return }
@@ -66,9 +78,12 @@ final class NewChatViewController: ASDKViewController<ASDisplayNode> {
             .disposed(by: bag)
 
         viewModel.output.searchBarPlaceholder
-            .subscribe { [weak uiElements] event in
+            .subscribe { [weak uiElements, viewModel] event in
                 guard let placeholder = event.element else { return }
-                uiElements?.searchBarNode.placeholder = placeholder
+
+                let attributes = [NSAttributedString.Key.font: viewModel.output.searchFont]
+                uiElements?.searchBarNode.attributedPlaceholder = NSAttributedString(string: placeholder,
+                                                                                 attributes: attributes)
             }
             .disposed(by: bag)
 
@@ -85,6 +100,12 @@ final class NewChatViewController: ASDKViewController<ASDisplayNode> {
             }
             .disposed(by: bag)
 
+    }
+
+    private func setupDelegates() {
+        uiElements.contactsTableNode.dataSource = self
+        uiElements.contactsTableNode.delegate = self
+        uiElements.searchBarNode.setDelegate(with: self)
     }
 
     private func layout() -> ASLayoutSpecBlock {
@@ -113,21 +134,35 @@ final class NewChatViewController: ASDKViewController<ASDisplayNode> {
 // MARK: - extension + ASCollectionDataSource -
 extension NewChatViewController: ASTableDataSource {
     func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
-        viewModel.output.getUsersCount()
+        let usersCount = viewModel.output.getUsersCount()
+
+        /// Заставка для пустого состояния
+        if usersCount == 0 {
+            uiElements.contactsTableNode.setupState(with: .startUserSearching)
+            uiElements.contactsTableNode.setupText(with: viewModel.output.emptyStateTitleText,
+                                                   font: viewModel.output.emptyStateTitleFont,
+                                                   fontColor: viewModel.output.emptyStateTitleColor)
+            return usersCount
+        }
+
+        uiElements.contactsTableNode.setupState(with: .normal)
+        return usersCount
     }
 
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
-        let user = viewModel.output.getUser(at: indexPath.row)
-        return { [viewModel] in
-            ContactUserCellNode(user: user, cellModel: viewModel.output.cellModel)
-        }
+        let model = viewModel.output.getModel(at: indexPath.row)
+        let cell = ContactUserCellNode(model: model)
+        viewModel.input.setupCellDelegate(with: cell)
+        viewModel.input.setupUserIcon(at: indexPath.row)
+        return { cell }
     }
 }
 
 // MARK: - extension + ASTableDelegate -
 extension NewChatViewController: ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, constrainedSizeForRowAt indexPath: IndexPath) -> ASSizeRange {
-        let size = CGSize(width: uiElements.contactsTableNode.frame.width, height: 50)
+        let size = CGSize(width: uiElements.contactsTableNode.frame.width,
+                          height: LocalConstants.cellHeight)
         return ASSizeRange(min: size, max: size)
     }
 
@@ -157,5 +192,35 @@ extension NewChatViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         searchBar.text = ""
+    }
+}
+
+// MARK: - extension + NSFetchedResultsControllerDelegate -
+extension NewChatViewController: NSFetchedResultsControllerDelegate {
+
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        DispatchQueue.main.async {
+            switch type {
+            case .insert:
+                guard let newIndexPath = newIndexPath else { return }
+                self.uiElements.contactsTableNode.insertRows(at: [newIndexPath], with: .automatic)
+            case .delete:
+                guard let indexPath = indexPath else { return }
+                self.uiElements.contactsTableNode.deleteRows(at: [indexPath], with: .automatic)
+            case .move:
+                guard let indexPath = indexPath,
+                      let newIndexPath = newIndexPath else { return }
+                self.uiElements.contactsTableNode.moveRow(at: [indexPath.item], to: [newIndexPath.item])
+            case .update:
+                guard let indexPath = indexPath else { return }
+                self.uiElements.contactsTableNode.reloadRows(at: [indexPath], with: .automatic)
+            @unknown default:
+                break
+            }
+        }
     }
 }

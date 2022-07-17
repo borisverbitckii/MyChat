@@ -8,19 +8,35 @@
 import UI
 import AsyncDisplayKit
 
+private enum LocalConstants {
+    static let cornerRadius: CGFloat = 8
+}
+
 final class RegisterUI {
 
     // MARK: Public properties
     private(set) lazy var orLabel = ASTextNode()
     private(set) lazy var errorLabel = ASTextNode()
-    private(set) lazy var submitButton = ASButtonNode()
-    private(set) lazy var changeStateButton = ASButtonNode()
     private(set) lazy var authButtons = AuthButtonsStackNode()
     private(set) lazy var activityIndicator: ActivityIndicatorNode = {
         $0.alpha = 0
         $0.isHidden = true
         return $0
     }(ActivityIndicatorNode())
+
+    private(set) lazy var submitButton: ASButtonNode = {
+        let button = ASButtonNode()
+        button.cornerRadius = LocalConstants.cornerRadius
+        button.clipsToBounds = true
+        return button
+    }()
+
+    private(set) lazy var changeStateButton: ASButtonNode = {
+        let button = ASButtonNode()
+        button.cornerRadius = LocalConstants.cornerRadius
+        button.clipsToBounds = true
+        return button
+    }()
 
     private(set) lazy var nameTextField: TextFieldWithBottomBorderNode = {
         $0.textfield.autocorrectionType = .no

@@ -2,6 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ChatViewController</key>
+	<dict>
+		<key>alertMessage</key>
+		<string>User is not online. He can`t receive messages</string>
+		<key>alertTitle</key>
+		<string>Oops!</string>
+		<key>alertActionTitle</key>
+		<string>Try latter</string>
+		<key>toolBarPlaceholder</key>
+		<string>Message</string>
+	</dict>
 	<key>RegisterViewController</key>
 	<dict>
 		<key>namePlaceholder</key>
@@ -51,11 +62,25 @@
 		<string>Search for chats</string>
 		<key>deleteButtonTitle</key>
 		<string>Delete</string>
+		<key>alertTitle</key>
+		<string>Oops!</string>
+		<key>alertMessage</key>
+		<string>Could not connect to the server</string>
+		<key>alertActionTitle</key>
+		<string>Try again</string>
+		<key>noChatsText</key>
+		<string>Start your first chat!</string>
+		<key>noChatsFoundText</key>
+		<string>No chat was found.</string>
 	</dict>
-	<key>ProfileViewController</key>
+	<key>SettingsViewController</key>
 	<dict>
-		<key>title</key>
+		<key>profileCellTitle</key>
 		<string>Profile</string>
+		<key>logOutCellTitle</key>
+		<string>Log out</string>
+		<key>title</key>
+		<string>Settings</string>
 	</dict>
 	<key>NewChatViewController</key>
 	<dict>
@@ -63,6 +88,23 @@
 		<string>Write Message</string>
 		<key>searchBarPlaceholder</key>
 		<string>Write user email</string>
+		<key>emptyStateText</key>
+		<string>Start searching...</string>
+	</dict>
+	<key>ProfileViewController</key>
+	<dict>
+		<key>uploadButtonText</key>
+		<string>Upload image</string>
+		<key>nameTextfieldPlaceholder</key>
+		<string>Name</string>
+		<key>saveButtonTitle</key>
+		<string>Save</string>
+		<key>alertTitle</key>
+		<string>Choose resource</string>
+		<key>camera</key>
+		<string>Camera</string>
+		<key>library</key>
+		<string>Library</string>
 	</dict>
 </dict>
 </plist>

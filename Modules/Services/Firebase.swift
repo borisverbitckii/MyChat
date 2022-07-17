@@ -8,7 +8,7 @@
 import Firebase
 
 public final class Firebase {
-    
+
     // MARK: Public Methods
     public static func setupFirebase() {
         FirebaseApp.configure()

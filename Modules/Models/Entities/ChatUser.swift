@@ -1,28 +1,34 @@
 //
-//  Profile.swift
-//  MyChat
+//  ChatUser.swift
+//  Models
 //
-//  Created by Борис on 12.02.2022.
+//  Created by Boris Verbitsky on 30.05.2022.
 //
 
 import Foundation
 
-public struct ChatUser: Codable, Equatable { // TODO: Перекинуть в кор дату
-    public let userID: String
-    public let name: String?
-    public let email: String?
-    public let isEmailVerified: Bool?
-    public let avatarURL: URL?
+public struct ChatUser: Equatable, Codable {
 
-    public init(uid: String,
-                name: String? = nil,
-                email: String? = nil,
-                isEmailVerified: Bool? = nil,
-                avatarURL: URL? = nil) {
-        self.userID = uid
-        self.email = email
-        self.isEmailVerified = isEmailVerified
+    public let id: String
+    public var name: String
+    public let email: String
+    public var avatarURL: String?
+
+    // MARK: Init
+    public init(id: String,
+                name: String,
+                email: String,
+                avatarURL: String? = nil) {
+        self.id = id
         self.name = name
+        self.email = email
         self.avatarURL = avatarURL
+    }
+
+    public init(coreDataUser: CDChatUser) {
+        self.id        = coreDataUser.id
+        self.name      = coreDataUser.name
+        self.email     = coreDataUser.email 
+        self.avatarURL = coreDataUser.avatarURL
     }
 }

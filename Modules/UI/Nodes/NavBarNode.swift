@@ -25,6 +25,15 @@ final public class NavBarNode: ASDisplayNode {
         return style
     }
 
+    public var titleTextAttributes: [NSAttributedString.Key: Any]? {
+        get {
+            navBarView.titleTextAttributes
+        }
+        set {
+            navBarView.titleTextAttributes = newValue
+        }
+    }
+
     // MARK: Private properties
     private let navBarView: UINavigationBar
     private let navBarNode: ASDisplayNode

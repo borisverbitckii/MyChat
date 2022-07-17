@@ -10,6 +10,12 @@ import RxSwift
 import Services
 import AuthenticationServices
 
+/*
+ Фасад, который совмещает менеджер авторизации и менеджер управления удаленной БД.
+ В моменты, когда пользователь авторизуется, в БД создается новая запись.
+ Дальнейшая работа с данными пользователя будет происходить в БД.
+ */
+
 protocol AuthFacadeProtocol {
     func createUser(withEmail email: String,
                     password: String,
@@ -40,7 +46,6 @@ final class AuthFacade {
         self.authManager = authManager
         self.remoteDatabaseManager = remoteDatabaseManager
     }
-
 }
 
 // MARK: - extension + AuthFacadeProtocol -
@@ -128,7 +133,8 @@ extension AuthFacade: AuthFacadeProtocol {
         Single<ChatUser?>.create { [weak self, bag] obs in
             self?.authManager.signInWithApple(showActivityIndicator: showActivityIndicator)
             .subscribe { user in
-                self?.saveUserToDatabase(user: user, obs: obs,
+                self?.saveUserToDatabase(user: user,
+                                         obs: obs,
                                          hideActivityIndicator: hideActivityIndicator)
             } onFailure: { error in
                 hideActivityIndicator()
@@ -137,10 +143,6 @@ extension AuthFacade: AuthFacadeProtocol {
             .disposed(by: bag)
             return Disposables.create()
         }
-    }
-
-    func signOut() -> Single<Any?> {
-        authManager.signOut()
     }
 
     // MARK: Private methods

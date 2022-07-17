@@ -8,12 +8,19 @@
 import Services
 import Messaging
 
+/*
+ Фабрика всех сервисов в приложении
+ Создет единые инстансы, к которым можно обратиться из любого места в приложении
+ */
+
 protocol ManagerFactoryForModulesProtocol {
     func getAuthFacade() -> AuthFacadeProtocol
     func getAuthManager() -> AuthManager
+    func getImageCacheManager() -> ImageCacheManagerProtocol
     func getStorageManager() -> StorageManagerProtocol
     func getWebSocketsFlowFacade() -> WebSocketsFlowFacade
     func getRemoteDataBaseManager() -> RemoteDataBaseManagerProtocol
+    func getRemoteFileStorageManager() -> RemoteFileStorageManagerProtocol
 }
 
 protocol ManagerFactoryGlobalProtocol {
@@ -26,14 +33,16 @@ final class ManagerFactory {
     // MARK: - Private properties
     private lazy var storageManager = StorageManager()
     private lazy var authManager = AuthManager()
+    private lazy var imageCacheManager = ImageCacheManager()
     private lazy var remoteDataBaseManager = RemoteDataBaseManager()
+    private lazy var remoteFileStorageManager = RemoteFileStorageManager()
     private lazy var authFacade = AuthFacade(authManager: authManager,
                                              remoteDatabaseManager: remoteDataBaseManager)
-    private lazy var configureManager = ConfigureManager()
     private lazy var pushNotificationsManager = PushNotificationManager()
     private lazy var configManager = ConfigureManager()
     private lazy var webSocketsFlowFacade = WebSocketsFlowFacade(
         webSocketsConnector: WebSocketsConnector(),
+        remoteDataBaseManager: remoteDataBaseManager,
         storageManager: storageManager)
 
 }
@@ -49,6 +58,10 @@ extension ManagerFactory: ManagerFactoryForModulesProtocol {
         authManager
     }
 
+    func getImageCacheManager() -> ImageCacheManagerProtocol {
+        imageCacheManager
+    }
+
     func getAuthFacade() -> AuthFacadeProtocol {
         authFacade
     }
@@ -59,6 +72,10 @@ extension ManagerFactory: ManagerFactoryForModulesProtocol {
 
     func getRemoteDataBaseManager() -> RemoteDataBaseManagerProtocol {
         remoteDataBaseManager
+    }
+
+    func getRemoteFileStorageManager() -> RemoteFileStorageManagerProtocol {
+        remoteFileStorageManager
     }
 }
 

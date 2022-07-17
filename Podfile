@@ -19,13 +19,13 @@ target 'MyChat' do
 
  pod 'Firebase'
  pod 'Firebase/Auth'
+ pod 'Firebase/Storage'
  pod 'FirebaseDatabase'
  pod 'Firebase/Messaging'
- pod 'Firebase/Firestore'
  pod 'Firebase/Analytics'
  pod 'Firebase/Crashlytics'
  pod 'Firebase/RemoteConfig'
-
+ pod 'Periphery'
 end
 
 target 'Services' do
@@ -38,11 +38,12 @@ target 'Services' do
  pod 'GoogleSignIn'
 
  pod 'Firebase/Auth'
+ pod 'Firebase/Storage'
  pod 'FirebaseDatabase'
- pod 'Firebase/Firestore'
  pod 'Firebase/Messaging'
  pod 'Firebase/RemoteConfig'
 
+ pod 'Periphery'
 end
 
 target 'UI' do
@@ -50,7 +51,6 @@ target 'UI' do
 
  pod 'Texture'
  pod 'lottie-ios'
-
 end
 
 target 'Messaging' do
@@ -58,21 +58,21 @@ target 'Messaging' do
 
  pod 'RxSwift'
  pod 'RxRelay'
-
+ pod 'Periphery'
 end
 
 target 'Analytics' do
   xcodeproj './Modules/Analytics/Analytics.xcodeproj'
 
  pod 'Firebase/Analytics'
-
+ pod 'Periphery'
 end
 
 target 'Logger' do
   xcodeproj './Modules/Logger/Logger.xcodeproj'
 
  pod 'Firebase/Crashlytics'
-
+ pod 'Periphery'
 end
 
 post_install do |installer|

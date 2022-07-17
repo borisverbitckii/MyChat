@@ -21,11 +21,12 @@ final class NewChatUI {
         searchBarNode.backgroundImage = UIImage()
         return searchBarNode
     }()
-    private(set) lazy var contactsTableNode: ASTableNode = {
-        let tableNode = ASTableNode()
+    private(set) lazy var contactsTableNode: TableNodeWithEmptyState = {
+        let tableNode = TableNodeWithEmptyState()
         tableNode.view.separatorStyle = .none
         tableNode.backgroundColor = .clear
         tableNode.style.flexBasis = ASDimension(unit: .fraction, value: 100)
+        tableNode.view.keyboardDismissMode = .onDrag
         return tableNode
     }()
 }

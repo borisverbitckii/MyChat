@@ -71,7 +71,6 @@ protocol RegisterViewModelInput {
     func checkTextfields(email: String?,
                          password: String?,
                          secondPassword: String?)
-    func cleanTextfields()
     // swiftlint:disable:next function_parameter_count
     func becomeFirstResponderOrClearOffTextfields(emailTextField: ASTextFieldNode,
                                                   passwordTestField: ASTextFieldNode,
@@ -197,9 +196,6 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     /// Для установки цветов
     private let palette: (RegisterViewControllerPalette) -> UIColor
 
-    /// Для сравнения значений, чтобы не отправлять лишние сигналы
-    private var oldErrorLabelTitle = ""
-
     // MARK: Init
     // swiftlint:disable:next function_body_length
     init(coordinator: CoordinatorProtocol,
@@ -213,11 +209,11 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         self.texts = texts
         self.palette = palette
 
-        // Стандартные значения для UI
-        // viewController
+        /// Стандартные значения для UI
+        /// viewController
         viewControllerBackgroundColor = BehaviorRelay<UIColor>(value: palette(.viewControllerBackgroundColor))
 
-        // submitButton
+        /// submitButton
         let submitButtonTitleText = texts(.authTextForButton)
         let submitButtonTitleFont = fonts(.submitButton)
         self.submitButtonTitle = BehaviorRelay<(title: String,
@@ -225,7 +221,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                     title: submitButtonTitleText,
                                                     font: submitButtonTitleFont))
         self.submitButtonTextColor = BehaviorRelay<UIColor>(value: palette(.submitButtonTextColor))
-        // changeStateButton
+        /// changeStateButton
         let changeStateButtonText = texts(.sighUpTextForButton)
         let changeStateButtonFont = fonts(.changeStateButton)
         self.changeStateButtonTitle = BehaviorRelay<(title: String,
@@ -233,30 +229,30 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                         title: changeStateButtonText,
                                                         font: changeStateButtonFont))
         self.changeStateButtonColor = BehaviorRelay<UIColor>(value: palette(.changeStateButtonColor))
-        // nameTextfield
+        /// nameTextfield
         let nameTextFieldPlaceholderText = texts(.namePlaceholder)
         let placeholderColor = palette(.textfieldsPlaceholderColor)
         self.nameTextfieldPlaceholder = BehaviorRelay<(text: String,
                                                        color: UIColor)>(value: (text: nameTextFieldPlaceholderText,
                                                                                 color: placeholderColor))
 
-        // passwordTextfield
+        /// passwordTextfield
         let passwordPlaceholderText = texts(.passwordPlaceholder)
         self.passwordTextfieldPlaceholder = BehaviorRelay<(text: String,
                                                            color: UIColor)>(value: (text: passwordPlaceholderText,
                                                                                     color: placeholderColor))
 
-        // secondPasswordTextfield
+        /// secondPasswordTextfield
         let secondPassPlaceholderText = texts(.secondPasswordPlaceholder)
         self.secondPasswordTextfieldPlaceholder = BehaviorRelay<(text: String,
                                                                  color: UIColor)>(value: (text: secondPassPlaceholderText,
                                                                                           color: placeholderColor))
 
-        // Для всех текстфилдов
+        /// Для всех текстфилдов
         self.textfieldsFont = BehaviorRelay<UIFont>(value: fonts(.registerTextfield))
         self.textfieldsBackgroundColor = BehaviorRelay<UIColor>(value: palette(.textFieldBackgroundColor))
 
-        // errorPasswordLabel
+        /// errorPasswordLabel
         let errorPasswordText = texts(.errorLabelPasswordsNotTheSame)
         self.errorLabelAttributedStringDataSource = BehaviorRelay<(text: String,
                                                                    font: UIFont,
@@ -264,9 +260,9 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                                     text: errorPasswordText,
                                                                     font: fonts(.registerErrorLabel),
                                                                     color: palette(.errorLabelTextColor)))
-        // AuthButtons
+        /// AuthButtons
         self.authButtonsBackgroundColor = BehaviorRelay<UIColor>(value: palette(.authButtonBackground))
-        // orLabel
+        /// orLabel
         let orLabelText = texts(.orLabelText)
         let orLabelFont = fonts(.registerOrLabel)
         let orLabelColor = palette(.orLabelTextColor)
@@ -277,7 +273,7 @@ final class RegisterViewModel: RegisterViewModelProtocol {
                                                                                  font: orLabelFont,
                                                                                  color: orLabelColor))
 
-        // Подписка на изменения темы пользователя для автоматического обновления цвета
+        /// Подписка на изменения темы пользователя для автоматического обновления цвета
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(shouldUpdateColors),
                                                name: NSNotification.shouldUpdatePalette,
@@ -391,7 +387,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                                              hideActivityIndicator: hideActivityIndicator)
                 .subscribe(onSuccess: { [coordinator] chatUser in
                     guard let chatUser = chatUser else { return }
-                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                    coordinator.presentChatsListNavigationController(withChatUser: chatUser)
                 }, onFailure: { [generateAlertController] _ in
                     let alertController = generateAlertController(.googleAuth)
                     presenter.present(alertController, animated: true)
@@ -404,7 +400,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                                                hideActivityIndicator: hideActivityIndicator)
                 .subscribe(onSuccess: { [coordinator] chatUser in
                     guard let chatUser = chatUser else { return }
-                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                    coordinator.presentChatsListNavigationController(withChatUser: chatUser)
                 }, onFailure: { [generateAlertController] _ in
                     let alertController = generateAlertController(.facebookAuth)
                     presenter.present(alertController, animated: true)
@@ -416,7 +412,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                                             hideActivityIndicator: hideActivityIndicator)
                 .subscribe { [coordinator] chatUser in
                     guard let chatUser = chatUser else { return }
-                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                    coordinator.presentChatsListNavigationController(withChatUser: chatUser)
                 } onFailure: { [generateAlertController] _ in
                     let alertController = generateAlertController(.appleAuth)
                     presenter.presentViewController(viewController: alertController,
@@ -431,7 +427,7 @@ extension RegisterViewModel: RegisterViewModelInput {
                                    hideActivityIndicator: hideActivityIndicator)
                 .subscribe(onSuccess: { [coordinator] chatUser in
                     guard let chatUser = chatUser else { return }
-                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                    coordinator.presentChatsListNavigationController(withChatUser: chatUser)
                 }, onFailure: { [generateAlertController] _ in
                     let alertController = generateAlertController(.notCorrectLoginOrPassword)
                     presenter.presentViewController(viewController: alertController,
@@ -446,11 +442,11 @@ extension RegisterViewModel: RegisterViewModelInput {
             case .submitButtonOrReturnButton(let username, let password, let presenter):
                 guard let hideActivityIndicator = hideActivityIndicator else { return }
                 authFacade.createUser(withEmail: username,
-                                       password: password,
-                                       hideActivityIndicator: hideActivityIndicator)
+                                      password: password,
+                                      hideActivityIndicator: hideActivityIndicator)
                 .subscribe { [coordinator] chatUser in
                     guard let chatUser = chatUser else { return }
-                    coordinator.presentTabBarViewController(withChatUser: chatUser)
+                    coordinator.presentProfileViewController(chatUser: chatUser, presenter: presenter)
                 } onFailure: { [weak self, generateAlertController] error in
                     if (error as NSError).code == 17007 {   // Уже существует аккаунт
                         let allertController = generateAlertController(.isAlreadySignedUp)
@@ -461,7 +457,6 @@ extension RegisterViewModel: RegisterViewModelInput {
                         self?.passwordTextfieldText.accept("")
                         self?.secondPasswordTextfieldText.accept("")
                     }
-                    // TODO: Обработать ошибки
                 }
                 .disposed(by: disposeBag)
             default: break
@@ -537,12 +532,6 @@ extension RegisterViewModel: RegisterViewModelInput {
             ? submitButtonState.accept(.enable)
             : submitButtonState.accept(.disable)
         }
-    }
-
-    func cleanTextfields() {
-        nameTextfieldText.accept("")
-        passwordTextfieldText.accept("")
-        secondPasswordTextfieldText.accept("")
     }
 
     // swiftlint:disable:next function_parameter_count

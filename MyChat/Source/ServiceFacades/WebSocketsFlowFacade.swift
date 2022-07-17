@@ -13,25 +13,27 @@ import CoreData
 import Messaging
 import Foundation
 
-protocol ChatsFlowProtocol {
-    func joinPrivateRoom(chatID: String,
-                         receiverUserID: String,
-                         completion: @escaping (Result<Any?, Error>) -> Void)
-}
+/*
+Фасад для того, чтобы сразу сохранять сообщения в локальную БД.
+Является делегатом для URLSession, которая отвечате за webSocket подключение
+*/
 
-protocol MessagesFlowProtocol {
+protocol WebSocketsFlowFacadeProtocol {
+
     func sendMessage(messageText: String,
                      chatID: String,
-                     senderID: String,
-                     receiverID: String,
+                     sender: ChatUser,
+                     receiver: ChatUser,
                      completion: @escaping (Result<Any?, Error>) -> Void)
-}
 
-protocol WebSocketConnector {
     func closeConnection()
 }
 
 final class WebSocketsFlowFacade: NSObject {
+
+    // MARK: Public properties
+    /// Список пользователей, который онлайн
+    var onlineUsers = Set<String>()
 
     // MARK: Private properties
     private lazy var operationQueue = OperationQueue()
@@ -40,8 +42,11 @@ final class WebSocketsFlowFacade: NSObject {
     private let webSocketsConnector: WebSocketsConnectorProtocol
     private let storageManager: StorageManagerProtocol
 
+    private var errorClosure: (() -> Void)?
+
     // MARK: Init
     init(webSocketsConnector: WebSocketsConnectorProtocol,
+         remoteDataBaseManager: RemoteDataBaseManagerProtocol,
          storageManager: StorageManagerProtocol) {
         self.webSocketsConnector = webSocketsConnector
         self.storageManager = storageManager
@@ -49,19 +54,12 @@ final class WebSocketsFlowFacade: NSObject {
         super.init()
 
         webSocketsConnector.rawMessageStringObserver
-            .subscribe { [operationQueue] rawMessageString in
-
-                let context = storageManager.backgroundContextForSaving
-                guard let context = context else { return }
-
-                guard let messages = rawMessageString.decode(with: context) else { return }
+            .compactMap { rawMessageString in
+                return rawMessageString.decode()
+            }
+            .subscribe { [weak self, operationQueue] messages in
 
                 for message in messages {
-                    // Если прилетает системное сообщение, удаляем его из контекста
-                    if message.action != .sendMessageAction {
-                        context.delete(message)
-                    }
-
                     // Сервер отправляем отправленный клиентом сообщения обратно, игнорируем их
                     if message.sender?.id == AuthManager.currentUser?.uid {
                         continue
@@ -69,56 +67,30 @@ final class WebSocketsFlowFacade: NSObject {
                     switch message.action {
                     case .sendMessageAction:
                         let saveMessageOperation = SaveMessageOperation(message: message,
-                                                                        storageManager: storageManager)
+                                                                        storageManager: storageManager,
+                                                                        remoteDataBaseManager: remoteDataBaseManager)
                         operationQueue.addOperation(saveMessageOperation)
                     case .userJoinedAction:
-                        let showUserOnlineOperation = ShowUserOnlineOperation(message: message,
-                                                                              storageManager: storageManager)
-                        operationQueue.addOperation(showUserOnlineOperation)
+                        if let senderID = message.sender?.id {
+                            self?.onlineUsers.insert(senderID)
+                        }
                     case .userLeftAction:
-                        let showUserOfflineOperation = ShowUserOfflineOperation(message: message,
-                                                                                storageManager: storageManager)
-                        operationQueue.addOperation(showUserOfflineOperation)
-                    case .leaveRoomAction:
-                        break // TODO: Обработать
-                    case .roomJoinedAction:
-                        break // TODO: Обработать
+                        if let senderID = message.sender?.id {
+                            self?.onlineUsers.remove(senderID)
+                        }
                     default: break
                     }
                 }
-            } onError: { error in
-                print(error) // TODO: Обработать
             }
             .disposed(by: bag)
     }
 
-    func setupConnectionWith(userID: String) {
+    func setupConnectionWith(userID: String, errorClosure: @escaping () -> Void) {
         webSocketsConnector.setUserID(userID: userID)
         webSocketsConnector.setURLSessionWebSocketsDelegate(with: self)
+        self.errorClosure = errorClosure
     }
-}
 
-// MARK: - extension + MessagesFlowCoordinatorProtocol -
-extension WebSocketsFlowFacade: MessagesFlowProtocol {
-
-    func sendMessage(messageText: String,
-                     chatID: String,
-                     senderID: String,
-                     receiverID: String,
-                     completion: @escaping (Result<Any?, Error>) -> Void) {
-        let sendOperation = SendMessageOperation(messageText: messageText,
-                                                 chatID: chatID,
-                                                 senderID: senderID,
-                                                 receiverID: receiverID,
-                                                 storageManager: storageManager,
-                                                 webSocketsConnector: webSocketsConnector,
-                                                 completion: completion)
-        operationQueue.addOperation(sendOperation)
-    }
-}
-
-// MARK: - extension + ChatsFlowCoordinator -
-extension WebSocketsFlowFacade: ChatsFlowProtocol {
     func joinPrivateRoom(chatID: String,
                          receiverUserID: String,
                          completion: @escaping (Result<Any?, Error>) -> Void) {
@@ -131,6 +103,29 @@ extension WebSocketsFlowFacade: ChatsFlowProtocol {
     }
 }
 
+// MARK: - extension + MessagesFlowCoordinatorProtocol -
+extension WebSocketsFlowFacade: WebSocketsFlowFacadeProtocol {
+
+    func sendMessage(messageText: String,
+                     chatID: String,
+                     sender: ChatUser,
+                     receiver: ChatUser,
+                     completion: @escaping (Result<Any?, Error>) -> Void) {
+        let sendOperation = SendMessageOperation(messageText: messageText,
+                                                 chatID: chatID,
+                                                 sender: sender,
+                                                 receiver: receiver,
+                                                 storageManager: storageManager,
+                                                 webSocketsConnector: webSocketsConnector,
+                                                 completion: completion)
+        operationQueue.addOperation(sendOperation)
+    }
+
+    func closeConnection() {
+        webSocketsConnector.closeConnection()
+    }
+}
+
 // MARK: - extension + URLSessionWebSocketDelegate -
 extension WebSocketsFlowFacade: URLSessionWebSocketDelegate {
 
@@ -140,16 +135,20 @@ extension WebSocketsFlowFacade: URLSessionWebSocketDelegate {
         Logger.log(to: .info, message: "Открыто подключение к web socket")
     }
 
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        Logger.log(to: .error,
+                   message: "Не удалось установить подключение к web socket",
+                   error: error)
+        guard let errorClosure = errorClosure else { return }
+        DispatchQueue.main.async {
+            errorClosure()
+        }
+    }
+
     func urlSession(_ session: URLSession,
                     webSocketTask: URLSessionWebSocketTask,
                     didCloseWith closeCode: URLSessionWebSocketTask.CloseCode,
                     reason: Data?) {
         Logger.log(to: .info, message: "Подключение к web socket закрыто")
-    }
-}
-
-extension WebSocketsFlowFacade: WebSocketConnector {
-    func closeConnection() {
-        webSocketsConnector.closeConnection()
     }
 }

@@ -11,12 +11,23 @@ import RxSwift
 import RxRelay
 import Foundation
 
+/*
+
+Коннектор для вебсокетов
+
+Здесь происходит подключение, установка делегата, а также отправлка и получение информации
+Обработка полученных сообщений происходит в WebSocketsFlowFacade
+
+ */
+
 public protocol WebSocketsConnectorProtocol {
+    /// Обсервер для получаемой даты
     var rawMessageStringObserver: PublishRelay<String> { get }
+    /// ID пользователя для идентификации на сервере
     var userID: String? { get }
     func setUserID(userID: String)
     func setURLSessionWebSocketsDelegate(with delegate: URLSessionWebSocketDelegate)
-    func executeWebSocketOperation(message: Message) -> Single<Any?>
+    func executeWebSocketOperation(message: CDMessage) -> Single<Any?>
     func closeConnection()
 }
 
@@ -78,7 +89,7 @@ public class WebSocketsConnector {
         }
     }
 
-    private func encodeMessageToData(message: Message, result: @escaping (Result<Any?, Error>) -> Void) -> Data? {
+    private func encodeMessageToData(message: CDMessage, result: @escaping (Result<Any?, Error>) -> Void) -> Data? {
         do {
             return try JSONEncoder().encode(message)
         } catch {
@@ -99,7 +110,7 @@ extension WebSocketsConnector: WebSocketsConnectorProtocol {
     public func setURLSessionWebSocketsDelegate(with delegate: URLSessionWebSocketDelegate) {
         urlSession = URLSession(configuration: .default,
                                 delegate: delegate,
-                                delegateQueue: OperationQueue()) // TODO: Проверить нужен ли оперейшн
+                                delegateQueue: OperationQueue())
     }
 
     /// Установка id пользователя телефона, чтобы отправлять этот id на сервер
@@ -110,7 +121,7 @@ extension WebSocketsConnector: WebSocketsConnectorProtocol {
         self.userID = userID
     }
 
-    public func executeWebSocketOperation(message: Message) -> Single<Any?> {
+    public func executeWebSocketOperation(message: CDMessage) -> Single<Any?> {
         Single<Any?>.create { [weak self] obs in
 
             guard let webSocketTask = self?.webSocketTask else {

@@ -5,20 +5,23 @@
 //  Created by Борис on 12.02.2022.
 //
 
-import AsyncDisplayKit
 import Models
 import RxSwift
+import AsyncDisplayKit
 
 protocol ModuleFactoryProtocol {
-    func getTabBarController(with user: ChatUser) -> ASTabBarController
-    func getRegisterViewController() -> ASDKViewController<ASDisplayNode>
     func getSplashModule() -> SplashViewController
-    func getProfileModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController
+    func getRegisterViewController() -> ASDKViewController<ASDisplayNode>
+    func getProfileViewController(source: PresenterSource, chatUser: ChatUser) -> ASDKViewController<ASTableNode>
+    func getSettingsModule(chatUser: ChatUser,
+                           coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
     func getChatsListModule(coordinator: CoordinatorProtocol, user: ChatUser) -> ASDKNavigationController
     func getNewChatModule(coordinator: CoordinatorProtocol,
                           presentingViewController: TransitionHandler) -> ASDKViewController<ASDisplayNode>
     func getChatModule(receiverUser: ChatUser,
                        coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
+    func getImagePickerController(delegatе: UIImagePickerControllerDelegate  & UINavigationControllerDelegate,
+                                  source: UIImagePickerController.SourceType) -> UIImagePickerController
 }
 
 final class ModuleFactory {
@@ -41,13 +44,8 @@ final class ModuleFactory {
 // MARK: - extension + ModuleFactoryProtocol
 extension ModuleFactory: ModuleFactoryProtocol {
 
-    func getTabBarController(with user: ChatUser) -> ASTabBarController {
-        guard let coordinator = coordinator else { return ASTabBarController()  }
-        let chatsListVC = getChatsListModule(coordinator: coordinator, user: user)
-        let profileVC = getProfileModule(coordinator: coordinator)
-        let viewControllers = [chatsListVC, profileVC]
-        return TabBarControllerModuleBuilder().build(coordinator: coordinator,
-                                                     viewControllers: viewControllers)
+    func getSplashModule() -> SplashViewController {
+        SplashModuleBuilder().build(managers: managerFactory)
     }
 
     func getRegisterViewController() -> ASDKViewController<ASDisplayNode> {
@@ -60,17 +58,27 @@ extension ModuleFactory: ModuleFactoryProtocol {
                                              palette: resource.paletteProvider.getColor())
     }
 
-    func getSplashModule() -> SplashViewController {
-        SplashModuleBuilder().build(managers: managerFactory)
+    func getProfileViewController(source: PresenterSource, chatUser: ChatUser) -> ASDKViewController<ASTableNode> {
+        guard let coordinator = coordinator else { return ASDKViewController() }
+        let resource: ResourceProtocol = Resource<ProfileViewController>(configProvider: uiConfigProvider)
+        return ProfileModuleBuilder().build(source: source,
+                                            chatUser: chatUser,
+                                            coordinator: coordinator,
+                                            managers: managerFactory,
+                                            texts: resource.textsProvider.getText(),
+                                            palette: resource.paletteProvider.getColor(),
+                                            fonts: resource.fontsProvider.getFont())
     }
 
-    func getProfileModule(coordinator: CoordinatorProtocol) -> ASDKNavigationController {
-        let resource: ResourceProtocol = Resource<ProfileViewController>(configProvider: uiConfigProvider)
-        return ProfileModuleBuilder().build(managers: managerFactory,
-                                            coordinator: coordinator,
-                                            texts: resource.textsProvider.getText(),
-                                            fonts: resource.fontsProvider.getFont(),
-                                            palette: resource.paletteProvider.getColor())
+    func getSettingsModule(chatUser: ChatUser,
+                           coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode> {
+        let resource: ResourceProtocol = Resource<SettingsViewController>(configProvider: uiConfigProvider)
+        return SettingsModuleBuilder().build(chatUser: chatUser,
+                                             managers: managerFactory,
+                                             coordinator: coordinator,
+                                             texts: resource.textsProvider.getText(),
+                                             fonts: resource.fontsProvider.getFont(),
+                                             palette: resource.paletteProvider.getColor())
     }
 
     func getChatsListModule(coordinator: CoordinatorProtocol, user: ChatUser) -> ASDKNavigationController {
@@ -89,12 +97,26 @@ extension ModuleFactory: ModuleFactoryProtocol {
         return NewChatModuleBuilder().build(coordinator: coordinator, presentingViewController: presentingViewController,
                                             managers: managerFactory,
                                             texts: resource.textsProvider.getText(),
-                                            palette: resource.paletteProvider.getColor())
+                                            palette: resource.paletteProvider.getColor(),
+                                            fonts: resource.fontsProvider.getFont())
     }
 
     func getChatModule(receiverUser: ChatUser, coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode> {
-        ChatModuleBuilder().build(receiverUser: receiverUser,
-                                  managerFactory: managerFactory,
-                                  coordinator: coordinator)
+        let resource: ResourceProtocol = Resource<ChatViewController>(configProvider: uiConfigProvider)
+        return ChatModuleBuilder().build(receiverUser: receiverUser,
+                                         managerFactory: managerFactory,
+                                         coordinator: coordinator,
+                                         texts: resource.textsProvider.getText(),
+                                         palette: resource.paletteProvider.getColor(),
+                                         fonts: resource.fontsProvider.getFont())
+    }
+
+    func getImagePickerController(delegatе: UIImagePickerControllerDelegate  & UINavigationControllerDelegate,
+                                  source: UIImagePickerController.SourceType) -> UIImagePickerController {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.sourceType = source
+        imagePickerController.allowsEditing = false
+        imagePickerController.delegate = delegatе
+        return imagePickerController
     }
 }

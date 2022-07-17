@@ -63,7 +63,7 @@ final class AppAssembly {
                                                                  uiConfigProvider: appConfigClosure)
         coordinator.injectModuleFactory(moduleFactory: moduleFactory)
 
-        // Установка рутового контроллера
+        /// Установка рутового контроллера
         let splashViewController = moduleFactory.getSplashModule()
         window.rootViewController = splashViewController
         window.makeKeyAndVisible()
@@ -99,8 +99,7 @@ final class AppAssembly {
                 }
 
                 if self?.isInitialLoad == true {
-                    splashViewController.viewModel.input.checkAuth(presenter: splashViewController,
-                                                                   coordinator: coordinator)
+                    splashViewController.viewModel.input.checkAuth(coordinator: coordinator)
                     self?.isInitialLoad = false
                 }
             })
@@ -112,7 +111,7 @@ final class AppAssembly {
             .userInterfaceStyle()
             .subscribe(onNext: { [weak self] _ in
                 if self?.isInitialLoad == false {
-                    // Для обновления UI во всех контроллерах при смене темы
+                    /// Для обновления UI во всех контроллерах при смене темы
                     self?.configManager.reloadUIConfig()
                     Logger.log(to: .info, message: "Пользователь сменил тему на телефоне")
                 }

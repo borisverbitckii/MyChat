@@ -13,12 +13,15 @@ final class NewChatModuleBuilder {
                presentingViewController: TransitionHandler,
                managers: ManagerFactoryForModulesProtocol,
                texts: @escaping (NewChatViewControllerTexts) -> String,
-               palette: @escaping (NewChatViewControllerPalette) -> UIColor) -> NewChatViewController {
+               palette: @escaping (NewChatViewControllerPalette) -> UIColor,
+               fonts: @escaping (NewChatViewControllerFonts) -> UIFont) -> NewChatViewController {
         let viewModel = NewChatViewModel(coordinator: coordinator,
                                          remoteDataBase: managers.getRemoteDataBaseManager(),
+                                         imageCacheManager: managers.getImageCacheManager(),
                                          presentingViewController: presentingViewController,
                                          texts: texts,
-                                         palette: palette)
+                                         palette: palette,
+                                         fonts: fonts)
         let uiElements = NewChatUI()
         let viewController = NewChatViewController(newChatViewModel: viewModel,
                                                    uiElements: uiElements)

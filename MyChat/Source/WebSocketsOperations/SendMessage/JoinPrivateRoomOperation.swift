@@ -6,10 +6,16 @@
 //
 
 import Models
+import Logger
 import RxSwift
 import Services
 import Messaging
 import Foundation
+
+/*
+ Операция для того, чтобы войти в нужную комнату чата на сервере
+ С момента входа пользователь телефона начинает получать из комнаты сообщения
+ */
 
 final class JoinPrivateRoomOperation: BaseSendMessageOperation {
 
@@ -33,18 +39,21 @@ final class JoinPrivateRoomOperation: BaseSendMessageOperation {
 
     // MARK: Override methods
     override func start() {
-        // TODO: Залогировать
         guard let context = storageManager.backgroundContextNotForSaving else { return }
-        let room = storageManager.createRoom(id: chatID, in: context)
+        let sender = storageManager.createChatUser(id: "", in: context)
+        let room = storageManager.createTarget(id: chatID, in: context)
         let message = storageManager.createMessage(action: .joinRoomPrivateAction,
+                                                   position: .noPosition,
                                                    text: receiverUserID,
-                                                   room: room,
-                                                   sender: nil,
+                                                   target: room,
+                                                   sender: sender,
                                                    in: context)
 
         webSocketsConnector.executeWebSocketOperation(message: message)
             .subscribe { [completion] _ in
                 completion(.success(nil))
+                Logger.log(to: .info,
+                           message: "Выполнен вход в чат с id \(room.id)")
             } onFailure: { [completion] error in
                 completion(.failure(error))
             }

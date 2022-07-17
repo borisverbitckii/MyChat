@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		521CB42B754A6018D5AB3AD6 /* Pods_Services.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BCD58D089B5C6DEF2585FC2 /* Pods_Services.framework */; };
+		D70D5BE2284B2FCD0087E47F /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70D5BE1284B2FCD0087E47F /* ImageCacheManager.swift */; };
 		D73FD4B52801D3AC00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; };
 		D73FD4B62801D3AC00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75E0BFA2811053500970308 /* Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0BF92811053500970308 /* Logger.framework */; };
@@ -24,6 +25,7 @@
 		D7D06B192822A5280061EA01 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B182822A5280061EA01 /* StorageManager.swift */; };
 		D7D36DC528212B8400F3A118 /* RemoteDataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */; };
 		D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */; };
+		D7FCD44928697FC400CE723E /* RemoteFileStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FCD44828697FC400CE723E /* RemoteFileStorageManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -46,6 +48,7 @@
 		1D16467F38E074859B093AC3 /* Pods-Services.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Services.release.xcconfig"; path = "Target Support Files/Pods-Services/Pods-Services.release.xcconfig"; sourceTree = "<group>"; };
 		2BCD58D089B5C6DEF2585FC2 /* Pods_Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8093C7E054C9555C61FC9AA /* Pods-Services.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Services.debug.xcconfig"; path = "Target Support Files/Pods-Services/Pods-Services.debug.xcconfig"; sourceTree = "<group>"; };
+		D70D5BE1284B2FCD0087E47F /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
 		D73FD4B42801D3AC00912D46 /* Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75E0BF92811053500970308 /* Logger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Logger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D75E0C242811983B00970308 /* Analytics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Analytics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +63,7 @@
 		D7D06B182822A5280061EA01 /* StorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDataBaseManager.swift; sourceTree = "<group>"; };
 		D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
+		D7FCD44828697FC400CE723E /* RemoteFileStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFileStorageManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,9 +105,12 @@
 		D75FD6522801C775001B1359 = {
 			isa = PBXGroup;
 			children = (
+				D7D06B0F2822A50D0061EA01 /* Firebase.swift */,
 				D7D06B0B2822A50D0061EA01 /* AuthManager */,
-				D7D06B172822A5280061EA01 /* StorageManager */,
+				D7D06B182822A5280061EA01 /* StorageManager.swift */,
+				D7FCD44828697FC400CE723E /* RemoteFileStorageManager.swift */,
 				D75FD67E2801D195001B1359 /* ConfigureManager.swift */,
+				D70D5BE1284B2FCD0087E47F /* ImageCacheManager.swift */,
 				D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */,
 				D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */,
 				D75FD65D2801C775001B1359 /* Products */,
@@ -135,18 +142,9 @@
 			children = (
 				D7D06B0D2822A50D0061EA01 /* Google.swift */,
 				D7D06B0E2822A50D0061EA01 /* Facebook.swift */,
-				D7D06B0F2822A50D0061EA01 /* Firebase.swift */,
 				D77F35BF2827A7AE0046D494 /* Apple.swift */,
 			);
 			path = SignInServices;
-			sourceTree = "<group>";
-		};
-		D7D06B172822A5280061EA01 /* StorageManager */ = {
-			isa = PBXGroup;
-			children = (
-				D7D06B182822A5280061EA01 /* StorageManager.swift */,
-			);
-			path = StorageManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,8 +279,10 @@
 				D7D06B132822A50D0061EA01 /* Facebook.swift in Sources */,
 				D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */,
 				D7D06B192822A5280061EA01 /* StorageManager.swift in Sources */,
+				D7FCD44928697FC400CE723E /* RemoteFileStorageManager.swift in Sources */,
 				D7D06B122822A50D0061EA01 /* Google.swift in Sources */,
 				D7D06B162822A50D0061EA01 /* AuthManager.swift in Sources */,
+				D70D5BE2284B2FCD0087E47F /* ImageCacheManager.swift in Sources */,
 				D77F35C02827A7AE0046D494 /* Apple.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

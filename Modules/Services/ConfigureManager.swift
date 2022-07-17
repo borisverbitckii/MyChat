@@ -31,8 +31,7 @@ public final class ConfigureManager {
     // MARK: Init
     public init() {
         let settings = RemoteConfigSettings()
-        settings.minimumFetchInterval = 0
-        // TODO: Стереть при релизе, чтобы не было куча запросов (будет означать сколько в кэше держит инфу)
+        settings.minimumFetchInterval = 12800
         remoteConfig.configSettings = settings
         reloadUIConfig()
     }

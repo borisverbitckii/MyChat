@@ -14,7 +14,6 @@ final class AppleAuth: NSObject {
 
     private var signInClosure: ((String) -> Void)?
     private var obs: ((Result<ChatUser?, Error>) -> Void)?
-    private var hideActivityIndicator: (() -> Void)?
 
     func setupSignInClosure(closure: @escaping (String) -> Void) {
         self.signInClosure = closure

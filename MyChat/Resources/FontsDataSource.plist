@@ -42,22 +42,129 @@
 	</dict>
 	<key>ChatsListViewController</key>
 	<dict>
-		<key>empty</key>
+		<key>navBarTitle</key>
 		<dict>
 			<key>fontName</key>
 			<string>Futura Medium</string>
 			<key>size</key>
 			<integer>16</integer>
 		</dict>
-	</dict>
-	<key>ProfileViewController</key>
-	<dict>
-		<key>empty</key>
+		<key>emptyStateTitle</key>
 		<dict>
 			<key>fontName</key>
 			<string>Futura Medium</string>
 			<key>size</key>
 			<integer>16</integer>
+		</dict>
+		<key>searchTextfieldPlaceholder</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+		<key>cellMessageBaseFont</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>12</integer>
+		</dict>
+		<key>cellMessageUserFont</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+	</dict>
+	<key>SettingsViewController</key>
+	<dict>
+		<key>cellTitle</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+	</dict>
+	<key>NewChatViewController</key>
+	<dict>
+		<key>searchTextfieldPlaceholder</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+		<key>cancelButton</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>16</integer>
+		</dict>
+		<key>navBarTitle</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>16</integer>
+		</dict>
+		<key>emptyStateText</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+	</dict>
+	<key>ProfileViewController</key>
+	<dict>
+		<key>textfield</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+		<key>button</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+	</dict>
+	<key>ChatViewController</key>
+	<dict>
+		<key>toolBarPlaceholder</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+		<key>userName</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
+		</dict>
+		<key>time</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>12</integer>
+		</dict>
+		<key>messageText</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>14</integer>
 		</dict>
 	</dict>
 </dict>

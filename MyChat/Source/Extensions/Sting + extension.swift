@@ -13,13 +13,11 @@ import Foundation
 
 public extension String {
 
-    func decode(with context: NSManagedObjectContext) -> [Message]? {
+    func decode() -> [ReceivedMessage]? {
         guard let data = self.data(using: .utf8, allowLossyConversion: false) else { return nil }
         let decoder = JSONDecoder()
-        decoder.userInfo[.context!] = context
-
         do {
-            return try decoder.decode([Message].self, from: data)
+            return try decoder.decode([ReceivedMessage].self, from: data)
         } catch {
             Logger.log(to: .error, message: "Не удалось декодировать строку в Message", error: error)
             return nil

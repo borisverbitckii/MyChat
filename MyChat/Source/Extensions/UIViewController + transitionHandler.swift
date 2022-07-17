@@ -13,8 +13,9 @@ protocol TransitionHandler {
     func presentViewController(viewController: UIViewController,
                                animated: Bool,
                                completion: (() -> Void)?)
-
     func pushViewController(viewController: UIViewController, animated: Bool)
+    func popViewController()
+
 }
 
 // MARK: - extension + TransitionHandler
@@ -27,5 +28,9 @@ extension UIViewController: TransitionHandler {
 
     func pushViewController(viewController: UIViewController, animated: Bool) {
         navigationController?.pushViewController(viewController, animated: animated)
+    }
+
+    func popViewController() {
+        navigationController?.popViewController(animated: true)
     }
 }

@@ -22,6 +22,7 @@ public final class PushNotificationManager {
     // MARK: Public properties
     public var pushNotificationHandler: (() -> Void)?
 
+    // MARK: Init
     public init() {}
 }
 
@@ -42,7 +43,6 @@ extension PushNotificationManager: PushNotificationManagerProtocol {
                 if let error = error {
                     Logger.log(to: .error,
                                message: "Не удалось получить разрешение на пуши",
-                               messageDescription: error.localizedDescription,
                                error: error)
                 }
             })

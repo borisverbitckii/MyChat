@@ -5,18 +5,22 @@
 //  Created by Boris Verbitsky on 15.04.2022.
 //
 
+import Logger
 import Models
 import RxSwift
-import Logger
 
-/// Базовый класс для всех провайдеров
-///
-/// Позволяет получить данные из plist файла и применить к локальному конфигу
+/*
+
+Базовый класс для всех провайдеров
+
+Позволяет получить данные из plist файла и применить к локальному конфигу
+ */
+
 class Provider <T> {
 
     // MARK: Public properties
-    var remoteConfig: (() -> (T?))?
-    lazy var localConfig: [String: Any] = {
+    private(set) var remoteConfig: (() -> (T?))?
+    private(set) lazy var localConfig: [String: Any] = {
 
         if T.self == Fonts.self {
             return getDataSourceDictFromPlist(resourceType: .fonts)

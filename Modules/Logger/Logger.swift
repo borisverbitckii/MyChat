@@ -66,6 +66,7 @@ public final class Logger {
     private static var isOnlyMessagesModeEnable = true
     private static var parametersToPrint: Set<LoggerPrintElements> = []
     private static var crashlytics = Crashlytics.crashlytics()
+
     /// Лок для  синхронизации записи в файл
     private static let lock = NSLock()
 
@@ -88,12 +89,12 @@ public final class Logger {
             return
         }
 
-        // Дата
+        /// Дата
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM.dd.yy HH:mm:ss"
         let date = "\n [ДАТА]: " + dateFormatter.string(from: Date())
 
-        // Цвет и тип уведомления
+        /// Цвет и тип уведомления
         var emoji = ""
         var messageType = ""
 
@@ -118,13 +119,13 @@ public final class Logger {
             messageType = "[КРИТИЧЕСКАЯ ОШИБКА]:"
         }
 
-        let description = " \n [ОПИСАНИЕ]: \(error?.localizedDescription ?? "---")"
+        let description = " \n [ОПИСАНИЕ]: \(error?.localizedDescription ?? messageDescription ?? "")"
         let file = "\n [ФАЙЛ]: \(file)"
         let function = "\n [МЕТОД]: \(function)"
         let line = "\n [СТРОКА]: \(line)"
         let separator = "\n ----------------------------------------------------"
 
-        // Сохранение результатов
+        /// Сохранение результатов
         crashlytics.log(messageType + emoji + message)
 
         if let uid = userInfo?["uid"] {
@@ -154,13 +155,14 @@ public final class Logger {
                              line: line,
                              separator: separator))
 
-        // Ассерт на случай ошибок
+        /// Ассерт на случай ошибок
         switch type {
         case .error, .critical:
             if let error = error {
                 crashlytics.record(error: error)
             }
-            // assertionFailure()
+            // TODO: Включить
+//            assertionFailure()
         default: break
         }
     }

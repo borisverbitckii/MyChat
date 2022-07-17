@@ -17,18 +17,28 @@ protocol NewChatViewModelProtocol {
 }
 
 protocol NewChatViewModelInputProtocol {
+    func setupCellDelegate(with delegate: ContactUserCellNodeDelegate)
+    func setupUserIcon(at index: Int)
     func fetchUsers(with name: String)
     func presentChatViewController(userAt index: Int)
 }
 
 protocol NewChatViewModelOutputProtocol {
+    // UI
+    var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
     var navBarTitle: BehaviorRelay<String> { get }
     var searchBarPlaceholder: BehaviorRelay<String> { get }
+    var searchFont: UIFont { get }
     var reloadCollectionNode: PublishRelay<Any?> { get }
     var searchBarTintColor: BehaviorRelay<UIColor> { get }
-    var cellModel: ContactUserCellModel { get }
+    var emptyStateTitleText: String { get }
+    var emptyStateTitleFont: UIFont { get }
+    var emptyStateTitleColor: UIColor { get }
+    var navBarTitleFont: UIFont { get }
+    var cancelButtonFont: UIFont { get }
+
     func getUsersCount() -> Int
-    func getUser(at index: Int) -> ChatUser
+    func getModel(at index: Int) -> ContactCellModel
 }
 
 final class NewChatViewModel {
@@ -38,10 +48,16 @@ final class NewChatViewModel {
     var output: NewChatViewModelOutputProtocol { return self }
 
     // UI
-    var navBarTitle: BehaviorRelay<String>
-    var searchBarPlaceholder: BehaviorRelay<String>
-    var searchBarTintColor: BehaviorRelay<UIColor>
-    var cellModel: ContactUserCellModel
+    let viewControllerBackgroundColor: BehaviorRelay<UIColor>
+    let navBarTitle: BehaviorRelay<String>
+    let searchBarPlaceholder: BehaviorRelay<String>
+    let searchFont: UIFont
+    let searchBarTintColor: BehaviorRelay<UIColor>
+    let emptyStateTitleText: String
+    let emptyStateTitleFont: UIFont
+    let emptyStateTitleColor: UIColor
+    let navBarTitleFont: UIFont
+    let cancelButtonFont: UIFont
 
     lazy var reloadCollectionNode = PublishRelay<Any?>()
 
@@ -54,47 +70,93 @@ final class NewChatViewModel {
 
     private let coordinator: CoordinatorProtocol
     private let remoteDataBase: RemoteDataBaseManagerProtocol
+    private let imageCacheManager: ImageCacheManagerProtocol
     private let presentingViewController: TransitionHandler
 
-    private let texts: (NewChatViewControllerTexts) -> String
     private let palette: (NewChatViewControllerPalette) -> UIColor
 
     private lazy var bag = DisposeBag()
 
+    private var cellDelegate: ContactUserCellNodeDelegate?
+
     // MARK: - Init
     init(coordinator: CoordinatorProtocol,
          remoteDataBase: RemoteDataBaseManagerProtocol,
+         imageCacheManager: ImageCacheManagerProtocol,
          presentingViewController: TransitionHandler,
          texts: @escaping (NewChatViewControllerTexts) -> String,
-         palette: @escaping (NewChatViewControllerPalette) -> UIColor) {
+         palette: @escaping (NewChatViewControllerPalette) -> UIColor,
+         fonts: @escaping (NewChatViewControllerFonts) -> UIFont) {
         self.coordinator = coordinator
         self.remoteDataBase = remoteDataBase
+        self.imageCacheManager = imageCacheManager
         self.presentingViewController = presentingViewController
 
-        self.texts = texts
         self.palette = palette
 
+        /// Текст
         navBarTitle = BehaviorRelay<String>(value: texts(.navBarTitle))
         searchBarPlaceholder = BehaviorRelay<String>(value: texts(.searchBarPlaceholder))
-
+        emptyStateTitleText = texts(.emptyStateText)
+        /// Цвета
+        viewControllerBackgroundColor = BehaviorRelay<UIColor>(value: palette(.newChatViewControllerBackgroundColor))
         searchBarTintColor = BehaviorRelay<UIColor>(value: palette(.searchBarTintColor))
-        self.cellModel = ContactUserCellModel(userNameColor: palette(.userNameCellColor))
+        emptyStateTitleColor = palette(.emptyStateTextColor)
+        /// Шрифты
+        emptyStateTitleFont = fonts(.emptyStateText)
+        navBarTitleFont = fonts(.navBarTitle)
+        searchFont = fonts(.searchTextfieldPlaceholder)
+        cancelButtonFont = fonts(.cancelButton)
+
+        /// Подписка на изменения темы пользователя для автоматического обновления цвета
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(shouldUpdateColors),
+                                               name: NSNotification.shouldUpdatePalette,
+                                               object: nil)
+    }
+
+    @objc private func shouldUpdateColors() {
+        searchBarTintColor.accept(palette(.searchBarTintColor))
+        reloadCollectionNode.accept(nil)
     }
 }
 
 // MARK: - extension + NewChatViewModelProtocol
-extension NewChatViewModel: NewChatViewModelProtocol {}
+extension NewChatViewModel: NewChatViewModelProtocol {
+}
 
 // MARK: - extension + NewChatViewModelInputProtocol
 extension NewChatViewModel: NewChatViewModelInputProtocol {
+
+    func setupCellDelegate(with delegate: ContactUserCellNodeDelegate) {
+        cellDelegate = delegate
+    }
+
+    func setupUserIcon(at index: Int) {
+        let user = users[index]
+        guard let avatarURL = user.avatarURL else {
+            cellDelegate?.setupUserImage(with: nil)
+            return
+        }
+        imageCacheManager.fetchImage(urlString: avatarURL)
+            .subscribe { [weak self] image in
+                guard let image = image else {
+                    self?.cellDelegate?.setupUserImage(with: nil)
+                    return
+                }
+                self?.cellDelegate?.setupUserImage(with: image)
+            } onFailure: { [weak self] _ in
+                self?.cellDelegate?.setupUserImage(with: nil)
+            }
+            .disposed(by: bag)
+    }
+
     func fetchUsers(with searchText: String) {
         remoteDataBase.fetchUsersUUIDs(email: searchText)
             .subscribe { [weak self] users in
                 if self?.users != users {
                     self?.users = users
                 }
-            } onFailure: { error in
-                // TODO: Показать алерт контролллер
             }
             .disposed(by: bag)
     }
@@ -111,8 +173,10 @@ extension NewChatViewModel: NewChatViewModelOutputProtocol {
         users.count
     }
 
-    func getUser(at index: Int) -> ChatUser {
-        users[index]
+    func getModel(at index: Int) -> ContactCellModel {
+        let user = users[index]
+        return ContactCellModel(name: user.name,
+                                nameColor: palette(.userNameCellColor),
+                                email: user.email)
     }
-
 }

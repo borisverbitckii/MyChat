@@ -17,11 +17,24 @@ private enum LocalConstants {
 protocol CoordinatorProtocol: AnyObject {
     func injectModuleFactory(moduleFactory: ModuleFactoryProtocol)
 
-    func presentTabBarViewController(withChatUser user: ChatUser)
-    func presentRegisterViewController(presenter: TransitionHandler)
+    func presentRegisterViewController()
+    func presentProfileViewController(chatUser: ChatUser,
+                                      presenter: TransitionHandler)
+    func presentChatsListNavigationController(withChatUser user: ChatUser)
     func presentNewChatViewController(presenter: TransitionHandler)
-    func presentChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler)
+    func presentImagePickerController(presenter: TransitionHandler,
+                                      delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate,
+                                      source: UIImagePickerController.SourceType)
 
+    func presentAlertController(style: UIAlertController.Style,
+                                title: String,
+                                message: String,
+                                actions: [UIAlertAction],
+                                presenter: TransitionHandler)
+    func pushSettingsViewController(chatUser: ChatUser,
+                                    presenter: TransitionHandler)
+    func pushProfileViewController(chatUser: ChatUser,
+                                   presenter: TransitionHandler)
     func pushChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler)
 }
 
@@ -44,9 +57,11 @@ extension Coordinator: CoordinatorProtocol {
         self.moduleFactory = moduleFactory
     }
 
-    func presentTabBarViewController(withChatUser user: ChatUser) {
-        guard let tabBarController = moduleFactory?.getTabBarController(with: user) else { return }
-        window.rootViewController = tabBarController
+    // Present
+
+    func presentRegisterViewController() {
+        guard let registerViewController = self.moduleFactory?.getRegisterViewController() else { return }
+        window.rootViewController = registerViewController
         window.makeKeyAndVisible()
 
         UIView.transition(with: window,
@@ -55,9 +70,18 @@ extension Coordinator: CoordinatorProtocol {
                           animations: nil)
     }
 
-    func presentRegisterViewController(presenter: TransitionHandler) {
-        guard let registerViewController = self.moduleFactory?.getRegisterViewController() else { return }
-        window.rootViewController = registerViewController
+    func presentProfileViewController(chatUser: ChatUser,
+                                      presenter: TransitionHandler) {
+        guard let profileViewController = moduleFactory?.getProfileViewController(source: .byRegisterVC,
+                                                                                  chatUser: chatUser) else { return }
+        profileViewController.modalPresentationStyle = .fullScreen
+        presenter.presentViewController(viewController: profileViewController, animated: true, completion: nil)
+    }
+
+    func presentChatsListNavigationController(withChatUser user: ChatUser) {
+        guard let chatsListViewController = moduleFactory?.getChatsListModule(coordinator: self,
+                                                                              user: user) else { return }
+        window.rootViewController = chatsListViewController
         window.makeKeyAndVisible()
 
         UIView.transition(with: window,
@@ -73,10 +97,41 @@ extension Coordinator: CoordinatorProtocol {
 
     }
 
-    func presentChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler) {
-        guard let chatViewController = moduleFactory?.getChatModule(receiverUser: receiverUser,
-                                                                    coordinator: self) else { return }
-        presenterVC.presentViewController(viewController: chatViewController, animated: true, completion: nil)
+    func presentImagePickerController(presenter: TransitionHandler,
+                                      delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate,
+                                      source: UIImagePickerController.SourceType) {
+        guard let imagePickerController = moduleFactory?.getImagePickerController(delegatе: delegate,
+                                                                                  source: source) else { return }
+        presenter.presentViewController(viewController: imagePickerController,
+                                        animated: true, completion: nil)
+    }
+
+    func presentAlertController(style: UIAlertController.Style,
+                                title: String,
+                                message: String,
+                                actions: [UIAlertAction],
+                                presenter: TransitionHandler) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
+        for action in actions {
+            alertController.addAction(action)
+        }
+        presenter.presentViewController(viewController: alertController, animated: true, completion: nil)
+    }
+
+    // Push
+
+    func pushSettingsViewController(chatUser: ChatUser, presenter: TransitionHandler) {
+        guard let settingsViewController = moduleFactory?.getSettingsModule(chatUser: chatUser,
+                                                                            coordinator: self) else { return }
+        presenter.pushViewController(viewController: settingsViewController, animated: true)
+    }
+
+    func pushProfileViewController(chatUser: ChatUser,
+                                   presenter: TransitionHandler) {
+        guard let profileViewController = moduleFactory?.getProfileViewController(source: .bySettingsVC,
+                                                                                  chatUser: chatUser) else { return }
+        presenter.pushViewController(viewController: profileViewController, animated: true)
+
     }
 
     func pushChatViewController(receiverUser: ChatUser, presenterVC: TransitionHandler) {

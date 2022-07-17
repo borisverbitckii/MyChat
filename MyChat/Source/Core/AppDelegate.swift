@@ -34,10 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // swiftlint:disable:next colon
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 
-        // Свизлинг
+        /// Свизлинг
         UIViewController.swizzleViewDidAppear()
 
-        // Настройка логгера
+        /// Настройка логгера
 //        Logger.printingMode = .onlyMessages
         Logger.printingMode = .print([.file, .function, .line])
         Logger.isOn = true
@@ -48,26 +48,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Logger.log(to: .info, message: "Приложение запустилось")
 
-        // Firebase
+        /// Firebase
         Firebase.setupFirebase()
 
-        // Facebook
+        /// Facebook
         Facebook.setupFacebook(application: application,
                                didFinishLaunchingWithOptions: launchOptions)
 
-        // Конфигурация приложения
+        /// Конфигурация приложения
         let window = UIWindow(frame: UIScreen.main.bounds)
         appAssembly = AppAssembly(window: window, configManager: configManager)
         pushNotificationsManager.pushNotificationHandler = appAssembly?.pushNotificationHandler
 
-        // Настройки для получения push уведомлений
+        /// Настройки для получения push уведомлений
         pushNotificationsManager.configureApp(application: application,
                                               pushNotificationCenterDelegate: self,
                                               messagingDelegate: self)
         return true
     }
 
-    // Для авторизации через google и facebook
+    /// Для авторизации через google и facebook
     func application(_ application: UIApplication,
                      open url: URL,
                      options: [UIApplication.OpenURLOptionsKey: Any]) -> Bool {
@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 /// Для получения новых appConfig в реальном времени
-extension AppDelegate: MessagingDelegate { // TODO: Перенести в отдельный NSObject
+extension AppDelegate: MessagingDelegate {
 
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         messaging.subscribe(toTopic: "PUSH_RC") { error in
@@ -115,5 +115,4 @@ extension AppDelegate: MessagingDelegate { // TODO: Перенести в отд
     }
 }
 
-extension AppDelegate: UNUserNotificationCenterDelegate { // TODO: Перенести в отдельный NSObject
-}
+extension AppDelegate: UNUserNotificationCenterDelegate {}

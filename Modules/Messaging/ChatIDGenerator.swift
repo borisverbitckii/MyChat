@@ -7,8 +7,10 @@
 
 import Foundation
 
-/// Специальный генератор chatID, который смешивает id пользователя телефона и id пользователя,
-/// с которым будет начат диалог
+/*Специальный генератор chatID, который смешивает
+id пользователя телефона и id пользователя,
+с которым будет начат диалог*/
+
 public final class ChatIDGenerator {
     public static func generateChatID(phoneUserID: String, targetUserID: String) -> String {
 

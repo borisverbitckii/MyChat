@@ -13,14 +13,14 @@ import Foundation
 class BaseReceivedMessageOperation: Operation {
 
     // MARK: Public properties
-    final let message: Message
+    final let originalMessage: ReceivedMessage
     final let storageManager: StorageManagerProtocol
     private(set) final lazy var bag = DisposeBag()
 
     // MARK: Init
-    init(message: Message,
+    init(message: ReceivedMessage,
          storageManager: StorageManagerProtocol) {
-        self.message = message
+        self.originalMessage = message
         self.storageManager = storageManager
         super.init()
     }
