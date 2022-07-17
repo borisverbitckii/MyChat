@@ -102,7 +102,7 @@ final class SettingsViewModel {
                             self.coordinator.pushProfileViewController(chatUser: user,
                                                                        presenter: presenter)
                         }
-                    case .failure(_): break
+                    case .failure: break
                     }
                 }
                 .disposed(by: self.disposeBag)

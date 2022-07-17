@@ -29,11 +29,11 @@ public final class TextFieldCellNode: ASCellNode {
     }()
 
     // MARK: Private properties
-    private let userInfoClosure: (String) -> ()
+    private let userInfoClosure: (String) -> Void
 
     // MARK: Init
     public init(model: ProfileCellModel,
-                userInfoClosure: @escaping (String) -> ()) {
+                userInfoClosure: @escaping (String) -> Void) {
         self.userInfoClosure = userInfoClosure
         super.init()
         automaticallyManagesSubnodes = true

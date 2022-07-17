@@ -60,7 +60,6 @@
 		D75E0C04281154B800970308 /* Logger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C02281154B800970308 /* Logger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75E0C1B281186CC00970308 /* Analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C1A281186CC00970308 /* Analytics.framework */; };
 		D75E0C1C281186CC00970308 /* Analytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C1A281186CC00970308 /* Analytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		D75FD5FE28017363001B1359 /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D764EDB12807F82700963C61 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D764EDB02807F82700963C61 /* Utils.swift */; };
 		D76761E72826C655007FB46D /* AuthFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = D76761E62826C655007FB46D /* AuthFacade.swift */; };
 		D7708EE0280334BB00D1E41D /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7708EDF280334BB00D1E41D /* Models.framework */; };
@@ -80,8 +79,6 @@
 		D7CE07EC2874707200F4A735 /* activityAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = D7CE07EB2874707100F4A735 /* activityAnimation.json */; };
 		D7D10CCC2812DD8200FA2EA5 /* Messaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CCB2812DD8200FA2EA5 /* Messaging.framework */; };
 		D7D10CCD2812DD8200FA2EA5 /* Messaging.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CCB2812DD8200FA2EA5 /* Messaging.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		D7D10D132815817900FA2EA5 /* Messaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10D122815817900FA2EA5 /* Messaging.framework */; };
-		D7D10D142815817900FA2EA5 /* Messaging.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10D122815817900FA2EA5 /* Messaging.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7D15EF527FFF68C00072821 /* RegisterConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D15EF427FFF68C00072821 /* RegisterConstants.swift */; };
 		D7DE73B8280063BB00DF2037 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DE73B7280063BB00DF2037 /* Errors.swift */; };
 		D7E7BD07282686CA008CB795 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7E7BD06282686CA008CB795 /* GoogleService-Info.plist */; };
@@ -99,8 +96,6 @@
 				D73FD4E92801D83B00912D46 /* UI.framework in Embed Frameworks */,
 				D7D10CCD2812DD8200FA2EA5 /* Messaging.framework in Embed Frameworks */,
 				D79CBCCB2804368E004722FE /* Services.framework in Embed Frameworks */,
-				D75FD5FE28017363001B1359 /* BuildFile in Embed Frameworks */,
-				D7D10D142815817900FA2EA5 /* Messaging.framework in Embed Frameworks */,
 				D75E0C04281154B800970308 /* Logger.framework in Embed Frameworks */,
 				D75E0C1C281186CC00970308 /* Analytics.framework in Embed Frameworks */,
 			);
@@ -198,7 +193,6 @@
 				D73FD4E82801D83B00912D46 /* UI.framework in Frameworks */,
 				D7D10CCC2812DD8200FA2EA5 /* Messaging.framework in Frameworks */,
 				D79CBCCA2804368E004722FE /* Services.framework in Frameworks */,
-				D7D10D132815817900FA2EA5 /* Messaging.framework in Frameworks */,
 				D75E0C03281154B800970308 /* Logger.framework in Frameworks */,
 				D75E0C1B281186CC00970308 /* Analytics.framework in Frameworks */,
 				7D76A883D3E942A61639D759 /* Pods_MyChat.framework in Frameworks */,
@@ -647,6 +641,7 @@
 		};
 		D75E0C0528115F0500970308 /* Crashlitics */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -667,6 +662,7 @@
 		};
 		D7D2E01927EB29690038B82A /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 12;
 			files = (
 			);

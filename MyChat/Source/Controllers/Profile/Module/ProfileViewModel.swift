@@ -97,7 +97,6 @@ final class ProfileViewModel: NSObject {
         if self.userImageURLString != nil {
             imageToReplace = self.userImageURLString
         }
-        
         self.remoteDataBaseManager.updateUser(id: self.chatUser.id,
                                               name: userName,
                                               userIconURLString: imageToReplace)
@@ -109,7 +108,7 @@ final class ProfileViewModel: NSObject {
         .disposed(by: bag)
     }
 
-    private(set) lazy var popViewController = PublishRelay<Any?> ()
+    private(set) lazy var popViewController = PublishRelay<Any?>()
 
     // UI
     let uploadButtonText: String
@@ -264,7 +263,7 @@ extension ProfileViewModel: ProfileViewModelOutputProtocol {}
 extension ProfileViewModel: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     func imagePickerController(_ picker: UIImagePickerController,
-                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         Logger.log(to: .info, message: "Изображение с камеры или библиотеки получено")
         picker.dismiss(animated: true)
 

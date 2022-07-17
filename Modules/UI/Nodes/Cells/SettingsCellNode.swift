@@ -30,7 +30,7 @@ public final class SettingsCellNode: ASCellNode {
         self.showSeparator = showSeparator
         super.init()
         automaticallyManagesSubnodes = true
-        let attributes: [NSAttributedString.Key : Any] = [.font: model.font, .foregroundColor : model.fontColor]
+        let attributes: [NSAttributedString.Key: Any] = [.font: model.font, .foregroundColor: model.fontColor]
         titleNode.attributedText = NSAttributedString(string: model.title, attributes: attributes)
         backgroundColor = model.backgroundColor
     }

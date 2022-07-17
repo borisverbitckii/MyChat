@@ -12,7 +12,7 @@ public struct ReceivedMessage: Decodable {
     // MARK: Public properties
     public let id:       String?
     public let action:   MessageAction
-    public let position: MessagePosition = .left
+    public var position: MessagePosition = .left
     public let text:     String?
     public let date:     String
     public var sender:   ChatUser?

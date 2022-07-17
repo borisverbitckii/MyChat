@@ -237,8 +237,7 @@ extension ChatsListViewController: ASTableDataSource {
                                                 fontColor: viewModel.output.noChatsFontColor.value)
             return sectionInfo?.numberOfObjects ?? 0
         }
-
-        uiElements.chatsTableNode.setupState(with: .normal) 
+        uiElements.chatsTableNode.setupState(with: .normal)
         return sectionInfo?.numberOfObjects ?? 0
     }
 
