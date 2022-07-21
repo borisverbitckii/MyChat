@@ -9,23 +9,8 @@
 /* Begin PBXBuildFile section */
 		7CDAC9283EE09B70DDE5C98B /* Pods_Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A0EB07908C1288B46FC76DB /* Pods_Logger.framework */; };
 		D75E0C2128118E9400970308 /* Analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C2028118E9400970308 /* Analytics.framework */; };
-		D75E0C2228118E9400970308 /* Analytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C2028118E9400970308 /* Analytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7ACEAD22810085D00D19784 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7ACEAD12810085D00D19784 /* Logger.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		D75E0C2328118E9500970308 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				D75E0C2228118E9400970308 /* Analytics.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6A0EB07908C1288B46FC76DB /* Pods_Logger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Logger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,7 +92,6 @@
 				D7ACEAC32810083600D19784 /* Sources */,
 				D7ACEAC42810083600D19784 /* Frameworks */,
 				D7ACEAC52810083600D19784 /* Resources */,
-				D75E0C2328118E9500970308 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

@@ -8,31 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		D77ECB282823F11A00626E21 /* Services.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D77ECB272823F11A00626E21 /* Services.framework */; };
-		D77ECB292823F11A00626E21 /* Services.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D77ECB272823F11A00626E21 /* Services.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7D10CC32812D69900FA2EA5 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CC22812D69900FA2EA5 /* Models.framework */; };
-		D7D10CC42812D69900FA2EA5 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CC22812D69900FA2EA5 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7D10CC72812D79000FA2EA5 /* WebSocketsConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D10CC62812D79000FA2EA5 /* WebSocketsConnector.swift */; };
 		D7D10CC92812DCA400FA2EA5 /* Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CC82812DCA400FA2EA5 /* Logger.framework */; };
-		D7D10CCA2812DCA400FA2EA5 /* Logger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CC82812DCA400FA2EA5 /* Logger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7D36DC728213BB900F3A118 /* ChatIDGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D36DC628213BB900F3A118 /* ChatIDGenerator.swift */; };
 		ECFA6F258B2C342917D159F3 /* Pods_Messaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 022351471B0200EA57F27D80 /* Pods_Messaging.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		D7D10CC52812D69900FA2EA5 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				D7D10CCA2812DCA400FA2EA5 /* Logger.framework in Embed Frameworks */,
-				D77ECB292823F11A00626E21 /* Services.framework in Embed Frameworks */,
-				D7D10CC42812D69900FA2EA5 /* Models.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		022351471B0200EA57F27D80 /* Pods_Messaging.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Messaging.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,7 +113,6 @@
 				D7D10CB32812D67900FA2EA5 /* Sources */,
 				D7D10CB42812D67900FA2EA5 /* Frameworks */,
 				D7D10CB52812D67900FA2EA5 /* Resources */,
-				D7D10CC52812D69900FA2EA5 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

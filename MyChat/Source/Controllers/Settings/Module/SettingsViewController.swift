@@ -26,6 +26,8 @@ final class SettingsViewController: ASDKViewController<ASDisplayNode> {
     private let uiElements: SettingsUI
     private let bag = DisposeBag()
 
+    private var isPresented = true
+
     // MARK: Init
     init(settingsViewModel: SettingsViewModelProtocol,
          uiElements: SettingsUI) {
@@ -47,6 +49,11 @@ final class SettingsViewController: ASDKViewController<ASDisplayNode> {
         viewModel.input.viewDidLoad(presenter: self)
         setupDelegates()
         bindUIElements()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        isPresented = true
     }
 
     // MARK: Private methods
@@ -111,7 +118,9 @@ extension SettingsViewController: ASTableDelegate {
     }
 
     func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
+        if isPresented == false { return }
         uiElements.tableViewNode.deselectRow(at: indexPath, animated: true)
         viewModel.output.cellModels[indexPath.row].action()
+        isPresented = false
     }
 }

@@ -68,6 +68,7 @@ protocol RegisterViewModelInput {
     func tryToLogin(sourceButtonType: RegisterAuthButtonType,
                     showActivityIndicator: @escaping () -> Void,
                     hideActivityIndicator: (() -> Void)?)
+    func presentAgreementsViewController(presenter: TransitionHandler, type: AgreementsType)
     func checkTextfields(email: String?,
                          password: String?,
                          secondPassword: String?)
@@ -98,6 +99,9 @@ protocol RegisterViewModelOutput {
     // viewController
     var viewControllerState: BehaviorRelay<RegisterViewControllerState> { get }
     var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
+    // agreements
+    var agreement: BehaviorRelay<(title:String, font: UIFont, color: UIColor)> { get }
+    var politic: BehaviorRelay<(title:String, font: UIFont, color: UIColor)> { get }
     // submitButton
     /// Состояние активности submitButton
     var submitButtonState: BehaviorRelay<SubmitButtonState> { get }
@@ -111,7 +115,6 @@ protocol RegisterViewModelOutput {
     var changeStateButtonColor: BehaviorRelay<UIColor> { get }
     // Текстфилды
     var textfieldsFont: BehaviorRelay<UIFont> { get }
-    var textfieldsBackgroundColor: BehaviorRelay<UIColor> { get }
     // nameTextfield
     var nameTextfieldText: PublishRelay<String> { get }
     var nameTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)> { get }
@@ -146,41 +149,43 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     var output: RegisterViewModelOutput { return self }
 
     // Все описания пропертей сверху в протоколе output
-    var viewControllerBackgroundColor: BehaviorRelay<UIColor>
-    var viewControllerState = BehaviorRelay(value: RegisterViewControllerState.auth)
+    let viewControllerBackgroundColor: BehaviorRelay<UIColor>
+    let viewControllerState = BehaviorRelay(value: RegisterViewControllerState.auth)
+    // Agreements
+    let agreement: BehaviorRelay<(title:String, font: UIFont, color: UIColor)>
+    let politic: BehaviorRelay<(title:String, font: UIFont, color: UIColor)>
     // Submit button
-    var submitButtonState = BehaviorRelay(value: SubmitButtonState.disable)
-    var submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
-    var submitButtonIsEnable = BehaviorRelay<Bool>(value: false)
-    var submitButtonBackgroundColor = PublishRelay<UIColor>()
-    var submitButtonTextColor: BehaviorRelay<UIColor>
+    let submitButtonState = BehaviorRelay(value: SubmitButtonState.disable)
+    let submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
+    let submitButtonIsEnable = BehaviorRelay<Bool>(value: false)
+    let submitButtonBackgroundColor = PublishRelay<UIColor>()
+    let submitButtonTextColor: BehaviorRelay<UIColor>
     // ChangeStateButton
-    var changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
-    var changeStateButtonColor: BehaviorRelay<UIColor>
+    let changeStateButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
+    let changeStateButtonColor: BehaviorRelay<UIColor>
     // Textfields
-    var textfieldsFont: BehaviorRelay<UIFont>
-    var textfieldsBackgroundColor: BehaviorRelay<UIColor>
+    let textfieldsFont: BehaviorRelay<UIFont>
     // nameTextfield
-    var nameTextfieldText = PublishRelay<String>()
-    var nameTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
+    let nameTextfieldText = PublishRelay<String>()
+    let nameTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
     // passwordTextfield
-    var passwordTextfieldText = PublishRelay<String>()
-    var passwordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
+    let passwordTextfieldText = PublishRelay<String>()
+    let passwordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
     // secondPasswordTextfield
-    var secondPasswordTextfieldText = PublishRelay<String>()
-    var secondPasswordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
-    var secondPasswordTextfieldIsHidden = BehaviorRelay<Bool>(value: false)
+    let secondPasswordTextfieldText = PublishRelay<String>()
+    let secondPasswordTextfieldPlaceholder: BehaviorRelay<(text: String, color: UIColor)>
+    let secondPasswordTextfieldIsHidden = BehaviorRelay<Bool>(value: false)
     // errorPasswordsLabel
     // swiftlint:disable:next large_tuple
-    var errorLabelAttributedStringDataSource: BehaviorRelay<(text: String,
+    let errorLabelAttributedStringDataSource: BehaviorRelay<(text: String,
                                                              font: UIFont,
                                                              color: UIColor)>
-    var errorLabelIsHidden = BehaviorRelay<Bool>(value: true)
+    let errorLabelIsHidden = BehaviorRelay<Bool>(value: true)
     // AuthButtons
-    var authButtonsBackgroundColor: BehaviorRelay<UIColor>
+    let authButtonsBackgroundColor: BehaviorRelay<UIColor>
     // orLabel
     // swiftlint:disable:next large_tuple
-    var orLabelAttributedStringDataSource: BehaviorRelay<(text: String,
+    let orLabelAttributedStringDataSource: BehaviorRelay<(text: String,
                                                           font: UIFont,
                                                           color: UIColor)>
     // MARK: Private properties
@@ -213,6 +218,17 @@ final class RegisterViewModel: RegisterViewModelProtocol {
         /// viewController
         viewControllerBackgroundColor = BehaviorRelay<UIColor>(value: palette(.viewControllerBackgroundColor))
 
+        /// Agreements
+        self.agreement = BehaviorRelay<(title: String,
+                                        font: UIFont,
+                                        color: UIColor)>(value: (title: texts(.termsOfUse),
+                                                                 font: fonts(.agreements),
+                                                                 color: palette(.agreementsTitleColor)))
+        self.politic = BehaviorRelay<(title: String,
+                                      font: UIFont,
+                                      color: UIColor)>(value: (title: texts(.privacyPolicy),
+                                                               font: fonts(.agreements),
+                                                               color: palette(.agreementsTitleColor)))
         /// submitButton
         let submitButtonTitleText = texts(.authTextForButton)
         let submitButtonTitleFont = fonts(.submitButton)
@@ -250,7 +266,6 @@ final class RegisterViewModel: RegisterViewModelProtocol {
 
         /// Для всех текстфилдов
         self.textfieldsFont = BehaviorRelay<UIFont>(value: fonts(.registerTextfield))
-        self.textfieldsBackgroundColor = BehaviorRelay<UIColor>(value: palette(.textFieldBackgroundColor))
 
         /// errorPasswordLabel
         let errorPasswordText = texts(.errorLabelPasswordsNotTheSame)
@@ -346,7 +361,6 @@ final class RegisterViewModel: RegisterViewModelProtocol {
             submitButtonBackgroundColor.accept(palette(.submitButtonDisableTintColor))
         }
         changeStateButtonColor.accept(palette(.changeStateButtonColor))
-        textfieldsBackgroundColor.accept(palette(.textFieldBackgroundColor))
         authButtonsBackgroundColor.accept(palette(.authButtonBackground))
 
         let orLabelText = orLabelAttributedStringDataSource.value.text
@@ -462,6 +476,10 @@ extension RegisterViewModel: RegisterViewModelInput {
             default: break
             }
         }
+    }
+
+    func presentAgreementsViewController(presenter: TransitionHandler, type: AgreementsType) {
+        coordinator.presentAgreementsViewController(presenter: presenter, type: type)
     }
 
     // swiftlint:disable:next cyclomatic_complexity

@@ -171,6 +171,11 @@ extension ChatViewModel: ChatViewModelInput {
         guard  let imageURLString = receiverUser.avatarURL else { return }
         imageCacheManager.fetchImage(urlString: imageURLString)
             .subscribe { [receiverUserIcon] image in
+                guard let image = image else {
+                    let placeholderImage = UIImage(named: "userImagePlaceholder")?.withRenderingMode(.alwaysTemplate)
+                    receiverUserIcon.accept(placeholderImage)
+                    return
+                }
                 receiverUserIcon.accept(image)
             } onFailure: { [receiverUserIcon] _ in
                 receiverUserIcon.accept(nil)

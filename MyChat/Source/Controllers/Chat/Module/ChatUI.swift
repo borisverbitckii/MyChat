@@ -55,8 +55,6 @@ final class ChatUI {
         $0.layer.cornerRadius = LocalConstants.userIconCornerRadius
         $0.clipsToBounds = true
         $0.tintColor = LocalConstants.userIconTintColor
-        $0.image = UIImage(named: "userImagePlaceholder")?
-            .withRenderingMode(.alwaysTemplate)
         return $0
     }(UIImageView())
 

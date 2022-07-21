@@ -151,6 +151,7 @@ PODS:
     - GoogleUtilities/Network
   - GoogleUtilities/Environment (7.7.0):
     - PromisesObjC (< 3.0, >= 1.2)
+  - GoogleUtilities/ISASwizzler (7.7.0)
   - GoogleUtilities/Logger (7.7.0):
     - GoogleUtilities/Environment
   - GoogleUtilities/MethodSwizzler (7.7.0):
@@ -167,7 +168,11 @@ PODS:
   - GTMAppAuth (1.3.0):
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
+  - GTMSessionFetcher (1.7.2):
+    - GTMSessionFetcher/Full (= 1.7.2)
   - GTMSessionFetcher/Core (1.7.2)
+  - GTMSessionFetcher/Full (1.7.2):
+    - GTMSessionFetcher/Core (= 1.7.2)
   - leveldb-library (1.22.1)
   - lottie-ios (3.3.0)
   - nanopb (2.30909.0):
@@ -231,6 +236,16 @@ DEPENDENCIES:
   - Firebase/Storage
   - FirebaseDatabase
   - GoogleSignIn
+  - GoogleUtilities/AppDelegateSwizzler
+  - GoogleUtilities/Environment
+  - GoogleUtilities/ISASwizzler
+  - GoogleUtilities/Logger
+  - GoogleUtilities/MethodSwizzler
+  - GoogleUtilities/Network
+  - "GoogleUtilities/NSData+zlib"
+  - GoogleUtilities/Reachability
+  - GoogleUtilities/UserDefaults
+  - GTMSessionFetcher
   - lottie-ios
   - Periphery
   - RxCocoa
@@ -326,6 +341,6 @@ SPEC CHECKSUMS:
   SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
   Texture: 2e8ab2519452515f7f5a520f5a8f7e0a413abfa3
 
-PODFILE CHECKSUM: 20c91d4c8c9ddf82feef14a9b436fabc49532c7b
+PODFILE CHECKSUM: bbc3ded3d834f7b5bd8e3331f8ca317423f33e3c
 
 COCOAPODS: 1.11.3

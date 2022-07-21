@@ -18,6 +18,9 @@ final class RegisterUI {
     private(set) lazy var orLabel = ASTextNode()
     private(set) lazy var errorLabel = ASTextNode()
     private(set) lazy var authButtons = AuthButtonsStackNode()
+    private(set) lazy var agreementButton = ASButtonNode()
+    private(set) lazy var politicButton = ASButtonNode()
+
     private(set) lazy var activityIndicator: ActivityIndicatorNode = {
         $0.alpha = 0
         $0.isHidden = true

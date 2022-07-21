@@ -144,6 +144,17 @@ final class ChatsListViewModel {
                                                selector: #selector(shouldUpdateColors),
                                                name: NSNotification.shouldUpdatePalette,
                                                object: nil)
+
+        /// Подписка на разрыв соединения с сервером при выходе из активного состояния
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(willResignActive),
+                                               name: UIApplication.willResignActiveNotification,
+                                               object: nil)
+        /// Подписка на переподключение к серверу при входе в активное состояние
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
     }
 
     // MARK: Objc private methods
@@ -153,6 +164,14 @@ final class ChatsListViewModel {
         noChatsFontColor.accept(palette(.chatsListViewControllerEmptyStateFontColor))
         noChatsFoundColor.accept(palette(.chatsListViewControllerEmptyStateFontColor))
         chatsCollectionShouldReload.accept(nil)
+    }
+
+    @objc private func willResignActive() {
+        webSocketsFacade.closeConnection()
+    }
+
+    @objc private func didBecomeActive() {
+        connectToServer()
     }
 }
 

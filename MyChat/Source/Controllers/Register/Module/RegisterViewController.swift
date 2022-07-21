@@ -149,16 +149,25 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                                                            sizingOptions: [],
                                                            child: self.uiElements.errorLabel)
 
+            let agreementsStack = ASStackLayoutSpec()
+            agreementsStack.direction = .horizontal
+            agreementsStack.spacing = self.constants.agreementsSpacing
+            agreementsStack.justifyContent = .center
+            agreementsStack.children = [self.uiElements.agreementButton,
+                                        self.uiElements.politicButton]
+
             let buttonsChildren: [ASLayoutElement] = [labelCenterLayoutSpec,
                                                       self.uiElements.submitButton,
-                                                      self.uiElements.changeStateButton]
+                                                      self.uiElements.changeStateButton,
+                                                      agreementsStack]
 
             let buttonsVerticalStack = ASStackLayoutSpec()
             buttonsVerticalStack.direction = .vertical
-            buttonsVerticalStack.horizontalAlignment = .middle
             buttonsVerticalStack.children = buttonsChildren
 
-            buttonsChildren.forEach { $0.style.preferredSize = self.constants.buttonsSize }
+            buttonsChildren.forEach {
+                if $0 === agreementsStack { return }
+                $0.style.preferredSize = self.constants.buttonsSize }
 
             var bottomInset = self.constants.bottomInsetForPhonesWithoutHomeButton
 
@@ -218,6 +227,25 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
             .distinctUntilChanged()
             .subscribe { [weak node] event in
                 node?.backgroundColor = event.element
+            }
+            .disposed(by: bag)
+
+        // agreements
+        viewModel.output.agreement
+            .subscribe { [uiElements] event in
+                guard let title = event.element?.title,
+                      let font = event.element?.font,
+                      let color = event.element?.color else { return }
+                uiElements.agreementButton.setTitle(title, with: font, with: color, for: .normal)
+            }
+            .disposed(by: bag)
+
+        viewModel.output.politic
+            .subscribe { [uiElements] event in
+                guard let title = event.element?.title,
+                      let font = event.element?.font,
+                      let color = event.element?.color else { return }
+                uiElements.politicButton.setTitle(title, with: font, with: color, for: .normal)
             }
             .disposed(by: bag)
 
@@ -300,19 +328,6 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
                   uiElements?.passwordTestField,
                   uiElements?.passwordSecondTimeTextfield
                 ].forEach { $0?.textfield.font = event.element }
-            }
-            .disposed(by: bag)
-
-        viewModel.output.textfieldsBackgroundColor
-            .distinctUntilChanged()
-            .subscribe { [weak uiElements, constants] event in
-                UIView.animate(withDuration: constants.animationDurationForColors) {
-                    [ uiElements?.nameTextField,
-                      uiElements?.passwordTestField,
-                      uiElements?.passwordSecondTimeTextfield
-                    ].forEach { $0?.textfield.backgroundColor = event.element
-                    }
-                }
             }
             .disposed(by: bag)
 
@@ -536,6 +551,15 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         uiElements.authButtons.appleButton.addTarget(self,
                                                      action: #selector(appleSignInButtonTapped),
                                                      forControlEvents: .touchUpInside)
+
+        // Условия использования
+        uiElements.agreementButton.addTarget(self,
+                                             action: #selector(agreementButtonTapped),
+                                             forControlEvents: .touchUpInside)
+        // Политика конфидициальности
+        uiElements.politicButton.addTarget(self,
+                                           action: #selector(politicButtonTapped),
+                                           forControlEvents: .touchUpInside)
     }
 
     private func addTargetsForTextfields() {
@@ -625,6 +649,14 @@ final class RegisterViewController: ASDKViewController<ASDisplayNode> {
         viewModel.input.changeViewControllerState()
         viewModel.input.disableSubmitButton() // Отключаем submitButton
         node.transitionLayout(withAnimation: true, shouldMeasureAsync: false) // обновляем лейаут
+    }
+
+    @objc private func agreementButtonTapped() {
+        viewModel.input.presentAgreementsViewController(presenter: self, type: .termsOfUse)
+    }
+
+    @objc private func politicButtonTapped() {
+        viewModel.input.presentAgreementsViewController(presenter: self, type: .policy)
     }
 
     // Работа с показом клавиатуры

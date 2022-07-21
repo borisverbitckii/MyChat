@@ -9,6 +9,15 @@ import Foundation
 
 public struct ReceivedMessage: Decodable {
 
+    enum CodingKeys: CodingKey {
+        case id
+        case action
+        case text
+        case date
+        case sender
+        case target
+    }
+
     // MARK: Public properties
     public let id:       String?
     public let action:   MessageAction

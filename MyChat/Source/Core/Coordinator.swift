@@ -18,6 +18,7 @@ protocol CoordinatorProtocol: AnyObject {
     func injectModuleFactory(moduleFactory: ModuleFactoryProtocol)
 
     func presentRegisterViewController()
+    func presentAgreementsViewController(presenter: TransitionHandler, type: AgreementsType)
     func presentProfileViewController(chatUser: ChatUser,
                                       presenter: TransitionHandler)
     func presentChatsListNavigationController(withChatUser user: ChatUser)
@@ -25,7 +26,6 @@ protocol CoordinatorProtocol: AnyObject {
     func presentImagePickerController(presenter: TransitionHandler,
                                       delegate: UIImagePickerControllerDelegate & UINavigationControllerDelegate,
                                       source: UIImagePickerController.SourceType)
-
     func presentAlertController(style: UIAlertController.Style,
                                 title: String,
                                 message: String,
@@ -60,7 +60,7 @@ extension Coordinator: CoordinatorProtocol {
     // Present
 
     func presentRegisterViewController() {
-        guard let registerViewController = self.moduleFactory?.getRegisterViewController() else { return }
+        guard let registerViewController = moduleFactory?.getRegisterViewController() else { return }
         window.rootViewController = registerViewController
         window.makeKeyAndVisible()
 
@@ -68,6 +68,11 @@ extension Coordinator: CoordinatorProtocol {
                           duration: LocalConstants.animationDuration,
                           options: .transitionCrossDissolve,
                           animations: nil)
+    }
+
+    func presentAgreementsViewController(presenter: TransitionHandler, type: AgreementsType) {
+        guard let agreementsViewController = moduleFactory?.getAgreementsViewController(type: type) else { return }
+        presenter.presentViewController(viewController: agreementsViewController, animated: true, completion: nil)
     }
 
     func presentProfileViewController(chatUser: ChatUser,

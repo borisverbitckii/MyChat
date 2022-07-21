@@ -44,6 +44,8 @@ final class WebSocketsFlowFacade: NSObject {
 
     private var errorClosure: (() -> Void)?
 
+    private var isNotActive = false
+
     // MARK: Init
     init(webSocketsConnector: WebSocketsConnectorProtocol,
          remoteDataBaseManager: RemoteDataBaseManagerProtocol,
@@ -135,11 +137,15 @@ extension WebSocketsFlowFacade: URLSessionWebSocketDelegate {
         Logger.log(to: .info, message: "Открыто подключение к web socket")
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    didCompleteWithError error: Error?) {
+        guard let error = error else { return }
         Logger.log(to: .error,
                    message: "Не удалось установить подключение к web socket",
                    error: error)
         guard let errorClosure = errorClosure else { return }
+
         DispatchQueue.main.async {
             errorClosure()
         }

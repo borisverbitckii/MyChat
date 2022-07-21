@@ -15,7 +15,6 @@
 		D734D8F32837A86A0087406F /* NavBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D734D8F22837A86A0087406F /* NavBarNode.swift */; };
 		D734D8F52838D3800087406F /* ContactUserCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D734D8F42838D3800087406F /* ContactUserCellNode.swift */; };
 		D73FD4EB2801D87B00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; };
-		D73FD4EC2801D87B00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4EA2801D87B00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75621A2285092E400D4C9F0 /* MessageBubbleNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75621A1285092E400D4C9F0 /* MessageBubbleNode.swift */; };
 		D75621AF28562B4200D4C9F0 /* textFieldCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75621AE28562B4200D4C9F0 /* textFieldCellNode.swift */; };
 		D75621B128562B4700D4C9F0 /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75621B028562B4700D4C9F0 /* ImageCell.swift */; };
@@ -31,20 +30,6 @@
 		D7CE07E628731FF000F4A735 /* TableNodeWithEmptyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CE07E528731FF000F4A735 /* TableNodeWithEmptyState.swift */; };
 		D7E7B3E7284F5A08003FCC87 /* MessageToolBarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E7B3E6284F5A08003FCC87 /* MessageToolBarNode.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		D73FD4ED2801D87B00912D46 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				D73FD4EC2801D87B00912D46 /* Models.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		37F14DE98C1685B99A9BBA6B /* Pods-UI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UI.release.xcconfig"; path = "Target Support Files/Pods-UI/Pods-UI.release.xcconfig"; sourceTree = "<group>"; };
@@ -206,7 +191,6 @@
 				D73FD4BE2801D67800912D46 /* Sources */,
 				D73FD4BF2801D67800912D46 /* Frameworks */,
 				D73FD4C02801D67800912D46 /* Resources */,
-				D73FD4ED2801D87B00912D46 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

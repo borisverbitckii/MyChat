@@ -168,7 +168,8 @@ final class ChatViewController: ASDKViewController<ASDisplayNode> {
 
         viewModel.output.receiverUserIcon
             .subscribe { [weak uiElements] event in
-                uiElements?.userIcon.image = event.element ?? UIImage()
+                guard let image = event.element else { return }
+                uiElements?.userIcon.image = image
             }
             .disposed(by: bag)
 

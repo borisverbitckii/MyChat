@@ -53,6 +53,10 @@
 		<string>Email is invalid, please try again</string>
 		<key>alertControllerIsAlreadySignUp</key>
 		<string>Account with this email is already signed up</string>
+		<key>termsOfUse</key>
+		<string>Terms of use</string>
+		<key>privacyPolicy</key>
+		<string>Privacy policy</string>
 	</dict>
 	<key>ChatsListViewController</key>
 	<dict>

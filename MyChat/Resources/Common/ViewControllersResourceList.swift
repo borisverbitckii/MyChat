@@ -35,6 +35,8 @@ enum RegisterViewControllerTexts: String {
     case alertControllerIsAlreadySignUp
     case alertControllerOKAction
     case orLabelText
+    case termsOfUse
+    case privacyPolicy
 }
 
 enum RegisterViewControllerFonts: String {
@@ -43,12 +45,12 @@ enum RegisterViewControllerFonts: String {
     case registerTextfield
     case registerErrorLabel
     case registerOrLabel
+    case agreements
 }
 
 enum RegisterViewControllerPalette: String {
     case viewControllerBackgroundColor
     case changeStateButtonColor
-    case textFieldBackgroundColor
     case textfieldsPlaceholderColor
     case submitButtonTextColor
     case submitButtonDisableTintColor
@@ -56,6 +58,7 @@ enum RegisterViewControllerPalette: String {
     case orLabelTextColor
     case authButtonBackground
     case errorLabelTextColor
+    case agreementsTitleColor
 }
 
 // MARK: - ChatsListViewController -

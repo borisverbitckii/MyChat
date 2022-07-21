@@ -22,6 +22,7 @@ protocol ModuleFactoryProtocol {
                        coordinator: CoordinatorProtocol) -> ASDKViewController<ASDisplayNode>
     func getImagePickerController(delegatе: UIImagePickerControllerDelegate  & UINavigationControllerDelegate,
                                   source: UIImagePickerController.SourceType) -> UIImagePickerController
+    func getAgreementsViewController(type: AgreementsType) -> AgreementsViewController
 }
 
 final class ModuleFactory {
@@ -118,5 +119,9 @@ extension ModuleFactory: ModuleFactoryProtocol {
         imagePickerController.allowsEditing = false
         imagePickerController.delegate = delegatе
         return imagePickerController
+    }
+
+    func getAgreementsViewController(type: AgreementsType) -> AgreementsViewController {
+        AgreementsModuleBuilder().build(type: type)
     }
 }

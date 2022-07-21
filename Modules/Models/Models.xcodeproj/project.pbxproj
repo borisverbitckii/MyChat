@@ -25,26 +25,11 @@
 		D7D06B832822B5990061EA01 /* MessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B822822B5990061EA01 /* MessageAction.swift */; };
 		D7E7B3E928507E35003FCC87 /* MessagePosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E7B3E828507E35003FCC87 /* MessagePosition.swift */; };
 		D7E7BD0328256674008CB795 /* Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7E7BD0228256674008CB795 /* Logger.framework */; };
-		D7E7BD0428256674008CB795 /* Logger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7E7BD0228256674008CB795 /* Logger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7FA5AE72840E6C70083290E /* CDChat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AE62840E6C70083290E /* CDChat+CoreDataProperties.swift */; };
 		D7FA5AEC284104EB0083290E /* CDTarget+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AEA284104EB0083290E /* CDTarget+CoreDataProperties.swift */; };
 		D7FA5AED284104EB0083290E /* CDTarget+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AEB284104EB0083290E /* CDTarget+CoreDataClass.swift */; };
 		D7FA5AF4284105510083290E /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AF3284105510083290E /* CDMessage+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		D7E7BD0528256674008CB795 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				D7E7BD0428256674008CB795 /* Logger.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		D70D5BE3284CAF730087E47F /* ContactCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCellModel.swift; sourceTree = "<group>"; };
@@ -215,7 +200,6 @@
 				D75FD68B2801D20B001B1359 /* Sources */,
 				D75FD68C2801D20B001B1359 /* Frameworks */,
 				D75FD68D2801D20B001B1359 /* Resources */,
-				D7E7BD0528256674008CB795 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

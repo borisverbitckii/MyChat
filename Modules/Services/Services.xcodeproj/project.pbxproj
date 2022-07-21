@@ -10,11 +10,8 @@
 		521CB42B754A6018D5AB3AD6 /* Pods_Services.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BCD58D089B5C6DEF2585FC2 /* Pods_Services.framework */; };
 		D70D5BE2284B2FCD0087E47F /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70D5BE1284B2FCD0087E47F /* ImageCacheManager.swift */; };
 		D73FD4B52801D3AC00912D46 /* Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; };
-		D73FD4B62801D3AC00912D46 /* Models.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D73FD4B42801D3AC00912D46 /* Models.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75E0BFA2811053500970308 /* Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0BF92811053500970308 /* Logger.framework */; };
-		D75E0BFB2811053500970308 /* Logger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0BF92811053500970308 /* Logger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75E0C252811983B00970308 /* Analytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C242811983B00970308 /* Analytics.framework */; };
-		D75E0C262811983B00970308 /* Analytics.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75E0C242811983B00970308 /* Analytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D75FD6812801D195001B1359 /* ConfigureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75FD67E2801D195001B1359 /* ConfigureManager.swift */; };
 		D77F35C02827A7AE0046D494 /* Apple.swift in Sources */ = {isa = PBXBuildFile; fileRef = D77F35BF2827A7AE0046D494 /* Apple.swift */; };
 		D7D06B122822A50D0061EA01 /* Google.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B0D2822A50D0061EA01 /* Google.swift */; };
@@ -27,22 +24,6 @@
 		D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */; };
 		D7FCD44928697FC400CE723E /* RemoteFileStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FCD44828697FC400CE723E /* RemoteFileStorageManager.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		D73FD4B72801D3AC00912D46 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				D75E0BFB2811053500970308 /* Logger.framework in Embed Frameworks */,
-				D73FD4B62801D3AC00912D46 /* Models.framework in Embed Frameworks */,
-				D75E0C262811983B00970308 /* Analytics.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1D16467F38E074859B093AC3 /* Pods-Services.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Services.release.xcconfig"; path = "Target Support Files/Pods-Services/Pods-Services.release.xcconfig"; sourceTree = "<group>"; };
@@ -170,7 +151,6 @@
 				D75FD6582801C775001B1359 /* Sources */,
 				D75FD6592801C775001B1359 /* Frameworks */,
 				D75FD65A2801C775001B1359 /* Resources */,
-				D73FD4B72801D3AC00912D46 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

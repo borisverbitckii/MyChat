@@ -1,9 +1,22 @@
 # Uncomment the next line to define a global platform for your project
-use_frameworks!
 platform :ios, '13.0'
+use_frameworks!
+
+def google_utilites
+  pod 'GoogleUtilities/AppDelegateSwizzler'
+  pod 'GoogleUtilities/Environment'
+  pod 'GoogleUtilities/ISASwizzler'
+  pod 'GoogleUtilities/Logger'
+  pod 'GoogleUtilities/MethodSwizzler'
+  pod 'GoogleUtilities/NSData+zlib'
+  pod 'GoogleUtilities/Network'
+  pod 'GoogleUtilities/Reachability'
+  pod 'GoogleUtilities/UserDefaults'
+  pod 'GTMSessionFetcher'
+end
 
 target 'MyChat' do
-  workspace 'MyChat.xcworkspace'
+ workspace 'MyChat.xcworkspace'
 
  pod 'SwiftLint'
 
@@ -22,10 +35,13 @@ target 'MyChat' do
  pod 'Firebase/Storage'
  pod 'FirebaseDatabase'
  pod 'Firebase/Messaging'
+ pod 'Firebase/RemoteConfig'
  pod 'Firebase/Analytics'
  pod 'Firebase/Crashlytics'
- pod 'Firebase/RemoteConfig'
+
  pod 'Periphery'
+
+ google_utilites
 end
 
 target 'Services' do
@@ -37,6 +53,7 @@ target 'Services' do
  pod 'FBSDKLoginKit'
  pod 'GoogleSignIn'
 
+ pod 'Firebase'
  pod 'Firebase/Auth'
  pod 'Firebase/Storage'
  pod 'FirebaseDatabase'
@@ -44,6 +61,8 @@ target 'Services' do
  pod 'Firebase/RemoteConfig'
 
  pod 'Periphery'
+
+ google_utilites
 end
 
 target 'UI' do
@@ -66,6 +85,8 @@ target 'Analytics' do
 
  pod 'Firebase/Analytics'
  pod 'Periphery'
+
+ google_utilites
 end
 
 target 'Logger' do
@@ -73,6 +94,8 @@ target 'Logger' do
 
  pod 'Firebase/Crashlytics'
  pod 'Periphery'
+
+ google_utilites
 end
 
 post_install do |installer|

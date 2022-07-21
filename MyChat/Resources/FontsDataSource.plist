@@ -39,6 +39,13 @@
 			<key>size</key>
 			<integer>20</integer>
 		</dict>
+		<key>agreements</key>
+		<dict>
+			<key>fontName</key>
+			<string>Futura Medium</string>
+			<key>size</key>
+			<integer>12</integer>
+		</dict>
 	</dict>
 	<key>ChatsListViewController</key>
 	<dict>

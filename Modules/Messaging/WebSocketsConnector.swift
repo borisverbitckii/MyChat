@@ -36,7 +36,7 @@ public class WebSocketsConnector {
     // MARK: Public properties
     public var userID: String? {
         didSet {
-            url = URL(string: "ws://localhost:8080?uuid=\(userID ?? "")")
+            url = URL(string: "ws://87.242.72.234:8081?uuid=\(userID ?? "")")
         }
     }
     public lazy var rawMessageStringObserver = PublishRelay<String>()
@@ -150,6 +150,7 @@ extension WebSocketsConnector: WebSocketsConnectorProtocol {
     }
 
     public func closeConnection() {
-        webSocketTask?.cancel()
+        webSocketTask?.cancel(with: .goingAway, reason: nil)
+        Logger.log(to: .info, message: "Иницииован разрыв соединения с сервером")
     }
 }
