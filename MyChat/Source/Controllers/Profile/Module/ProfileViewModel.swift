@@ -26,6 +26,7 @@ protocol ProfileViewModelProtocol {
 
 protocol ProfileViewModelInputProtocol {
     func setImageActivityIndicatorDelegate(with delegate: ImageActivityIndicatorDelegate)
+    func presentAlertController(presenter: TransitionHandler)
 }
 
 protocol ProfileViewModelOutputProtocol {
@@ -39,6 +40,7 @@ protocol ProfileViewModelOutputProtocol {
     var tableViewContentInset: UIEdgeInsets { get }
     var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
     var cellModel: ProfileCellModel { get }
+    var showAlertController: PublishRelay<Any?> { get }
 
     var userImage: UIImage? { get }
     var userName: String { get }
@@ -93,6 +95,11 @@ final class ProfileViewModel: NSObject {
     private(set) lazy var saveButtonClosure: () -> Void = { [weak self, bag] in
         guard let self = self,
               let userName = self.userName else { return }
+
+        if userName == "" {
+            self.showAlertController.accept(nil)
+            return
+        }
         var imageToReplace = self.chatUser.avatarURL
         if self.userImageURLString != nil {
             imageToReplace = self.userImageURLString
@@ -121,6 +128,7 @@ final class ProfileViewModel: NSObject {
     let cellModel: ProfileCellModel
     var userImage: UIImage?
     var userName: String
+    private(set) lazy var showAlertController = PublishRelay<Any?>()
 
     private(set) var tableViewContentInset: UIEdgeInsets
     private(set) lazy var reloadCellWithUserImage = PublishRelay<Any?>()
@@ -253,6 +261,16 @@ extension ProfileViewModel: ProfileViewModelProtocol {}
 extension ProfileViewModel: ProfileViewModelInputProtocol {
     func setImageActivityIndicatorDelegate(with delegate: ImageActivityIndicatorDelegate) {
         self.imageActivityIndicatorDelegate = delegate
+    }
+
+    func presentAlertController(presenter: TransitionHandler) {
+        let action = UIAlertAction(title: texts(.alertOkAction),
+                                   style: .default)
+        coordinator.presentAlertController(style: .alert,
+                                           title: texts(.alertNoNameTitle),
+                                           message: texts(.alertNoNameMessage),
+                                           actions: [action],
+                                           presenter: presenter)
     }
 }
 

@@ -63,6 +63,13 @@ final class ProfileViewController: ASDKViewController<ASTableNode> {
                 self?.popViewController()
             }
             .disposed(by: bag)
+
+        viewModel.output.showAlertController
+            .subscribe {[weak self] event in
+                guard let self = self else { return }
+                self.viewModel.input.presentAlertController(presenter: self)
+            }
+            .disposed(by: bag)
     }
 }
 

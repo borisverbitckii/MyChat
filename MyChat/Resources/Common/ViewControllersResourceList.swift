@@ -113,6 +113,9 @@ enum ProfileViewControllerTexts: String {
     case alertTitle
     case camera
     case library
+    case alertNoNameTitle
+    case alertNoNameMessage
+    case alertOkAction
 }
 
 enum ProfileViewControllerFonts: String {

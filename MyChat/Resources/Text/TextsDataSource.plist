@@ -109,6 +109,12 @@
 		<string>Camera</string>
 		<key>library</key>
 		<string>Library</string>
+		<key>alertNoNameTitle</key>
+		<string>Ooops!</string>
+		<key>alertNoNameMessage</key>
+		<string>Name shouldn`t be empty</string>
+		<key>alertOkAction</key>
+		<string>Ok</string>
 	</dict>
 </dict>
 </plist>

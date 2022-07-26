@@ -100,8 +100,14 @@ protocol RegisterViewModelOutput {
     var viewControllerState: BehaviorRelay<RegisterViewControllerState> { get }
     var viewControllerBackgroundColor: BehaviorRelay<UIColor> { get }
     // agreements
-    var agreement: BehaviorRelay<(title:String, font: UIFont, color: UIColor)> { get }
-    var politic: BehaviorRelay<(title:String, font: UIFont, color: UIColor)> { get }
+    // swiftlint:disable:next large_tuple
+    var agreement: BehaviorRelay<(title: String,
+                                  font: UIFont,
+                                  color: UIColor)> { get }
+    // swiftlint:disable:next large_tuple
+    var politic: BehaviorRelay<(title: String,
+                                font: UIFont,
+                                color: UIColor)> { get }
     // submitButton
     /// Состояние активности submitButton
     var submitButtonState: BehaviorRelay<SubmitButtonState> { get }
@@ -152,8 +158,14 @@ final class RegisterViewModel: RegisterViewModelProtocol {
     let viewControllerBackgroundColor: BehaviorRelay<UIColor>
     let viewControllerState = BehaviorRelay(value: RegisterViewControllerState.auth)
     // Agreements
-    let agreement: BehaviorRelay<(title:String, font: UIFont, color: UIColor)>
-    let politic: BehaviorRelay<(title:String, font: UIFont, color: UIColor)>
+    // swiftlint:disable:next large_tuple
+    let agreement: BehaviorRelay<(title: String,
+                                  font: UIFont,
+                                  color: UIColor)>
+    // swiftlint:disable:next large_tuple
+    let politic: BehaviorRelay<(title: String,
+                                font: UIFont,
+                                color: UIColor)>
     // Submit button
     let submitButtonState = BehaviorRelay(value: SubmitButtonState.disable)
     let submitButtonTitle: BehaviorRelay<(title: String, font: UIFont)>
