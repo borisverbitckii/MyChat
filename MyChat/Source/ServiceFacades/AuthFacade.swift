@@ -76,10 +76,8 @@ extension AuthFacade: AuthFacadeProtocol {
         Single<ChatUser?>.create { [weak self, bag] obs in
             self?.authManager.signIn(withEmail: email,
                                      password: password)
-            .subscribe { user in
-                self?.saveUserToDatabase(user: user,
-                                         obs: obs,
-                                         hideActivityIndicator: hideActivityIndicator)
+            .subscribe { chatUser in
+                obs(.success(chatUser))
             } onFailure: { error in
                 hideActivityIndicator()
                 obs(.failure(error))
