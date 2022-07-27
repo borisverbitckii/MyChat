@@ -42,24 +42,29 @@ final class SaveMessageOperation: BaseReceivedMessageOperation {
                     if let sender = originalMessage.sender {
                         /// Выгрузка данных о пользователе из удаленной БД
                         _ = self?.remoteDataBaseManager.fetchUser(fetchType: .all, id: sender.id)
-                            .subscribe { user in
-                                if let user = user {
-                                    finalSender?.setup(with: user)
-                                    /// Сохранение нового пользователя
-                                    self?.storageManager.saveContext(with: context) { result in
-                                        switch result {
-                                        case .success:
-                                            guard let finalSender = finalSender else { return }
-                                            guard let message = self?.setupMessage(context: context) else { return }
+                            .subscribe { result in
+                                switch result {
+                                case .success(let user):
+                                    if let user = user {
+                                        finalSender?.setup(with: user)
+                                        /// Сохранение нового пользователя
+                                        self?.storageManager.saveContext(with: context) { result in
+                                            switch result {
+                                            case .success:
+                                                guard let finalSender = finalSender else { return }
+                                                guard let message = self?.setupMessage(context: context) else { return }
 
-                                            /// Поиск/создание чата
-                                            self?.findChat(messageToSave: message,
-                                                           sender: finalSender,
-                                                           context: context)
-                                        default: break
+                                                /// Поиск/создание чата
+                                                self?.findChat(messageToSave: message,
+                                                               sender: finalSender,
+                                                               context: context)
+                                            default: break
+                                            }
                                         }
                                     }
+                                case .failure: break
                                 }
+
                             }
                     }
                     return
@@ -96,17 +101,22 @@ final class SaveMessageOperation: BaseReceivedMessageOperation {
                           context: NSManagedObjectContext) {
         storageManager.fetchChat(chatID: originalMessage.target?.id ?? "",
                                  from: context)
-        .subscribe { [weak self, storageManager, originalMessage] chat in
-            if let chat = chat {
-                chat.addToMessages(messageToSave)
-                chat.lastMessageDate = Date()
-                storageManager.saveContext(with: context,
-                                           completion: nil)
-            } else {
-                self?.createNewChat(chatID: originalMessage.target?.id ?? "",
-                                    message: messageToSave,
-                                    sender: sender,
-                                    in: context)
+        .subscribe { [weak self, storageManager, originalMessage] result in
+            switch result {
+
+            case .success(let chat):
+                if let chat = chat {
+                    chat.addToMessages(messageToSave)
+                    chat.lastMessageDate = Date()
+                    storageManager.saveContext(with: context,
+                                               completion: nil)
+                } else {
+                    self?.createNewChat(chatID: originalMessage.target?.id ?? "",
+                                        message: messageToSave,
+                                        sender: sender,
+                                        in: context)
+                }
+            case .failure: break
             }
         }
         .disposed(by: bag)

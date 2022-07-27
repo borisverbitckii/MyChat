@@ -153,9 +153,13 @@ extension NewChatViewModel: NewChatViewModelInputProtocol {
 
     func fetchUsers(with searchText: String) {
         remoteDataBase.fetchUsersUUIDs(email: searchText)
-            .subscribe { [weak self] users in
-                if self?.users != users {
-                    self?.users = users
+            .subscribe { [weak self] result in
+                switch result {
+                case .success(let users):
+                    if self?.users != users {
+                        self?.users = users
+                    }
+                case .failure: break
                 }
             }
             .disposed(by: bag)

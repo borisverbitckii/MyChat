@@ -55,9 +55,13 @@ extension SplashViewModel: SplashViewModelInputProtocol {
                         Logger.log(to: .info, message: "Пользователь уже авторизован", userInfo: ["uid": user.id])
                         /// Подгрузка данных о пользователе из удаленной БД
                         self.remoteDataBaseManager.fetchUser(fetchType: .selfUser, id: user.id)
-                            .subscribe { chatUser in
-                                guard let chatUser = chatUser else { return }
-                                coordinator.presentChatsListNavigationController(withChatUser: chatUser)
+                            .subscribe { result in
+                                switch result {
+                                case .success(let chatUser):
+                                    guard let chatUser = chatUser else { return }
+                                    coordinator.presentChatsListNavigationController(withChatUser: chatUser)
+                                case .failure: break
+                                }
                             }
                             .disposed(by: self.disposeBag)
                     } else {

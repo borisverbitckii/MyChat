@@ -224,11 +224,15 @@ extension ChatsListViewModel: ChatsListViewModelInput {
         guard let id = chat.id else { return }
 
         storageManager.fetchUser(chatID: id, from: .main)
-            .subscribe { [palette, fonts] user in
-                guard let user = user else { return }
-                delegate.setupUser(with: user,
-                                   color: palette(.chatNameCellColor),
-                                   font: fonts(.cellMessageUserFont))
+            .subscribe { [palette, fonts] result in
+                switch result {
+                case .success(let user):
+                    guard let user = user else { return }
+                    delegate.setupUser(with: user,
+                                       color: palette(.chatNameCellColor),
+                                       font: fonts(.cellMessageUserFont))
+                case .failure: break
+                }
             }
             .disposed(by: bag)
 

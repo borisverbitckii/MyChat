@@ -93,10 +93,9 @@ final class ProfileViewModel: NSObject {
 
     /// Клоужер для сохранения информации о профиле
     private(set) lazy var saveButtonClosure: () -> Void = { [weak self, bag] in
-        guard let self = self,
-              let userName = self.userName else { return }
+        guard let self = self else { return }
 
-        if userName == "" {
+        if self.userName == "" {
             self.showAlertController.accept(nil)
             return
         }
@@ -105,10 +104,10 @@ final class ProfileViewModel: NSObject {
             imageToReplace = self.userImageURLString
         }
         self.remoteDataBaseManager.updateUser(id: self.chatUser.id,
-                                              name: userName,
+                                              name: self.userName,
                                               userIconURLString: imageToReplace)
         .subscribe { _ in
-            self.chatUser.name = userName
+            self.chatUser.name = self.userName
             self.chatUser.avatarURL = imageToReplace
             self.presentNextViewController()
         }
@@ -195,9 +194,13 @@ final class ProfileViewModel: NSObject {
         super.init()
 
         imageCacheManager.fetchImage(urlString: chatUser.avatarURL ?? "")
-            .subscribe { [weak self] image in
+            .subscribe { [weak self] result in
                 self?.userImageURLString = chatUser.avatarURL
-                self?.userImage = image
+                switch result {
+                case .success(let image):
+                    self?.userImage = image
+                case .failure: break
+                }
                 self?.reloadCellWithUserImage.accept(nil)
             }
             .disposed(by: bag)

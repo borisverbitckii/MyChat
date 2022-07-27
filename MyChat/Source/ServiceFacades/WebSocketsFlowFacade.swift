@@ -60,6 +60,7 @@ final class WebSocketsFlowFacade: NSObject {
                 return rawMessageString.decode()
             }
             .subscribe { [weak self, operationQueue] messages in
+                guard let messages = messages.element else { return }
 
                 for message in messages {
                     // Сервер отправляем отправленный клиентом сообщения обратно, игнорируем их
