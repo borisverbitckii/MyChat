@@ -88,7 +88,7 @@ final class SettingsViewModel {
 
     // MARK: Private methods
     private func generateCellModels(presenter: TransitionHandler) {
-        /// Profile
+        /// Change Profile
         let profileModel = SettingsCellModel(title: texts(.profileCellTitle),
                                              font: fonts(.cellTitle),
                                              backgroundColor: palette(.settingsCellBackgroundColor),
@@ -108,6 +108,25 @@ final class SettingsViewModel {
                 .disposed(by: self.disposeBag)
         }
         cellModels.append(profileModel)
+
+        /// Remove profile
+        let removeModel = SettingsCellModel(title: texts(.removeCellTitle),
+                                            font: fonts(.cellTitle),
+                                            backgroundColor: palette(.settingsCellBackgroundColor),
+                                            fontColor: palette(.settingsCellFontColor)) { [weak self] in
+            guard let self = self else { return}
+            self.remoteDataBaseManager.removeUser(id: self.user.id)
+                .subscribe { _ in
+                    self.authManager.removeUser()
+                        .subscribe { _ in
+                            self.signOut()
+                        }
+                        .disposed(by: self.disposeBag)
+                }
+                .disposed(by: self.disposeBag)
+        }
+
+        cellModels.append(removeModel)
 
         /// Logout
         let logoutModel = SettingsCellModel(title: texts(.logOutCellTitle),

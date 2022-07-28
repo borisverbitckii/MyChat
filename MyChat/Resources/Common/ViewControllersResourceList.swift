@@ -92,6 +92,7 @@ enum ChatsListViewControllerPalette: String {
 enum SettingsViewControllerTexts: String {
     case title
     case profileCellTitle
+    case removeCellTitle
     case logOutCellTitle
 }
 

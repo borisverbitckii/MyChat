@@ -23,6 +23,7 @@ public protocol RemoteDataBaseManagerProtocol {
     func fetchUser(fetchType: FetchType, id: String) -> Single<ChatUser?>
     func fetchUsersUUIDs(email: String) -> Single<[ChatUser]>
     func updateUser(id: String, name: String, userIconURLString: String?) -> Single<Any?>
+    func removeUser(id: String) -> Single<Any?>
 }
 
 public final class RemoteDataBaseManager {
@@ -109,6 +110,19 @@ extension RemoteDataBaseManager: RemoteDataBaseManagerProtocol {
                     Logger.log(to: .error,
                                message: "Не удалось обновить данные пользователя",
                                error: error)
+                    obs(.failure(error))
+                    return
+                }
+                obs(.success(nil))
+            }
+            return Disposables.create()
+        }
+    }
+
+    public func removeUser(id: String) -> Single<Any?> {
+        Single<Any?>.create { [directDatabasePath] obs in
+            directDatabasePath.child("\(id)").removeValue { error, _ in
+                if let error = error {
                     obs(.failure(error))
                     return
                 }

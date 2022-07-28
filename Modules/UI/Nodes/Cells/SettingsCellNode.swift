@@ -23,11 +23,10 @@ public final class SettingsCellNode: ASCellNode {
         return line
     }()
 
-    private let showSeparator: Bool
+    private lazy var showSeparator = true
 
     // MARK: Init
-    public init(model: SettingsCellModel, showSeparator: Bool = true) {
-        self.showSeparator = showSeparator
+    public init(model: SettingsCellModel) {
         super.init()
         automaticallyManagesSubnodes = true
         let attributes: [NSAttributedString.Key: Any] = [.font: model.font, .foregroundColor: model.fontColor]
@@ -58,5 +57,10 @@ public final class SettingsCellNode: ASCellNode {
         }
 
         return centerSpec
+    }
+
+    // MARK: Public Methods
+    public func hideSeparator() {
+        showSeparator = false
     }
 }

@@ -26,6 +26,7 @@ final class SettingsViewController: ASDKViewController<ASDisplayNode> {
     private let uiElements: SettingsUI
     private let bag = DisposeBag()
 
+    /// Презентован ли контроллер или нет
     private var isPresented = true
 
     // MARK: Init
@@ -63,7 +64,7 @@ final class SettingsViewController: ASDKViewController<ASDisplayNode> {
             let statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
             let navBarHeight = self?.navigationController?.navigationBar.frame.height ?? 0
             let topInset = statusBarHeight + navBarHeight + 16
-            let bottomInset = UIScreen.main.bounds.height - topInset - 80
+            let bottomInset = UIScreen.main.bounds.height - topInset - 120
             return ASInsetLayoutSpec(insets: LocalConstants.tableViewInsets(topInset, bottomInset),
                               child: uiElements.tableViewNode)
         }
@@ -98,14 +99,12 @@ extension SettingsViewController: ASTableDataSource {
 
     func tableNode(_ tableNode: ASTableNode, nodeBlockForRowAt indexPath: IndexPath) -> ASCellNodeBlock {
         let model = viewModel.output.cellModels[indexPath.row]
-        if indexPath.row == viewModel.output.cellModels.count - 1 {
-            let cell = SettingsCellNode(model: model, showSeparator: false)
-            return { cell }
-        }
         let cell = SettingsCellNode(model: model)
+        if indexPath.row == viewModel.output.cellModels.count - 1 {
+            cell.hideSeparator()
+        }
         return { cell }
     }
-
 }
 
 // MARK: - extension + ASTableDelegate -

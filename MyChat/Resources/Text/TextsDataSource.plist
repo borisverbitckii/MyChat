@@ -81,6 +81,8 @@
 	<dict>
 		<key>profileCellTitle</key>
 		<string>Profile</string>
+		<key>removeCellTitle</key>
+		<string>Remove profile</string>
 		<key>logOutCellTitle</key>
 		<string>Log out</string>
 		<key>title</key>

@@ -32,6 +32,7 @@ public protocol AuthManagerRegisterProtocol {       // для RegisterViewContro
 }
 
 public protocol AuthManagerSettingsProtocol {         // для SettingsViewController
+    func removeUser() -> Single<Any?>
     func signOut() -> Single<Any?>
 }
 
@@ -288,6 +289,32 @@ extension AuthManager: AuthManagerRegisterProtocol {
 
 // MARK: - extension + AuthManagerProfileProtocol -
 extension AuthManager: AuthManagerSettingsProtocol {
+
+    public func removeUser() -> Single<Any?> {
+        Single<Any?>.create { [weak self] observer in
+            guard let self = self else { return Disposables.create() }
+            self.auth.currentUser?.delete { error in
+                if let error = error {
+                    Logger.log(to: .error, message: "Не удалось удалить пользователя",
+                               error: error)
+                    observer(.failure(error))
+                    return
+                }
+
+                self.signOut()
+                    .subscribe { _ in
+                        observer(.success(nil))
+                        Logger.log(to: .info, message: "Пользователь успешно удален",
+                                   error: error)
+                    } onFailure: { error in
+                        observer(.failure(error))
+                    }
+                    .disposed(by: self.bag)
+            }
+            return Disposables.create()
+        }
+    }
+
     public func signOut() -> Single<Any?> {
         Single<Any?>.create { [auth] observer in
             do {
