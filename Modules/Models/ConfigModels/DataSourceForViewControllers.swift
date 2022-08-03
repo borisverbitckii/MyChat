@@ -10,7 +10,7 @@ public typealias Palette = DataSourceForViewControllers<DataSourceForViewControl
 public typealias Texts = DataSourceForViewControllers<DataSourceForViewController<UIElementTexts>>
 
 // MARK: - DataSourceForViewControllers
-public struct DataSourceForViewControllers<T>: Decodable, Equatable where T: Decodable, T: Equatable  {
+public struct DataSourceForViewControllers<T>: Decodable, Equatable where T: Decodable, T: Equatable {
     public let viewControllers: [String: T]
 }
 
@@ -34,4 +34,3 @@ public struct UIElementColor: Decodable, Equatable {
 public struct UIElementTexts: Decodable, Equatable {
     public let text: String
 }
-

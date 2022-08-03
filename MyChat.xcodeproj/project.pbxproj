@@ -76,18 +76,29 @@
 		D7B4A03C28890F3C00985EDA /* Logger.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7ACEAD32810087900D19784 /* Logger.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7B4A03D28890F4B00985EDA /* Services.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D75FD66B2801CD48001B1359 /* Services.framework */; };
 		D7B4A03E28890F4B00985EDA /* Services.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D75FD66B2801CD48001B1359 /* Services.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D7C2DBC1289946D300BD61CD /* MyChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C2DBC0289946D300BD61CD /* MyChatTests.swift */; };
 		D7CE07EC2874707200F4A735 /* activityAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = D7CE07EB2874707100F4A735 /* activityAnimation.json */; };
 		D7D10CCC2812DD8200FA2EA5 /* Messaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CCB2812DD8200FA2EA5 /* Messaging.framework */; };
 		D7D10CCD2812DD8200FA2EA5 /* Messaging.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D7D10CCB2812DD8200FA2EA5 /* Messaging.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D7D15EF527FFF68C00072821 /* RegisterConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D15EF427FFF68C00072821 /* RegisterConstants.swift */; };
 		D7DE73B8280063BB00DF2037 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7DE73B7280063BB00DF2037 /* Errors.swift */; };
-		D7E7BD07282686CA008CB795 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7E7BD06282686CA008CB795 /* GoogleService-Info.plist */; };
 		D7E9E37628870BBD00BD807F /* AgreementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E9E37528870BBD00BD807F /* AgreementsViewController.swift */; };
 		D7E9E37828870BC700BD807F /* AgreementsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E9E37728870BC700BD807F /* AgreementsViewModel.swift */; };
 		D7E9E37C28870BDE00BD807F /* AgreementsModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E9E37B28870BDE00BD807F /* AgreementsModuleBuilder.swift */; };
 		D7E9E37E28870C8600BD807F /* AgreementsUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E9E37D28870C8600BD807F /* AgreementsUI.swift */; };
+		D7ED9CC82893845C00B65AE7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D7ED9CC72893845C00B65AE7 /* GoogleService-Info.plist */; };
 		D7F5BE09280D9359000ACDD4 /* NotificationCenter + extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE08280D9358000ACDD4 /* NotificationCenter + extension.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D7C2DBC2289946D300BD61CD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A101D57627B7750C00A38901 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A101D57D27B7750C00A38901;
+			remoteInfo = MyChat;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		D75FD5FF28017363001B1359 /* Embed Frameworks */ = {
@@ -178,16 +189,18 @@
 		D77ECB4B2824E2E200626E21 /* WebSocketsFlowFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketsFlowFacade.swift; sourceTree = "<group>"; };
 		D79CBCC92804368E004722FE /* Services.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Services.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7ACEAD32810087900D19784 /* Logger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Logger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7C2DBBE289946D300BD61CD /* MyChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D7C2DBC0289946D300BD61CD /* MyChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyChatTests.swift; sourceTree = "<group>"; };
 		D7CE07EB2874707100F4A735 /* activityAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = activityAnimation.json; sourceTree = "<group>"; };
 		D7D10CCB2812DD8200FA2EA5 /* Messaging.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Messaging.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7D10D122815817900FA2EA5 /* Messaging.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Messaging.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7D15EF427FFF68C00072821 /* RegisterConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterConstants.swift; sourceTree = "<group>"; };
 		D7DE73B7280063BB00DF2037 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		D7E7BD06282686CA008CB795 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D7E9E37528870BBD00BD807F /* AgreementsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementsViewController.swift; sourceTree = "<group>"; };
 		D7E9E37728870BC700BD807F /* AgreementsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementsViewModel.swift; sourceTree = "<group>"; };
 		D7E9E37B28870BDE00BD807F /* AgreementsModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementsModuleBuilder.swift; sourceTree = "<group>"; };
 		D7E9E37D28870C8600BD807F /* AgreementsUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementsUI.swift; sourceTree = "<group>"; };
+		D7ED9CC72893845C00B65AE7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D7F5BE08280D9358000ACDD4 /* NotificationCenter + extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter + extension.swift"; sourceTree = "<group>"; };
 		D98CE068DAA97D1455C4A21E /* Pods_MyChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -204,6 +217,13 @@
 				D7B4A03928890F3700985EDA /* Models.framework in Frameworks */,
 				CEFDAF21873D55491C04EDA7 /* Pods_MyChat.framework in Frameworks */,
 				D7B4A03728890F3100985EDA /* Analytics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D7C2DBBB289946D300BD61CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				A101D58027B7750C00A38901 /* MyChat */,
+				D7C2DBBF289946D300BD61CD /* MyChatTests */,
 				A101D57F27B7750C00A38901 /* Products */,
 				EEA65EAEA00387E28FABF1EB /* Pods */,
 				8D89884A6872C86BB0CF73C6 /* Frameworks */,
@@ -241,6 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				A101D57E27B7750C00A38901 /* MyChat.app */,
+				D7C2DBBE289946D300BD61CD /* MyChatTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -249,7 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				A101D58F27B7750C00A38901 /* Info.plist */,
-				D7E7BD06282686CA008CB795 /* GoogleService-Info.plist */,
+				D7ED9CC72893845C00B65AE7 /* GoogleService-Info.plist */,
 				A101D59F27B7764900A38901 /* Source */,
 				A101D59E27B7763A00A38901 /* Resources */,
 			);
@@ -521,6 +543,14 @@
 			path = SendMessage;
 			sourceTree = "<group>";
 		};
+		D7C2DBBF289946D300BD61CD /* MyChatTests */ = {
+			isa = PBXGroup;
+			children = (
+				D7C2DBC0289946D300BD61CD /* MyChatTests.swift */,
+			);
+			path = MyChatTests;
+			sourceTree = "<group>";
+		};
 		D7D15EEF27FEB50600072821 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -594,6 +624,24 @@
 			productReference = A101D57E27B7750C00A38901 /* MyChat.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D7C2DBBD289946D300BD61CD /* MyChatTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D7C2DBC6289946D300BD61CD /* Build configuration list for PBXNativeTarget "MyChatTests" */;
+			buildPhases = (
+				D7C2DBBA289946D300BD61CD /* Sources */,
+				D7C2DBBB289946D300BD61CD /* Frameworks */,
+				D7C2DBBC289946D300BD61CD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D7C2DBC3289946D300BD61CD /* PBXTargetDependency */,
+			);
+			name = MyChatTests;
+			productName = MyChatTests;
+			productReference = D7C2DBBE289946D300BD61CD /* MyChatTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -601,12 +649,16 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1330;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					A101D57D27B7750C00A38901 = {
 						CreatedOnToolsVersion = 13.2.1;
 						LastSwiftMigration = 1330;
+					};
+					D7C2DBBD289946D300BD61CD = {
+						CreatedOnToolsVersion = 13.4.1;
+						TestTargetID = A101D57D27B7750C00A38901;
 					};
 				};
 			};
@@ -624,6 +676,7 @@
 			projectRoot = "";
 			targets = (
 				A101D57D27B7750C00A38901 /* MyChat */,
+				D7C2DBBD289946D300BD61CD /* MyChatTests */,
 			);
 		};
 /* End PBXProject section */
@@ -638,7 +691,14 @@
 				A101D58E27B7750C00A38901 /* LaunchScreen.storyboard in Resources */,
 				A101D58B27B7750C00A38901 /* Assets.xcassets in Resources */,
 				D722AA47280916D500569D47 /* TextsDataSource.plist in Resources */,
-				D7E7BD07282686CA008CB795 /* GoogleService-Info.plist in Resources */,
+				D7ED9CC82893845C00B65AE7 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D7C2DBBC289946D300BD61CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -795,7 +855,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D7C2DBBA289946D300BD61CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7C2DBC1289946D300BD61CD /* MyChatTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D7C2DBC3289946D300BD61CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A101D57D27B7750C00A38901 /* MyChat */;
+			targetProxy = D7C2DBC2289946D300BD61CD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		A101D58C27B7750C00A38901 /* LaunchScreen.storyboard */ = {
@@ -947,8 +1023,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyChat/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to camera.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to the photo library.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "App needs access to camera to setup user image";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App needs access to library to setup user image";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -993,8 +1069,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyChat/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to camera.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to the photo library.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "App needs access to camera to setup user image";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App needs access to library to setup user image";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -1018,6 +1094,46 @@
 			};
 			name = Release;
 		};
+		D7C2DBC4289946D300BD61CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PQ6LM8W269;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = unitTests.MyChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyChat.app/MyChat";
+			};
+			name = Debug;
+		};
+		D7C2DBC5289946D300BD61CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PQ6LM8W269;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = unitTests.MyChatTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyChat.app/MyChat";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1035,6 +1151,15 @@
 			buildConfigurations = (
 				A101D59327B7750C00A38901 /* Debug */,
 				A101D59427B7750C00A38901 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D7C2DBC6289946D300BD61CD /* Build configuration list for PBXNativeTarget "MyChatTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D7C2DBC4289946D300BD61CD /* Debug */,
+				D7C2DBC5289946D300BD61CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

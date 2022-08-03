@@ -28,7 +28,7 @@ public struct ChatUser: Equatable, Codable {
     public init(coreDataUser: CDChatUser) {
         self.id        = coreDataUser.id
         self.name      = coreDataUser.name
-        self.email     = coreDataUser.email 
+        self.email     = coreDataUser.email
         self.avatarURL = coreDataUser.avatarURL
     }
 }

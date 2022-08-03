@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1FBBFBC05BC76AAA737C805D /* Pods_Models.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9030D430CA9ED11C7D95A927 /* Pods_Models.framework */; };
 		D70D5BE4284CAF730087E47F /* ContactCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D70D5BE3284CAF730087E47F /* ContactCellModel.swift */; };
 		D7113924286DAF7200593281 /* SettingsCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7113923286DAF7200593281 /* SettingsCellModel.swift */; };
 		D71DEA8D28435303000F4B1F /* CDChatUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D71DEA8B28435303000F4B1F /* CDChatUser+CoreDataProperties.swift */; };
@@ -20,18 +21,21 @@
 		D7995766283F9F1D00B7B9C2 /* ChatCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7995765283F9F1D00B7B9C2 /* ChatCellModel.swift */; };
 		D7B20C712823A1EF00C4E1A1 /* CDMessage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C692823A1EF00C4E1A1 /* CDMessage+CoreDataClass.swift */; };
 		D7B20C722823A1EF00C4E1A1 /* CDChat+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7B20C6A2823A1EF00C4E1A1 /* CDChat+CoreDataClass.swift */; };
+		D7C63AAE28996FA800FA9C15 /* CDChat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C63AAD28996FA800FA9C15 /* CDChat+CoreDataProperties.swift */; };
+		D7C63AB028996FD200FA9C15 /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C63AAF28996FD200FA9C15 /* CDMessage+CoreDataProperties.swift */; };
 		D7CE07E42870A2B500F4A735 /* ProfileCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CE07E32870A2B500F4A735 /* ProfileCellModel.swift */; };
 		D7CE07E82874622200F4A735 /* MessageCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7CE07E72874622200F4A735 /* MessageCellModel.swift */; };
 		D7D06B832822B5990061EA01 /* MessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D06B822822B5990061EA01 /* MessageAction.swift */; };
 		D7E7B3E928507E35003FCC87 /* MessagePosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E7B3E828507E35003FCC87 /* MessagePosition.swift */; };
 		D7E7BD0328256674008CB795 /* Logger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7E7BD0228256674008CB795 /* Logger.framework */; };
-		D7FA5AE72840E6C70083290E /* CDChat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AE62840E6C70083290E /* CDChat+CoreDataProperties.swift */; };
 		D7FA5AEC284104EB0083290E /* CDTarget+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AEA284104EB0083290E /* CDTarget+CoreDataProperties.swift */; };
 		D7FA5AED284104EB0083290E /* CDTarget+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AEB284104EB0083290E /* CDTarget+CoreDataClass.swift */; };
-		D7FA5AF4284105510083290E /* CDMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FA5AF3284105510083290E /* CDMessage+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2457AACD338ED4D1E385CAB6 /* Pods-Models.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Models.debug.xcconfig"; path = "Target Support Files/Pods-Models/Pods-Models.debug.xcconfig"; sourceTree = "<group>"; };
+		41CF37F22E4A2D641528325B /* Pods-Models.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Models.release.xcconfig"; path = "Target Support Files/Pods-Models/Pods-Models.release.xcconfig"; sourceTree = "<group>"; };
+		9030D430CA9ED11C7D95A927 /* Pods_Models.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Models.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D70D5BE3284CAF730087E47F /* ContactCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCellModel.swift; sourceTree = "<group>"; };
 		D7113923286DAF7200593281 /* SettingsCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCellModel.swift; sourceTree = "<group>"; };
 		D71DEA8B28435303000F4B1F /* CDChatUser+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDChatUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -46,15 +50,15 @@
 		D7995765283F9F1D00B7B9C2 /* ChatCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCellModel.swift; sourceTree = "<group>"; };
 		D7B20C692823A1EF00C4E1A1 /* CDMessage+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D7B20C6A2823A1EF00C4E1A1 /* CDChat+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDChat+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D7C63AAD28996FA800FA9C15 /* CDChat+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDChat+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		D7C63AAF28996FD200FA9C15 /* CDMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CDMessage+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D7CE07E32870A2B500F4A735 /* ProfileCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellModel.swift; sourceTree = "<group>"; };
 		D7CE07E72874622200F4A735 /* MessageCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellModel.swift; sourceTree = "<group>"; };
 		D7D06B822822B5990061EA01 /* MessageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageAction.swift; sourceTree = "<group>"; };
 		D7E7B3E828507E35003FCC87 /* MessagePosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagePosition.swift; sourceTree = "<group>"; };
 		D7E7BD0228256674008CB795 /* Logger.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Logger.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D7FA5AE62840E6C70083290E /* CDChat+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CDChat+CoreDataProperties.swift"; path = "/Users/borisverbitsky/Desktop/MyChat/Modules/Models/Core Data/Chat/CDChat+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 		D7FA5AEA284104EB0083290E /* CDTarget+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDTarget+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D7FA5AEB284104EB0083290E /* CDTarget+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDTarget+CoreDataClass.swift"; sourceTree = "<group>"; };
-		D7FA5AF3284105510083290E /* CDMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CDMessage+CoreDataProperties.swift"; path = "/Users/borisverbitsky/Desktop/MyChat/Modules/Models/Core Data/Chat/Message/CDMessage+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,12 +67,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7E7BD0328256674008CB795 /* Logger.framework in Frameworks */,
+				1FBBFBC05BC76AAA737C805D /* Pods_Models.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		392D8C6765B34F7E483FFEF0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2457AACD338ED4D1E385CAB6 /* Pods-Models.debug.xcconfig */,
+				41CF37F22E4A2D641528325B /* Pods-Models.release.xcconfig */,
+			);
+			name = Pods;
+			path = ../../Pods;
+			sourceTree = "<group>";
+		};
 		D71DEA8A28435303000F4B1F /* ChatUser */ = {
 			isa = PBXGroup;
 			children = (
@@ -84,11 +99,12 @@
 				D7CE07EE288062FD00F4A735 /* CellsModels */,
 				D7D06B822822B5990061EA01 /* MessageAction.swift */,
 				D7E7B3E828507E35003FCC87 /* MessagePosition.swift */,
-				D7D06B882822B7420061EA01 /* Core Data */,
+				D7D06B882822B7420061EA01 /* CoreData */,
 				D7D06B1A2822A5640061EA01 /* Entities */,
 				D75FD6D32801D285001B1359 /* ConfigModels */,
 				D75FD6902801D20B001B1359 /* Products */,
 				D7E7BD0128256674008CB795 /* Frameworks */,
+				392D8C6765B34F7E483FFEF0 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,7 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				D7B20C692823A1EF00C4E1A1 /* CDMessage+CoreDataClass.swift */,
-				D7FA5AF3284105510083290E /* CDMessage+CoreDataProperties.swift */,
+				D7C63AAF28996FD200FA9C15 /* CDMessage+CoreDataProperties.swift */,
 			);
 			path = Message;
 			sourceTree = "<group>";
@@ -122,7 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				D7B20C6A2823A1EF00C4E1A1 /* CDChat+CoreDataClass.swift */,
-				D7FA5AE62840E6C70083290E /* CDChat+CoreDataProperties.swift */,
+				D7C63AAD28996FA800FA9C15 /* CDChat+CoreDataProperties.swift */,
 				D7B20C762823A28C00C4E1A1 /* Message */,
 			);
 			path = Chat;
@@ -150,7 +166,7 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
-		D7D06B882822B7420061EA01 /* Core Data */ = {
+		D7D06B882822B7420061EA01 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
 				D727158A283F84530036BDE7 /* MyChat.xcdatamodeld */,
@@ -158,13 +174,14 @@
 				D7FA5AE52840E6540083290E /* Target */,
 				D7B20C782823A2F900C4E1A1 /* Chat */,
 			);
-			path = "Core Data";
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		D7E7BD0128256674008CB795 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				D7E7BD0228256674008CB795 /* Logger.framework */,
+				9030D430CA9ED11C7D95A927 /* Pods_Models.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -195,6 +212,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D75FD6962801D20B001B1359 /* Build configuration list for PBXNativeTarget "Models" */;
 			buildPhases = (
+				AAD63E36E3AB094FCBF4D248 /* [CP] Check Pods Manifest.lock */,
 				D75FD68A2801D20B001B1359 /* Headers */,
 				D7317A9C281A7A9A00CFB130 /* SwiftLint */,
 				D75FD68B2801D20B001B1359 /* Sources */,
@@ -253,6 +271,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		AAD63E36E3AB094FCBF4D248 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Models-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		D7317A9C281A7A9A00CFB130 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -282,9 +322,9 @@
 				D7334452280C0441007B1F37 /* DataSourceForViewControllers.swift in Sources */,
 				D7D06B832822B5990061EA01 /* MessageAction.swift in Sources */,
 				D71DEA8E28435303000F4B1F /* CDChatUser+CoreDataClass.swift in Sources */,
-				D7FA5AE72840E6C70083290E /* CDChat+CoreDataProperties.swift in Sources */,
 				D7995766283F9F1D00B7B9C2 /* ChatCellModel.swift in Sources */,
 				D7B20C712823A1EF00C4E1A1 /* CDMessage+CoreDataClass.swift in Sources */,
+				D7C63AAE28996FA800FA9C15 /* CDChat+CoreDataProperties.swift in Sources */,
 				D7CE07E82874622200F4A735 /* MessageCellModel.swift in Sources */,
 				D70D5BE4284CAF730087E47F /* ContactCellModel.swift in Sources */,
 				D72A4C3D284616A900DAF2F6 /* Target.swift in Sources */,
@@ -293,9 +333,9 @@
 				D75FD6E02801D285001B1359 /* AppConfig.swift in Sources */,
 				D7113924286DAF7200593281 /* SettingsCellModel.swift in Sources */,
 				D72A4C3928449CA000DAF2F6 /* ChatUser.swift in Sources */,
-				D7FA5AF4284105510083290E /* CDMessage+CoreDataProperties.swift in Sources */,
 				D7B20C722823A1EF00C4E1A1 /* CDChat+CoreDataClass.swift in Sources */,
 				D7E7B3E928507E35003FCC87 /* MessagePosition.swift in Sources */,
+				D7C63AB028996FD200FA9C15 /* CDMessage+CoreDataProperties.swift in Sources */,
 				D7FA5AEC284104EB0083290E /* CDTarget+CoreDataProperties.swift in Sources */,
 				D72A4C3B284610BA00DAF2F6 /* ReceivedMessage.swift in Sources */,
 				D727158C283F84530036BDE7 /* MyChat.xcdatamodeld in Sources */,
@@ -428,6 +468,7 @@
 		};
 		D75FD6972801D20B001B1359 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2457AACD338ED4D1E385CAB6 /* Pods-Models.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -457,6 +498,7 @@
 		};
 		D75FD6982801D20B001B1359 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 41CF37F22E4A2D641528325B /* Pods-Models.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

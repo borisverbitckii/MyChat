@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>236565682646-3k7l6i9092tgd9q1vc55b74n191eq5pc.apps.googleusercontent.com</string>
+	<string>236565682646-gibikgmr924dl2q4l8ok8iru6h1up0pu.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.236565682646-3k7l6i9092tgd9q1vc55b74n191eq5pc</string>
+	<string>com.googleusercontent.apps.236565682646-gibikgmr924dl2q4l8ok8iru6h1up0pu</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDJgVcPruOdqoFsiSwn06eJVGrUygX3cyk</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>Highlights.MyChat</string>
+	<string>Highlights.MyChatApp</string>
 	<key>PROJECT_ID</key>
 	<string>mychat-95efa</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:236565682646:ios:c8b231a908365098cfec77</string>
+	<string>1:236565682646:ios:576fe272ad956217cfec77</string>
 	<key>DATABASE_URL</key>
 	<string>https://mychat-95efa-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>

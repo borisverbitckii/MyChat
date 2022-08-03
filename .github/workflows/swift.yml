@@ -1,0 +1,22 @@
+name: Swift
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install xcbeautify
+      uses: Cyberbeni/install-swift-tool@master
+      with:
+        url: https://github.com/Cyberbeni/xcbeautify
+        branch: main
+    - name: Run tests
+      run: bundle exec fastlane unitTestsLane

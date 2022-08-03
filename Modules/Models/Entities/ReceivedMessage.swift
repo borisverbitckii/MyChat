@@ -19,21 +19,21 @@ public struct ReceivedMessage: Decodable {
     }
 
     // MARK: Public properties
-    public let id:       String?
-    public let action:   MessageAction
+    public let id: String?
+    public let action: MessageAction
     public var position: MessagePosition = .left
-    public let text:     String?
-    public let date:     String
-    public var sender:   ChatUser?
-    public var target:   Target?
+    public let text: String?
+    public let date: String
+    public var sender: ChatUser?
+    public var target: Target?
 
     // MARK: Init
-    public init(id:       String? = nil,
-                action:   MessageAction,
-                text:     String? = nil,
-                date:     String,
-                sender:   ChatUser? = nil,
-                target:   Target? = nil) {
+    public init(id: String? = nil,
+                action: MessageAction,
+                text: String? = nil,
+                date: String,
+                sender: ChatUser? = nil,
+                target: Target? = nil) {
         self.id       = id
         self.action   = action
         self.text     = text

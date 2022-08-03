@@ -63,6 +63,8 @@ target 'Services' do
  pod 'Periphery'
 
  google_utilites
+
+ pod 'SwiftLint'
 end
 
 target 'UI' do
@@ -70,6 +72,8 @@ target 'UI' do
 
  pod 'Texture'
  pod 'lottie-ios'
+
+ pod 'SwiftLint'
 end
 
 target 'Messaging' do
@@ -78,6 +82,8 @@ target 'Messaging' do
  pod 'RxSwift'
  pod 'RxRelay'
  pod 'Periphery'
+
+ pod 'SwiftLint'
 end
 
 target 'Analytics' do
@@ -87,6 +93,8 @@ target 'Analytics' do
  pod 'Periphery'
 
  google_utilites
+
+ pod 'SwiftLint'
 end
 
 target 'Logger' do
@@ -96,6 +104,13 @@ target 'Logger' do
  pod 'Periphery'
 
  google_utilites
+
+ pod 'SwiftLint'
+end
+
+target 'Models' do
+  xcodeproj './Modules/Models/Models.xcodeproj'
+ pod 'SwiftLint'
 end
 
 post_install do |installer|
