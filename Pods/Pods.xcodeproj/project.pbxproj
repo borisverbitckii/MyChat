@@ -5394,7 +5394,7 @@
 		7A90166E64D54160FA50654EC4E30214 /* FIRStartMFASignInRequest.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FIRStartMFASignInRequest.h; path = FirebaseAuth/Sources/Backend/RPC/MultiFactor/SignIn/FIRStartMFASignInRequest.h; sourceTree = "<group>"; };
 		7AB377149A6D0162499F5610B1685282 /* GIDSignIn.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GIDSignIn.m; path = GoogleSignIn/Sources/GIDSignIn.m; sourceTree = "<group>"; };
 		7AD17F495F86FC3FB5F276369FED1BF5 /* two_level_iterator.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = two_level_iterator.cc; path = table/two_level_iterator.cc; sourceTree = "<group>"; };
-		7B04ECBE01AEF250A270B8FDADE9CC0E /* Pods_MyChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B04ECBE01AEF250A270B8FDADE9CC0E /* Pods-MyChat */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-MyChat"; path = Pods_MyChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B0F659D0B81B22B9A11DDD37910F4CD /* ASDKViewController.mm */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.objcpp; name = ASDKViewController.mm; path = Source/ASDKViewController.mm; sourceTree = "<group>"; };
 		7B825BF3E25E1998EBC577930E3C9FD7 /* GULNetworkURLSession.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = GULNetworkURLSession.m; path = GoogleUtilities/Network/GULNetworkURLSession.m; sourceTree = "<group>"; };
 		7B8C94FAEB946431535A716191CB07E5 /* AnimationFontProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnimationFontProvider.swift; path = Sources/Public/FontProvider/AnimationFontProvider.swift; sourceTree = "<group>"; };
@@ -7837,7 +7837,7 @@
 				09DE77F977A3EA56CD86ACBFB89DEF07 /* Pods-Logger */,
 				44A886289898E0CD5AE399EACAAC816C /* Pods-Messaging */,
 				9A27EB0BE9583EE181F6FA476A0F88E8 /* Pods-Models */,
-				7B04ECBE01AEF250A270B8FDADE9CC0E /* Pods_MyChat.framework */,
+				7B04ECBE01AEF250A270B8FDADE9CC0E /* Pods-MyChat */,
 				029DC932573FD3CFF2AB08725C770343 /* Pods-Services */,
 				EA96243EC9AAD4C84488D658139EE20E /* Pods-UI */,
 				3347A1AB6546F0A3977529B8F199DC41 /* FBLPromises.framework */,
@@ -13155,7 +13155,7 @@
 			);
 			name = "Pods-MyChat";
 			productName = Pods_MyChat;
-			productReference = 7B04ECBE01AEF250A270B8FDADE9CC0E /* Pods_MyChat.framework */;
+			productReference = 7B04ECBE01AEF250A270B8FDADE9CC0E /* Pods-MyChat */;
 			productType = "com.apple.product-type.framework";
 		};
 		9307B7A119490930CF70393AB529AAC1 /* leveldb-library */ = {

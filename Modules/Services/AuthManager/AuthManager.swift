@@ -59,19 +59,17 @@ extension AuthManager: AuthManagerSplashProtocol {
 
     public func checkIsUserAlreadyLoggedIn() -> Single<ChatUser?> {
         Single<ChatUser?>.create { [auth] observer in
-            auth.addStateDidChangeListener { _, user in
-                if let user = user {
-                    let chatUser = ChatUser(id: user.uid,
-                                            name: user.displayName ?? "",
-                                            email: user.email ?? "",
-                                            avatarURL: user.photoURL?.absoluteString)
+           if let user = auth.currentUser {
+               let chatUser = ChatUser(id: user.uid,
+                                       name: user.displayName ?? "",
+                                       email: user.email ?? "",
+                                       avatarURL: user.photoURL?.absoluteString)
 
-                    AnalyticReporter.logEvent(.login(loginMethod: "firebase"))
-                    observer(.success(chatUser))
-                } else {
-                    observer(.success(nil))
-                }
-            }
+               AnalyticReporter.logEvent(.login(loginMethod: "firebase"))
+               observer(.success(chatUser))
+           } else {
+               observer(.success(nil))
+           }
             return Disposables.create()
         }
     }
