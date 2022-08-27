@@ -23,6 +23,7 @@
 		D7D36DC528212B8400F3A118 /* RemoteDataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */; };
 		D7F5BE22280EEB0A000ACDD4 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */; };
 		D7FCD44928697FC400CE723E /* RemoteFileStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FCD44828697FC400CE723E /* RemoteFileStorageManager.swift */; };
+		D7FFB99328B88D0500BB1953 /* MessagingDelegateImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7FFB99228B88D0500BB1953 /* MessagingDelegateImpl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 		D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteDataBaseManager.swift; sourceTree = "<group>"; };
 		D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		D7FCD44828697FC400CE723E /* RemoteFileStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFileStorageManager.swift; sourceTree = "<group>"; };
+		D7FFB99228B88D0500BB1953 /* MessagingDelegateImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingDelegateImpl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,7 +95,7 @@
 				D75FD67E2801D195001B1359 /* ConfigureManager.swift */,
 				D70D5BE1284B2FCD0087E47F /* ImageCacheManager.swift */,
 				D7D36DC428212B8400F3A118 /* RemoteDataBaseManager.swift */,
-				D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */,
+				D7FFB99128B88CA100BB1953 /* PushNotification */,
 				D75FD65D2801C775001B1359 /* Products */,
 				133C22E0F04F10D67E4484CF /* Frameworks */,
 				4E342AA5E39C58C14D45B742 /* Pods */,
@@ -126,6 +128,15 @@
 				D77F35BF2827A7AE0046D494 /* Apple.swift */,
 			);
 			path = SignInServices;
+			sourceTree = "<group>";
+		};
+		D7FFB99128B88CA100BB1953 /* PushNotification */ = {
+			isa = PBXGroup;
+			children = (
+				D7F5BE21280EEB0A000ACDD4 /* PushNotificationManager.swift */,
+				D7FFB99228B88D0500BB1953 /* MessagingDelegateImpl.swift */,
+			);
+			path = PushNotification;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,6 +273,7 @@
 				D7D06B192822A5280061EA01 /* StorageManager.swift in Sources */,
 				D7FCD44928697FC400CE723E /* RemoteFileStorageManager.swift in Sources */,
 				D7D06B122822A50D0061EA01 /* Google.swift in Sources */,
+				D7FFB99328B88D0500BB1953 /* MessagingDelegateImpl.swift in Sources */,
 				D7D06B162822A50D0061EA01 /* AuthManager.swift in Sources */,
 				D70D5BE2284B2FCD0087E47F /* ImageCacheManager.swift in Sources */,
 				D77F35C02827A7AE0046D494 /* Apple.swift in Sources */,

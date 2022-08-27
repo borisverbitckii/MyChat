@@ -11,7 +11,6 @@ import Logger
 import RxSwift
 import RxCocoa
 import Services
-import FirebaseCrashlytics
 
 final class AppAssembly {
 

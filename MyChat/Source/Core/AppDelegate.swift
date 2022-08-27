@@ -10,7 +10,6 @@ import Models
 import Logger
 import RxRelay
 import Services
-import Firebase
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -61,9 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         pushNotificationsManager.pushNotificationHandler = appAssembly?.pushNotificationHandler
 
         /// Настройки для получения push уведомлений
-        pushNotificationsManager.configureApp(application: application,
-                                              pushNotificationCenterDelegate: self,
-                                              messagingDelegate: self)
+        pushNotificationsManager.configureApp(application: application)
         return true
     }
 
@@ -100,19 +97,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(UIBackgroundFetchResult.newData)
     }
 }
-
-/// Для получения новых appConfig в реальном времени
-extension AppDelegate: MessagingDelegate {
-
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        messaging.subscribe(toTopic: "PUSH_RC") { error in
-            if let error = error {
-                Logger.log(to: .error,
-                           message: error.localizedDescription,
-                           error: error)
-            }
-        }
-    }
-}
-
-extension AppDelegate: UNUserNotificationCenterDelegate {}
