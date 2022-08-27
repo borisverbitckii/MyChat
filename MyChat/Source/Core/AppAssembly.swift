@@ -24,8 +24,6 @@ final class AppAssembly {
     private let bag = DisposeBag()
 
     private let configManager: ConfigureManagerProtocol
-    /// Для того, чтобы избавиться от дублирования запроса на обновление ui конфига
-    private var isInitialLoad = true
     /// Конфиг для обновления приложения, автоматически захватывается клоужером
     private var appConfig: AppConfig?
     /// Для сравнения темы, чтобы можно было обновить цвета по всему приложению в случае изменения
@@ -66,7 +64,9 @@ final class AppAssembly {
         let splashViewController = moduleFactory.getSplashModule()
         window.rootViewController = splashViewController
         window.makeKeyAndVisible()
+        splashViewController.viewModel.input.checkAuth(coordinator: coordinator)
 
+        /// Подписка на изменения конфига
         uiConfigObserverDisposable = configManager.uiConfigObserver
             .subscribe(onNext: { [weak self] appConfig in
                 var notificationsNames = [Notification.Name]()
@@ -96,11 +96,6 @@ final class AppAssembly {
                     NotificationCenter.default.post(name: notificationName,
                                                     object: nil)
                 }
-
-                if self?.isInitialLoad == true {
-                    splashViewController.viewModel.input.checkAuth(coordinator: coordinator)
-                    self?.isInitialLoad = false
-                }
             })
     }
 
@@ -109,11 +104,9 @@ final class AppAssembly {
         UIScreen.main.rx
             .userInterfaceStyle()
             .subscribe(onNext: { [weak self] _ in
-                if self?.isInitialLoad == false {
-                    /// Для обновления UI во всех контроллерах при смене темы
-                    self?.configManager.reloadUIConfig()
-                    Logger.log(to: .info, message: "Пользователь сменил тему на телефоне")
-                }
+                /// Для обновления UI во всех контроллерах при смене темы
+                self?.configManager.reloadUIConfig()
+                Logger.log(to: .info, message: "Пользователь сменил тему на телефоне")
             })
             .disposed(by: bag)
     }

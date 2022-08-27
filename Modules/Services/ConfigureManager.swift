@@ -33,7 +33,6 @@ public final class ConfigureManager {
         let settings = RemoteConfigSettings()
         settings.minimumFetchInterval = 12800
         remoteConfig.configSettings = settings
-        reloadUIConfig()
     }
 }
 
